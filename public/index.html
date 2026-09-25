@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YZ250 2T Tracker — Live Listings Dashboard</title>
+  <meta name="description" content="Track Yamaha YZ250 2-stroke listings across Polish marketplaces in real-time." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <img src="Yamaha_Motor_Racing_logo.svg" alt="Yamaha Factory Racing" class="brand-logo" />
+      
+      <div class="header-actions">
+        <div class="status-pill" id="scrapeStatus">
+          <span class="status-dot"></span>
+          <span class="status-label">Loading…</span>
+        </div>
+        <button class="btn-scrape" id="btnScrape" onclick="triggerScrape()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+            <path d="M23 4v6h-6M1 20v-6h6"/>
+            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+          </svg>
+          Refresh Data
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Stats Bar -->
+    <section class="stats-grid" id="statsGrid">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon--blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        </div>
+        <div class="stat-value" id="statTotal">—</div>
+        <div class="stat-label">Active Listings</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon--green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 100 7h5a3.5 3.5 0 110 7H6"/></svg>
+        </div>
+        <div class="stat-value" id="statAvg">—</div>
+        <div class="stat-label">Average Price</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon--amber">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <div class="stat-value" id="statMin">—</div>
+        <div class="stat-label">Lowest Price</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon--red">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div class="stat-value" id="statMax">—</div>
+        <div class="stat-label">Highest Price</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon--purple">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <div class="stat-value" id="statNewToday">—</div>
+        <div class="stat-label">New Today</div>
+      </div>
+    </section>
+
+    <!-- Price Range Chart -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Price Distribution</h2>
+        <span class="badge">PLN</span>
+      </div>
+      <div class="chart-container" id="priceChart">
+        <div class="chart-loading">Loading chart…</div>
+      </div>
+    </section>
+
+    <!-- Filters & Listings -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Listings</h2>
+        <div class="filters">
+          <input type="text" id="filterSearch" placeholder="Search title…" oninput="debounceLoad()" />
+          <input type="number" id="filterMin" placeholder="Min price" oninput="debounceLoad()" />
+          <input type="number" id="filterMax" placeholder="Max price" oninput="debounceLoad()" />
+          <select id="filterSource" onchange="loadListings()">
+            <option value="">All sources</option>
+            <option value="OLX.pl">OLX.pl</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Listing count -->
+      <div class="listing-meta" id="listingMeta">Loading listings…</div>
+
+      <!-- Grid -->
+      <div class="listings-grid" id="listingsGrid">
+        <div class="loading-spinner"></div>
+      </div>
+
+      <div class="pagination" id="pagination"></div>
+    </section>
+  </main>
+
+  <!-- Last updated footer -->
+  <footer class="footer">
+    <span id="lastUpdated">Updating…</span>
+    <span>· Auto-refreshes every 30 minutes · 2-stroke only (YZ250F excluded)</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
