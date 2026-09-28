@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function fetchAllListings() {
   try {
-    const res = await fetch('/listings.json');
+    const res = await fetch('./listings.json');
     if (!res.ok) throw new Error('not found');
     const data = await res.json();
     allListings = data.listings || [];
