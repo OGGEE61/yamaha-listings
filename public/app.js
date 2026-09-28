@@ -27,6 +27,10 @@ async function fetchAllListings() {
     // Show last updated time
     if (data.updatedAt) {
       setText('lastUpdated', `Last scraped ${timeAgo(data.updatedAt)}`);
+      const statusPill = document.getElementById('scrapeStatus');
+      if (statusPill) {
+        statusPill.innerHTML = `<span class="status-dot" style="background:#10b981"></span><span class="status-label">Up to date</span>`;
+      }
     }
   } catch (err) {
     document.getElementById('listingsGrid').innerHTML =
@@ -251,6 +255,41 @@ function renderPagination(total, page) {
 // ──────────────────────────────────────────────
 // HELPERS
 // ──────────────────────────────────────────────
+
+async function triggerScrape() {
+  const statusPill = document.getElementById('scrapeStatus');
+  const btn = document.getElementById('btnScrape');
+  
+  if (statusPill) {
+    statusPill.innerHTML = `<span class="status-dot" style="background:#f59e0b; animation: pulse 1.5s infinite"></span><span class="status-label">Fetching...</span>`;
+  }
+  if (btn) btn.disabled = true;
+
+  try {
+    // Add cache buster to force fetching fresh listings.json
+    const res = await fetch(`./listings.json?t=${Date.now()}`);
+    if (!res.ok) throw new Error('not found');
+    const data = await res.json();
+    allListings = data.listings || [];
+
+    if (data.updatedAt) {
+      setText('lastUpdated', `Last scraped ${timeAgo(data.updatedAt)}`);
+    }
+    applyAndRender(0); // Go back to first page
+    
+    if (statusPill) {
+      statusPill.innerHTML = `<span class="status-dot" style="background:#10b981"></span><span class="status-label">Up to date</span>`;
+    }
+    showToast('Dashboard data refreshed!', 'success');
+  } catch (err) {
+    if (statusPill) {
+      statusPill.innerHTML = `<span class="status-dot" style="background:#ef4444"></span><span class="status-label">Error</span>`;
+    }
+    showToast('Failed to refresh data', 'error');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
 
 function formatPrice(n) {
   if (!n && n !== 0) return '—';
