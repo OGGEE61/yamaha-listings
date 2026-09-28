@@ -79,8 +79,8 @@
         <h2 class="section-title">Price Distribution</h2>
         <span class="badge">PLN</span>
       </div>
-      <div class="chart-container" id="priceChart">
-        <div class="chart-loading">Loading chart…</div>
+      <div class="chart-container" id="priceChartContainer">
+        <canvas id="priceChartCanvas"></canvas>
       </div>
     </section>
 
@@ -149,6 +149,7 @@
     <span>· Auto-refreshes every 30 minutes · Tracking YZ, WR, Tenere 700 & Vintage (DT, XT, TT, IT)</span>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

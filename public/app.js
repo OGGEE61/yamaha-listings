@@ -7,6 +7,7 @@ const PAGE_SIZE = 24;
 let currentPage = 0;
 let allListings = [];   // full dataset loaded once
 let debounceTimer = null;
+let priceChart = null;
 
 // ──────────────────────────────────────────────
 // INIT
@@ -126,16 +127,35 @@ function renderStats(all, filtered) {
 }
 
 function renderPriceChart(filtered) {
-  const container = document.getElementById('priceChart');
   const prices = filtered.map(l => l.price).filter(Boolean);
+  const canvas = document.getElementById('priceChartCanvas');
+  const container = document.getElementById('priceChartContainer');
+
   if (prices.length === 0) {
-    container.innerHTML = '<div class="chart-loading">No price data for current filters</div>';
+    if (priceChart) { priceChart.destroy(); priceChart = null; }
+    canvas.style.display = 'none';
+    if (!document.getElementById('noChartData')) {
+      const msg = document.createElement('div');
+      msg.id = 'noChartData';
+      msg.className = 'chart-loading';
+      msg.textContent = 'No price data for current filters';
+      msg.style.position = 'absolute';
+      msg.style.top = '50%';
+      msg.style.left = '50%';
+      msg.style.transform = 'translate(-50%, -50%)';
+      container.appendChild(msg);
+    }
     return;
   }
+  
+  canvas.style.display = 'block';
+  const noDataMsg = document.getElementById('noChartData');
+  if (noDataMsg) noDataMsg.remove();
 
   const min = Math.min(...prices);
   const max = Math.max(...prices);
   const step = Math.ceil((max - min) / 8 / 1000) * 1000 || 1000;
+  
   const buckets = {};
   for (let s = Math.floor(min/step)*step; s <= max; s += step) {
     buckets[s] = 0;
@@ -145,19 +165,79 @@ function renderPriceChart(filtered) {
     buckets[bucket] = (buckets[bucket] || 0) + 1;
   });
 
-  const entries = Object.entries(buckets);
-  const maxCount = Math.max(...entries.map(([,c]) => c), 1);
+  const labels = Object.keys(buckets).map(k => {
+    const startK = Math.round(k/1000);
+    const endK = Math.round((parseInt(k)+step)/1000);
+    return `${startK}k - ${endK}k PLN`;
+  });
+  const data = Object.values(buckets);
 
-  container.innerHTML = entries.map(([start, count]) => {
-    const height = Math.max(4, Math.round((count / maxCount) * 100));
-    const label = `${Math.round(start/1000)}k`;
-    return `
-      <div class="chart-bar-wrap">
-        <div class="chart-bar-count">${count}</div>
-        <div class="chart-bar" style="height:${height}px" title="${label}: ${count} listing(s)"></div>
-        <div class="chart-bar-label">${label}</div>
-      </div>`;
-  }).join('');
+  if (priceChart) {
+    priceChart.data.labels = labels;
+    priceChart.data.datasets[0].data = data;
+    priceChart.update();
+  } else {
+    const ctx = canvas.getContext('2d');
+    
+    // Create gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+    gradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 0.1)');
+
+    Chart.defaults.color = '#cbd5e1';
+    Chart.defaults.font.family = 'Inter, sans-serif';
+
+    priceChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Listings',
+          data: data,
+          backgroundColor: gradient,
+          borderRadius: 4,
+          borderSkipped: false,
+          hoverBackgroundColor: '#ffffff'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(10, 45, 130, 0.95)',
+            titleColor: '#fff',
+            bodyColor: '#fff',
+            titleFont: { size: 13, weight: 'bold' },
+            bodyFont: { size: 14 },
+            padding: 12,
+            borderColor: 'rgba(255,255,255,0.2)',
+            borderWidth: 1,
+            displayColors: false,
+            callbacks: {
+              label: function(context) {
+                return context.parsed.y + ' listing(s)';
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 1, precision: 0 },
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            border: { display: false }
+          },
+          x: {
+            grid: { display: false },
+            border: { display: false }
+          }
+        },
+        animation: { duration: 600 }
+      }
+    });
+  }
 }
 
 // ──────────────────────────────────────────────
