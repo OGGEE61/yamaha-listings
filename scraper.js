@@ -87,6 +87,18 @@ function determineYamahaModel(title, description = '') {
   return null;
 }
 
+function extractCC(title, desc, model) {
+  if (model === 'Tenere 700') return 700;
+  if (model === 'WR 450F') return 450;
+  if (model === 'WR 250F' || model === 'YZ 250 2T' || model === 'YZ 250X') return 250;
+  
+  const t = title.toLowerCase();
+  const match = t.match(/\b(50|80|85|125|175|200|225|250|350|400|426|450|500|600|650|700)\b/);
+  if (match) return parseInt(match[1], 10);
+  
+  return 0;
+}
+
 const SOURCES = {
   olx: {
     name: 'OLX.pl',
@@ -164,6 +176,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
             id: offer.url ? offer.url.split('/').filter(Boolean).pop() : null,
             title,
             model: modelName,
+            cc: extractCC(title, '', modelName),
             price: offer.price || null,
             currency: offer.priceCurrency || 'PLN',
             location,
@@ -202,6 +215,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
       id: href.split('/').filter(Boolean).pop(),
       title,
       model: modelName,
+      cc: extractCC(title, '', modelName),
       price,
       currency: 'PLN',
       location,
@@ -302,6 +316,7 @@ async function scrapeAll() {
     const finalModel = determineYamahaModel(listing.title, desc);
     if (finalModel) {
       listing.model = finalModel;
+      listing.cc = extractCC(listing.title, desc, finalModel);
       verifiedListings.push(listing);
     } else {
       console.log(`[Scraper] ❌ REJECTED based on description: ${listing.url}`);
@@ -317,7 +332,7 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-module.exports = { scrapeAll, determineYamahaModel };
+module.exports = { scrapeAll, determineYamahaModel, extractCC };
 
 if (require.main === module) {
   const db = require('./db');

@@ -33,7 +33,10 @@ function saveDb() {
 
 function exportPublicJson() {
   const active = Object.values(db.listings).filter(l => l.is_active === 1);
-  active.sort((a, b) => new Date(b.first_seen) - new Date(a.first_seen));
+  active.sort((a, b) => {
+    if (b.cc !== a.cc) return (b.cc || 0) - (a.cc || 0);
+    return new Date(b.first_seen) - new Date(a.first_seen);
+  });
   const publicDir = path.join(__dirname, 'public');
   if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir, { recursive: true });
   fs.writeFileSync(PUBLIC_JSON_PATH, JSON.stringify({ listings: active, updatedAt: new Date().toISOString() }, null, 2), 'utf8');
@@ -58,6 +61,7 @@ function upsertListings(newItems) {
       existing.price = item.price;
       existing.location = item.location || existing.location;
       existing.image = item.image || existing.image;
+      if (item.cc !== undefined) existing.cc = item.cc;
       existing.last_seen = now;
       existing.valid_until = item.validUntil || null;
       existing.is_active = 1;
@@ -80,6 +84,7 @@ function upsertListings(newItems) {
         location: item.location || '',
         url: item.url,
         image: item.image || null,
+        cc: item.cc || 0,
         source: item.source || 'Unknown',
         first_seen: now,
         last_seen: now,
@@ -165,7 +170,10 @@ function getListings({ source, minPrice, maxPrice, search, model, engine, exclud
     results = results.filter(l => l.title.toLowerCase().includes(s));
   }
   
-  results.sort((a, b) => new Date(b.first_seen) - new Date(a.first_seen));
+  results.sort((a, b) => {
+    if (b.cc !== a.cc) return (b.cc || 0) - (a.cc || 0);
+    return new Date(b.first_seen) - new Date(a.first_seen);
+  });
   
   const total = results.length;
   const paginated = results.slice(offset, offset + limit);

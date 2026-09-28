@@ -211,6 +211,7 @@ function renderListings(listings) {
           <div class="listing-meta-row">
             ${location}
             ${dateChip}
+            ${l.cc ? `<span class="listing-source" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd;">${l.cc} cc</span>` : ''}
             <span class="listing-source" style="background:var(--gray-200);color:var(--gray-800);border-color:var(--gray-300);">${escHtml(l.model || 'Unknown')}</span>
             <span class="listing-source">${escHtml(l.source || 'OLX.pl')}</span>
           </div>
