@@ -1,4 +1,6 @@
-# ![Yamaha](public/Yamaha_Motor_Racing_logo.svg)
+<p align="center">
+  <img src="public/Yamaha_Motor_Racing_logo.svg" alt="Yamaha" width="100%"/>
+</p>
 
 # Yamaha Listings Tracker
 
