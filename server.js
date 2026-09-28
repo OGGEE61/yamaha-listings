@@ -21,12 +21,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // GET /api/listings
 app.get('/api/listings', (req, res) => {
-  const { source, minPrice, maxPrice, search, limit = 200, offset = 0 } = req.query;
+  const { source, minPrice, maxPrice, search, model, engine, excludeTenere, limit = 200, offset = 0 } = req.query;
   const result = db.getListings({
     source,
     minPrice: minPrice ? parseInt(minPrice) : undefined,
     maxPrice: maxPrice ? parseInt(maxPrice) : undefined,
     search,
+    model,
+    engine,
+    excludeTenere: excludeTenere === 'true',
     limit: parseInt(limit),
     offset: parseInt(offset),
   });

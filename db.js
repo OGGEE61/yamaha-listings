@@ -44,6 +44,7 @@ function upsertListings(newItems) {
     
     if (existing) {
       existing.title = item.title;
+      existing.model = item.model || existing.model || 'Unknown';
       existing.price = item.price;
       existing.location = item.location || existing.location;
       existing.image = item.image || existing.image;
@@ -63,6 +64,7 @@ function upsertListings(newItems) {
       db.listings[item.id] = {
         id: item.id,
         title: item.title,
+        model: item.model || 'Unknown',
         price: item.price,
         currency: item.currency || 'PLN',
         location: item.location || '',
@@ -106,7 +108,7 @@ function markInactiveIfNotSeen(seenUrls, source) {
   if (changed) saveDb();
 }
 
-function getListings({ source, minPrice, maxPrice, search, activeOnly = true, limit = 200, offset = 0 } = {}) {
+function getListings({ source, minPrice, maxPrice, search, model, engine, excludeTenere, activeOnly = true, limit = 200, offset = 0 } = {}) {
   let results = Object.values(db.listings);
   
   if (activeOnly) {
@@ -115,6 +117,33 @@ function getListings({ source, minPrice, maxPrice, search, activeOnly = true, li
   if (source) {
     results = results.filter(l => l.source === source);
   }
+  if (model) {
+    results = results.filter(l => l.model === model);
+  }
+  if (engine) {
+    if (engine === '2T') {
+      results = results.filter(l => 
+        l.model === 'YZ 250 2T' || 
+        l.model === 'YZ 250X' || 
+        (l.model === 'Yamaha Vintage' && /\b(dt|it)\b/i.test(l.title))
+      );
+    } else if (engine === '4T') {
+      results = results.filter(l => 
+        l.model === 'WR 250F' || 
+        l.model === 'WR 450F' || 
+        l.model === 'Tenere 700' || 
+        (l.model === 'Yamaha Vintage' && /\b(xt|tt)\b/i.test(l.title))
+      );
+    }
+  }
+  
+  if (excludeTenere) {
+    results = results.filter(l => 
+      l.model !== 'Tenere 700' &&
+      !(l.model === 'Yamaha Vintage' && /tenere/i.test(l.title))
+    );
+  }
+
   if (minPrice != null) {
     results = results.filter(l => l.price !== null && l.price >= minPrice);
   }
@@ -155,6 +184,13 @@ function getStats() {
   }
   const bySource = Object.entries(sourceMap).map(([source, count]) => ({ source, count }));
   
+  const modelMap = {};
+  for (const l of activeListings) {
+    const m = l.model || 'Unknown';
+    modelMap[m] = (modelMap[m] || 0) + 1;
+  }
+  const byModel = Object.entries(modelMap).map(([model, count]) => ({ model, count }));
+  
   const lastRun = db.scrape_runs.length ? db.scrape_runs[db.scrape_runs.length - 1] : null;
   
   const ranges = {
@@ -179,7 +215,7 @@ function getStats() {
     .filter(([_, count]) => count > 0)
     .map(([range, count]) => ({ range, count }));
     
-  return { totalActive, totalAll, avgPrice, minPrice, maxPrice, newToday, bySource, lastRun, priceRanges };
+  return { totalActive, totalAll, avgPrice, minPrice, maxPrice, newToday, bySource, byModel, lastRun, priceRanges };
 }
 
 function recordScrapeRun(startedAt) {

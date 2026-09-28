@@ -87,14 +87,46 @@
     <section class="section">
       <div class="section-header">
         <h2 class="section-title">Listings</h2>
-        <div class="filters">
-          <input type="text" id="filterSearch" placeholder="Search title…" oninput="debounceLoad()" />
-          <input type="number" id="filterMin" placeholder="Min price" oninput="debounceLoad()" />
-          <input type="number" id="filterMax" placeholder="Max price" oninput="debounceLoad()" />
-          <select id="filterSource" onchange="loadListings()">
-            <option value="">All sources</option>
-            <option value="OLX.pl">OLX.pl</option>
-          </select>
+        <div class="filters-container">
+          <div class="filter-group">
+            <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input type="text" id="filterSearch" placeholder="Search title…" oninput="debounceLoad()" />
+          </div>
+          <div class="filter-group">
+            <span class="filter-prefix">PLN</span>
+            <input type="number" id="filterMin" placeholder="Min price" oninput="debounceLoad()" />
+            <span class="filter-separator">-</span>
+            <input type="number" id="filterMax" placeholder="Max price" oninput="debounceLoad()" />
+          </div>
+          <div class="filter-group select-wrapper">
+            <select id="filterModel" onchange="loadListings()">
+              <option value="">All Models</option>
+              <option value="YZ 250 2T">YZ 250 2T</option>
+              <option value="YZ 250X">YZ 250X</option>
+              <option value="WR 250F">WR 250F</option>
+              <option value="WR 450F">WR 450F</option>
+              <option value="Tenere 700">Tenere 700</option>
+              <option value="Yamaha Vintage">Yamaha Vintage (DT, XT, TT, IT)</option>
+            </select>
+          </div>
+          <div class="filter-group select-wrapper">
+            <select id="filterEngine" onchange="loadListings()">
+              <option value="">All Engines</option>
+              <option value="2T" selected>2-Stroke (2T)</option>
+              <option value="4T">4-Stroke (4T)</option>
+            </select>
+          </div>
+          <div class="filter-group select-wrapper">
+            <select id="filterSource" onchange="loadListings()">
+              <option value="">All Sources</option>
+              <option value="OLX.pl">OLX.pl</option>
+            </select>
+          </div>
+          <label class="toggle-container">
+            <input type="checkbox" id="excludeTenere" onchange="loadListings()" checked>
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">Hide Tenere</span>
+          </label>
         </div>
       </div>
 
@@ -113,7 +145,7 @@
   <!-- Last updated footer -->
   <footer class="footer">
     <span id="lastUpdated">Updating…</span>
-    <span>· Auto-refreshes every 30 minutes · 2-stroke only (YZ250F excluded)</span>
+    <span>· Auto-refreshes every 30 minutes · Tracking YZ, WR, Tenere 700 & Vintage (DT, XT, TT, IT)</span>
   </footer>
 
   <script src="app.js"></script>

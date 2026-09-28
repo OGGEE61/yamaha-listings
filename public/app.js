@@ -91,19 +91,25 @@ async function loadListings(page = 0) {
   const search  = document.getElementById('filterSearch').value.trim();
   const minPrice = document.getElementById('filterMin').value;
   const maxPrice = document.getElementById('filterMax').value;
+  const model   = document.getElementById('filterModel').value;
+  const engine  = document.getElementById('filterEngine').value;
   const source  = document.getElementById('filterSource').value;
+  const excludeTenere = document.getElementById('excludeTenere').checked;
 
   if (search)   params.set('search',   search);
   if (minPrice) params.set('minPrice', minPrice);
   if (maxPrice) params.set('maxPrice', maxPrice);
+  if (model)    params.set('model',    model);
+  if (engine)   params.set('engine',   engine);
   if (source)   params.set('source',  source);
+  if (excludeTenere) params.set('excludeTenere', 'true');
 
   try {
     const res = await fetch(`/api/listings?${params}`);
     const { listings, total } = await res.json();
     totalListings = total;
 
-    setText('listingMeta', `Showing ${listings.length} of ${total} YZ250 2-stroke listings`);
+    setText('listingMeta', `Showing ${listings.length} of ${total} Yamaha listings`);
     renderListings(listings);
     renderPagination(total, page);
   } catch (err) {
@@ -162,6 +168,7 @@ function renderListings(listings) {
           <div class="listing-meta-row">
             ${location}
             ${dateChip}
+            <span class="listing-source" style="background:var(--gray-200);color:var(--gray-800);border-color:var(--gray-300);">${escHtml(l.model || 'Unknown')}</span>
             <span class="listing-source">${escHtml(l.source || 'Unknown')}</span>
           </div>
         </div>

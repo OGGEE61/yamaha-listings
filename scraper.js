@@ -12,58 +12,79 @@ const { execSync } = require('child_process');
 // FILTER LOGIC
 // ──────────────────────────────────────────────
 
-function isYZ250TwoStroke(title, description = '') {
-  if (!title) return false;
+function determineYamahaModel(title, description = '') {
+  if (!title) return null;
   const t = title.toLowerCase().replace(/\s+/g, ' ').trim();
   const d = description.toLowerCase().replace(/\s+/g, ' ').trim().substring(0, 400); // Only check the first 400 chars of desc
 
-  // Title must mention yz250 (with or without space)
-  const hasYZ250 = /yz[ ]?250/.test(t);
-  if (!hasYZ250) return false;
-
-  // Must NOT be a competing brand spamming tags
-  const competingBrands = /\b(ktm|honda|suzuki|kawasaki|husqvarna|gasgas|beta|sx|sxf|exc|rm|rmz|kx|kxf|cr|crf|tc)\b/i;
-  // If a competing brand is in the title, it's probably spam like "KTM SX 250 (yz250)"
-  if (competingBrands.test(t) && !/\byamaha\b/.test(t)) {
-     return false;
-  }
-  // Even if they wrote Yamaha, if it has KTM SX etc, let's just reject it if it looks like tag spam
-  // Or we can just reject if any competing brand model is present
-  if (/\b(ktm|honda|suzuki|kawasaki|husqvarna|sx|exc|rm|kx|cr|tc)\b/i.test(t)) {
-    // some people write "Yamaha YZ 250 zamienię na KTM" - this is tricky. 
-    // Let's check the very first word of the title. If it's a competing brand, reject.
-    const firstWord = t.split(' ')[0];
-    if (['ktm', 'honda', 'suzuki', 'kawasaki', 'husqvarna', 'gasgas'].includes(firstWord)) {
-        return false;
-    }
-    
-    // Also reject if it has multiple brands (typical tag spam)
-    let brandCount = 0;
-    if (/\byamaha\b/.test(t)) brandCount++;
-    if (/\bktm\b/.test(t)) brandCount++;
-    if (/\bhonda\b/.test(t)) brandCount++;
-    if (/\bsuzuki\b/.test(t)) brandCount++;
-    if (/\bkawasaki\b/.test(t)) brandCount++;
-    if (brandCount >= 2) return false; // Tag spam: "Yamaha YZ 250 KTM SX 250"
+  const hasYamaha = /\byamaha\b/.test(t);
+  
+  // 1. Aggressively filter out tag spam and competing brands
+  const competingBrands = ['ktm', 'honda', 'suzuki', 'kawasaki', 'husqvarna', 'gasgas', 'beta', 'aprilia', 'sherco', 'derbi', 'rieju', 'keeway', 'peugeot', 'motorhispania', 'tm', 'husaberg', 'bmw', 'triumph', 'ducati'];
+  
+  const firstWord = t.split(' ')[0];
+  if (competingBrands.includes(firstWord)) {
+      return null; // Actual bike is likely a competing brand
   }
 
-  // Must NOT be a 4-stroke variant (in title or early desc)
-  const isFourStroke = /yz[ ]?250[ ]?f[x]?/i.test(t) || /yzf[ ]?250/i.test(t) ||
-                       /yz[ ]?250[ ]?f[x]?/i.test(d) || /yzf[ ]?250/i.test(d) ||
-                       /\b4[ ]?t\b/i.test(d) || /4suw/i.test(d);
-  if (isFourStroke) return false;
+  let brandCount = hasYamaha ? 1 : 0;
+  for (const b of competingBrands) {
+    if (new RegExp('\\b' + b + '\\b', 'i').test(t)) brandCount++;
+  }
+  
+  if (brandCount >= 2) return null; // Tag spam (mentions multiple brands)
+  if (brandCount === 1 && !hasYamaha) return null; // Mentions only a competing brand
+  
+  // Reject typical competing models
+  if (/\b(sx|sxf|exc|rm|rmz|kx|kxf|cr|crf|tc|te|tx|senda|rr|mh10)\b/i.test(t)) {
+      return null;
+  }
 
-  // Must NOT be a 125cc, 85cc, or 450cc explicitly (in title or early desc)
+  // Reject Super Tenere / 1200cc models
+  if (/\b(super tenere|supertenere|xt1200|xtz1200|xtz 1200|xtz 750|1200ze)\b/i.test(t)) {
+      return null;
+  }
+
+  const isVintage = /\b(dt|xt|tt|it)\b/i.test(t);
+
+  // Must NOT be a 125cc, 85cc explicitly (unless it's a vintage model like DT 125)
   const isOtherCc = /\b125\b/.test(t) || /125cc/i.test(t) ||
                     /\b85\b/.test(t)  || /85cc/i.test(t)  ||
-                    /\b450\b/.test(t) || /450cc/i.test(t) ||
                     /\b125\b/.test(d) || /125cc/i.test(d) ||
-                    /\b85\b/.test(d)  || /85cc/i.test(d)  ||
-                    /\b450\b/.test(d) || /450cc/i.test(d);
-  
-  if (isOtherCc) return false;
+                    /\b85\b/.test(d)  || /85cc/i.test(d);
+  if (isOtherCc && !isVintage) return null;
 
-  return true;
+  if (/\b(tenere[\s-]*700|xtz[\s-]*700|xtz690|\bt7\b|t700)\b/i.test(t) && !/\bxt[\s-]?6/i.test(t)) {
+    return 'Tenere 700';
+  }
+
+  if (/wr[ ]?450/i.test(t)) {
+    return 'WR 450F';
+  }
+
+  if (/wr[ ]?250/i.test(t)) {
+    // WR 250 is assumed to be WR250F since WR250Z is extremely rare and often confused.
+    return 'WR 250F';
+  }
+
+  if (/yz[ ]?250/i.test(t)) {
+    const isFourStroke = /yz[ ]?250[ ]?f[x]?/i.test(t) || /yzf[ ]?250/i.test(t) ||
+                         /yz[ ]?250[ ]?f[x]?/i.test(d) || /yzf[ ]?250/i.test(d) ||
+                         /\b4[ ]?t\b/i.test(d) || /4suw/i.test(d);
+    if (isFourStroke) return null;
+
+    if (/yz[ ]?250[ ]?x/i.test(t) || /yz[ ]?250[ ]?x/i.test(d)) {
+      return 'YZ 250X';
+    }
+
+    return 'YZ 250 2T';
+  }
+
+  if (isVintage) {
+    return 'Yamaha Vintage';
+  }
+
+  return null;
 }
 
 const SOURCES = {
@@ -73,7 +94,17 @@ const SOURCES = {
     searchUrls: [
       'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-yz-250/',
       'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-yz250/',
-      'https://www.olx.pl/motoryzacja/motocykle-skutery/cross/q-yz-250/'
+      'https://www.olx.pl/motoryzacja/motocykle-skutery/cross/q-yz-250/',
+      'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-wr-250/',
+      'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-wr250/',
+      'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-wr-450/',
+      'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-wr450/',
+      'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-dt/',
+      'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-xt/',
+      'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-tt/',
+      'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-it/',
+      'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-tenere-700/',
+      'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-t7/'
     ],
     scrape: scrapeOLX
   }
@@ -124,13 +155,15 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
       if (data['@type'] === 'Product' && data.offers && data.offers.offers) {
         for (const offer of data.offers.offers) {
           const title = offer.name || '';
-          if (!isYZ250TwoStroke(title)) continue;
+          const modelName = determineYamahaModel(title);
+          if (!modelName) continue;
 
           const location = offer.areaServed ? (offer.areaServed.name || '') : '';
 
           listings.push({
             id: offer.url ? offer.url.split('/').filter(Boolean).pop() : null,
             title,
+            model: modelName,
             price: offer.price || null,
             currency: offer.priceCurrency || 'PLN',
             location,
@@ -152,7 +185,8 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
   $('[data-testid="l-card"]').each((_, el) => {
     const $el = $(el);
     const title = $el.find('[data-testid="ad-title"]').text().trim();
-    if (!title || !isYZ250TwoStroke(title)) return;
+    const modelName = determineYamahaModel(title);
+    if (!modelName) return;
 
     let href = $el.find('a[href]').first().attr('href') || '';
     if (href && !href.startsWith('http')) href = SOURCES.olx.baseUrl + href;
@@ -167,6 +201,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
     listings.push({
       id: href.split('/').filter(Boolean).pop(),
       title,
+      model: modelName,
       price,
       currency: 'PLN',
       location,
@@ -183,7 +218,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
             html.includes('"nextPage"');
 
   // Filter listings based on title alone first, to save requests
-  const preliminaryListings = listings.filter(l => isYZ250TwoStroke(l.title, ''));
+  const preliminaryListings = listings.filter(l => determineYamahaModel(l.title, ''));
   console.log(`[OLX] Page ${pageNum}: found ${preliminaryListings.length} preliminary matches`);
   return { listings: preliminaryListings, hasMore };
 }
@@ -264,7 +299,9 @@ async function scrapeAll() {
   for (const listing of unique) {
     console.log(`[Scraper] Checking description for: ${listing.title.substring(0, 40)}...`);
     const desc = await fetchDescription(listing.url);
-    if (isYZ250TwoStroke(listing.title, desc)) {
+    const finalModel = determineYamahaModel(listing.title, desc);
+    if (finalModel) {
+      listing.model = finalModel;
       verifiedListings.push(listing);
     } else {
       console.log(`[Scraper] ❌ REJECTED based on description: ${listing.url}`);
@@ -272,7 +309,7 @@ async function scrapeAll() {
     await delay(500); // Politeness delay between fetching items
   }
 
-  console.log(`[Scraper] Done. Total VERIFIED YZ250 2-stroke listings: ${verifiedListings.length}`);
+  console.log(`[Scraper] Done. Total VERIFIED Yamaha listings: ${verifiedListings.length}`);
   return verifiedListings;
 }
 
@@ -280,4 +317,30 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-module.exports = { scrapeAll, isYZ250TwoStroke };
+module.exports = { scrapeAll, determineYamahaModel };
+
+if (require.main === module) {
+  const db = require('./db');
+  (async () => {
+    try {
+      const startedAt = new Date().toISOString();
+      const runId = db.recordScrapeRun(startedAt);
+      console.log(`[CLI] Scrape run #${runId} started at ${startedAt}`);
+
+      const listings = await scrapeAll();
+      const { newCount, updatedCount } = db.upsertListings(listings);
+
+      const olxUrls = listings.filter(l => l.source === 'OLX.pl').map(l => l.url);
+      if (olxUrls.length > 0) {
+        db.markInactiveIfNotSeen(olxUrls, 'OLX.pl');
+      }
+
+      const result = { totalFound: listings.length, newListings: newCount, updated: updatedCount };
+      db.finishScrapeRun(runId, result);
+      console.log(`[CLI] Scrape #${runId} complete:`, result);
+    } catch (err) {
+      console.error('[CLI] Scrape error:', err);
+      process.exit(1);
+    }
+  })();
+}
