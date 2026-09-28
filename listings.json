@@ -1747,6 +1747,14 @@
       "total_found": 61,
       "new_listings": 0,
       "updated": 61
+    },
+    {
+      "id": 22,
+      "started_at": "2026-09-28T09:00:00.085Z",
+      "finished_at": null,
+      "total_found": 0,
+      "new_listings": 0,
+      "updated": 0
     }
   ]
 }

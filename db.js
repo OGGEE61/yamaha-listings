@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 
 const DB_PATH = path.join(__dirname, 'listings.json');
+const PUBLIC_JSON_PATH = path.join(__dirname, 'public', 'listings.json');
 
 let db = {
   listings: {}, // id -> listing object
@@ -27,6 +28,15 @@ function loadDb() {
 
 function saveDb() {
   fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2), 'utf8');
+  exportPublicJson();
+}
+
+function exportPublicJson() {
+  const active = Object.values(db.listings).filter(l => l.is_active === 1);
+  active.sort((a, b) => new Date(b.first_seen) - new Date(a.first_seen));
+  const publicDir = path.join(__dirname, 'public');
+  if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir, { recursive: true });
+  fs.writeFileSync(PUBLIC_JSON_PATH, JSON.stringify({ listings: active, updatedAt: new Date().toISOString() }, null, 2), 'utf8');
 }
 
 // Load initially
