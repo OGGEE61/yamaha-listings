@@ -149,12 +149,22 @@ function fetchWithPuppeteer(url) {
     const scriptPath = require('path').join(__dirname, 'puppeteer_fetcher.js');
     
     // Call the puppeteer script
-    return execSync(`node "${scriptPath}" "${url}"`, { 
+    const html = execSync(`node "${scriptPath}" "${url}"`, { 
       encoding: 'utf8',
       maxBuffer: 1024 * 1024 * 10 // 10MB buffer for large HTML
     });
+
+    if (html.includes('datadome') || html.includes('Just a moment...') || html.includes('px-captcha')) {
+      throw new Error('BOT PROTECTION DETECTED');
+    }
+
+    return html;
   } catch (err) {
     console.error(`Puppeteer fetch error for ${url}:`, err.message);
+    if (err.message.includes('BOT PROTECTION')) {
+      console.error('[FATAL] Scraper was blocked by bot protection. Aborting to protect database.');
+      process.exit(1);
+    }
     return null;
   }
 }
@@ -430,8 +440,10 @@ if (require.main === module) {
       const { newCount, updatedCount } = db.upsertListings(listings);
 
       const olxUrls = listings.filter(l => l.source === 'OLX.pl').map(l => l.url);
-      if (olxUrls.length > 0) {
+      if (olxUrls.length > 30) {
         db.markInactiveIfNotSeen(olxUrls, 'OLX.pl');
+      } else {
+        console.warn(`[WARNING] OLX listings found (${olxUrls.length}) is suspiciously low. Skipping deactivation of old listings to protect database.`);
       }
 
       const autoplacUrls = listings.filter(l => l.source === 'Autoplac').map(l => l.url);
