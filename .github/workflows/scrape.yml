@@ -29,6 +29,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Rebuild better-sqlite3 (Fix Segfault)
+        run: npm rebuild better-sqlite3 --build-from-source
+
       - name: Install Chromium for Puppeteer
         run: npx puppeteer browsers install chrome
 
