@@ -80,6 +80,13 @@ function determineYamahaModel(title, description = '') {
     return 'YZ 250 2T';
   }
 
+  if (/\bxj6\b/i.test(t) || /\bxj[\s-]?6\b/i.test(t)) {
+    if (/\bdiversion\b/i.test(t) || /\bdiversion\b/i.test(d)) return null;
+    if (/\bxj6[\s-]*f\b/i.test(t) || /\bxj[\s-]*6f\b/i.test(t)) return null;
+    if (/\bxj6[\s-]*s\b/i.test(t) || /\bxj[\s-]*6s\b/i.test(t)) return null;
+    return 'XJ6 Naked';
+  }
+
   if (isVintage) {
     return 'Yamaha Vintage';
   }
@@ -91,6 +98,7 @@ function extractCC(title, desc, model) {
   if (model === 'Tenere 700') return 700;
   if (model === 'WR 450F') return 450;
   if (model === 'WR 250F' || model === 'YZ 250 2T' || model === 'YZ 250X') return 250;
+  if (model === 'XJ6 Naked') return 600;
   
   const t = title.toLowerCase();
   const match = t.match(/\b(50|80|85|125|175|200|225|250|350|400|426|450|500|600|650|700)\b/);
@@ -116,7 +124,8 @@ const SOURCES = {
       'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-tt/',
       'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-it/',
       'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-tenere-700/',
-      'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-t7/'
+      'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-t7/',
+      'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-xj6/'
     ],
     scrape: scrapeOLX
   },
