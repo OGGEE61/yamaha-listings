@@ -101,7 +101,7 @@ function extractCC(title, desc, model) {
   if (model === 'XJ6 Naked') return 600;
   
   const t = title.toLowerCase();
-  const match = t.match(/\b(50|80|85|125|175|200|225|250|350|400|426|450|500|600|650|700)\b/);
+  const match = t.match(/\b(50|80|85|125|175|200|225|250|350|400|426|450|500|600|650|700)[a-z]*\b/);
   if (match) return parseInt(match[1], 10);
   
   return 0;

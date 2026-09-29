@@ -881,6 +881,22 @@
       "is_active": 0
     },
     {
+      "id": "yamaha-dt-125r-zarejestrowana-stan-kolekcjonerski-CID5-ID1bHNHl.html",
+      "title": "Yamaha DT 125R  zarejestrowana stan kolekcjonerski",
+      "model": "Yamaha Vintage",
+      "price": 16900,
+      "currency": "PLN",
+      "location": "Koniecpol",
+      "url": "https://www.olx.pl/d/oferta/yamaha-dt-125r-zarejestrowana-stan-kolekcjonerski-CID5-ID1bHNHl.html",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/tdw1amibd6z92-PL/image",
+      "cc": 125,
+      "source": "OLX.pl",
+      "first_seen": "2026-09-28T11:08:45.828Z",
+      "last_seen": "2026-09-29T07:09:28.802Z",
+      "valid_until": "2026-10-02T14:38:28+02:00",
+      "is_active": 1
+    },
+    {
       "id": "cross-yamaha-dt-125-kat-b-CID5-ID1atjl5.html",
       "title": "Cross Yamaha DT 125 kat B",
       "model": "Yamaha Vintage",
@@ -991,6 +1007,22 @@
       "last_seen": "2026-09-29T07:09:28.802Z",
       "valid_until": "2026-10-21T17:51:01+02:00",
       "is_active": 1
+    },
+    {
+      "id": "yamaha-dt-125r-sm-2002r-CID5-ID1ccLJa.html",
+      "title": "Yamaha DT 125R SM 2002r",
+      "model": "Yamaha Vintage",
+      "price": 10500,
+      "currency": "PLN",
+      "location": "Świętochłowice",
+      "url": "https://www.olx.pl/d/oferta/yamaha-dt-125r-sm-2002r-CID5-ID1ccLJa.html",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/6o51qozahe2e2-PL/image",
+      "cc": 125,
+      "source": "OLX.pl",
+      "first_seen": "2026-09-28T07:47:24.335Z",
+      "last_seen": "2026-09-29T02:34:28.009Z",
+      "valid_until": "2026-10-06T15:22:16+02:00",
+      "is_active": 0
     },
     {
       "id": "yamaha-dt-125-2004r-a1-b-CID5-ID1aMHP9.html",
@@ -1137,22 +1169,6 @@
       "is_active": 1
     },
     {
-      "id": "yamaha-dt-125r-zarejestrowana-stan-kolekcjonerski-CID5-ID1bHNHl.html",
-      "title": "Yamaha DT 125R  zarejestrowana stan kolekcjonerski",
-      "model": "Yamaha Vintage",
-      "price": 16900,
-      "currency": "PLN",
-      "location": "Koniecpol",
-      "url": "https://www.olx.pl/d/oferta/yamaha-dt-125r-zarejestrowana-stan-kolekcjonerski-CID5-ID1bHNHl.html",
-      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/tdw1amibd6z92-PL/image",
-      "cc": 0,
-      "source": "OLX.pl",
-      "first_seen": "2026-09-28T11:08:45.828Z",
-      "last_seen": "2026-09-29T07:09:28.802Z",
-      "valid_until": "2026-10-02T14:38:28+02:00",
-      "is_active": 1
-    },
-    {
       "id": "yamaha-tenere-xt-660-z-tenere-bezwypadkowy-kufry-zadbany-CID5-ID1bQQPA.html",
       "title": "Yamaha Tenere XT 660 Z Tenere Bezwypadkowy Kufry Zadbany",
       "model": "Yamaha Vintage",
@@ -1182,22 +1198,6 @@
       "first_seen": "2026-09-28T07:47:24.335Z",
       "last_seen": "2026-09-28T07:57:29.882Z",
       "valid_until": "2026-10-05T10:57:28+02:00",
-      "is_active": 0
-    },
-    {
-      "id": "yamaha-dt-125r-sm-2002r-CID5-ID1ccLJa.html",
-      "title": "Yamaha DT 125R SM 2002r",
-      "model": "Yamaha Vintage",
-      "price": 10500,
-      "currency": "PLN",
-      "location": "Świętochłowice",
-      "url": "https://www.olx.pl/d/oferta/yamaha-dt-125r-sm-2002r-CID5-ID1ccLJa.html",
-      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/6o51qozahe2e2-PL/image",
-      "cc": 0,
-      "source": "OLX.pl",
-      "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-09-29T02:34:28.009Z",
-      "valid_until": "2026-10-06T15:22:16+02:00",
       "is_active": 0
     },
     {
@@ -1409,5 +1409,5 @@
       "is_active": 1
     }
   ],
-  "updatedAt": "2026-09-29T09:16:36.040Z"
+  "updatedAt": "2026-09-29T09:39:36.342Z"
 }
