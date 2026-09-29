@@ -12,10 +12,12 @@ const Database = require('better-sqlite3');
 const path = require('path');
 const fs = require('fs');
 
+console.log("[DEBUG] db.js initializing DB...");
 const DB_PATH = path.join(__dirname, 'listings.db');
 const PUBLIC_JSON_PATH = path.join(__dirname, 'public', 'listings.json');
 
 const db = new Database(DB_PATH);
+console.log("[DEBUG] db.js DB initialized!");
 
 // Enable WAL mode for better concurrency / performance
 db.pragma('journal_mode = WAL');

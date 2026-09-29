@@ -1,3 +1,5 @@
+console.log("[DEBUG] scraper.js started");
+
 /**
  * YZ250 2-Stroke Listing Scraper
  * 
