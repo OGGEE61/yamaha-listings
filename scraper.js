@@ -119,6 +119,14 @@ const SOURCES = {
       'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-t7/'
     ],
     scrape: scrapeOLX
+  },
+  autoplac: {
+    name: 'Autoplac',
+    baseUrl: 'https://autoplac.pl',
+    searchUrls: [
+      'https://autoplac.pl/oferty/motocykle/yamaha'
+    ],
+    scrape: scrapeAutoplac
   }
 };
 
@@ -237,6 +245,71 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
   return { listings: preliminaryListings, hasMore };
 }
 
+// ──────────────────────────────────────────────
+// AUTOPLAC SCRAPER
+// ──────────────────────────────────────────────
+
+async function scrapeAutoplac(pageNum = 1, searchUrl) {
+  const url = pageNum === 1
+    ? searchUrl
+    : `${searchUrl}?page=${pageNum}`;
+
+  const html = fetchWithPuppeteer(url);
+  if (!html) {
+    console.error(`[Autoplac] Failed to fetch page ${pageNum}`);
+    return { listings: [], hasMore: false };
+  }
+
+  const listings = [];
+  let hasMore = false;
+  const $ = cheerio.load(html);
+  const seen = new Set();
+  
+  $('a[href*="/oferta/"]').each((_, el) => {
+    const $el = $(el);
+    const href = $el.attr('href');
+    if (!href) return;
+    
+    const title = $el.find('h2, h3, [class*="title"]').first().text().trim();
+    if (!title) return;
+    
+    const modelName = determineYamahaModel(title);
+    if (!modelName) return;
+
+    let fullUrl = href.startsWith('http') ? href : 'https://autoplac.pl' + href;
+    if (seen.has(fullUrl)) return;
+    seen.add(fullUrl);
+
+    const id = fullUrl.split('/').filter(Boolean).pop();
+    
+    const priceText = $el.find('[class*="price"]').first().text().trim();
+    const price = parsePrice(priceText);
+    
+    const img = $el.find('img').first().attr('src') || null;
+    
+    listings.push({
+      id,
+      title,
+      model: modelName,
+      cc: extractCC(title, '', modelName),
+      price,
+      currency: 'PLN',
+      location: '',
+      url: fullUrl,
+      image: img,
+      source: 'Autoplac',
+      scrapedAt: new Date().toISOString(),
+      validUntil: null,
+    });
+  });
+
+  hasMore = html.includes(`page=${pageNum + 1}`);
+
+  const preliminaryListings = listings.filter(l => determineYamahaModel(l.title, ''));
+  console.log(`[Autoplac] Page ${pageNum}: found ${preliminaryListings.length} preliminary matches`);
+  return { listings: preliminaryListings, hasMore };
+}
+
 async function fetchDescription(url) {
   const html = fetchWithPuppeteer(url);
   if (!html) return '';
@@ -348,6 +421,11 @@ if (require.main === module) {
       const olxUrls = listings.filter(l => l.source === 'OLX.pl').map(l => l.url);
       if (olxUrls.length > 0) {
         db.markInactiveIfNotSeen(olxUrls, 'OLX.pl');
+      }
+
+      const autoplacUrls = listings.filter(l => l.source === 'Autoplac').map(l => l.url);
+      if (autoplacUrls.length > 0) {
+        db.markInactiveIfNotSeen(autoplacUrls, 'Autoplac');
       }
 
       const result = { totalFound: listings.length, newListings: newCount, updated: updatedCount };

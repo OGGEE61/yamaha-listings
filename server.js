@@ -82,10 +82,15 @@ async function runScrape() {
     // Save to DB
     const { newCount, updatedCount } = db.upsertListings(listings);
     
-    // Mark any OLX listings that weren't seen in this run as inactive
+    // Mark any listings that weren't seen in this run as inactive
     const olxUrls = listings.filter(l => l.source === 'OLX.pl').map(l => l.url);
     if (olxUrls.length > 0) {
       db.markInactiveIfNotSeen(olxUrls, 'OLX.pl');
+    }
+
+    const autoplacUrls = listings.filter(l => l.source === 'Autoplac').map(l => l.url);
+    if (autoplacUrls.length > 0) {
+      db.markInactiveIfNotSeen(autoplacUrls, 'Autoplac');
     }
 
     const result = { totalFound: listings.length, newListings: newCount, updated: updatedCount };
