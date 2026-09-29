@@ -50,7 +50,28 @@ Cloudflare Pages (auto-deploys on every push)
        └─ app.js loads listings.json and filters in-browser
 ```
 
-No external database needed — `listings.json` committed to the repo **is** the database.
+No external database server needed — `listings.json` committed to the repo **is** the database for the frontend, generated from a local SQLite database (`listings.db`) during the scraping process.
+
+---
+
+## 🗄️ Data Model
+
+The data is stored in a local SQLite database (`listings.db`) which contains the following tables:
+
+1. **`listings`**: The core table containing all motorcycles.
+   - `id`: Unique identifier (usually extracted from the OLX URL).
+   - `title`, `model`, `price`, `currency`, `location`, `url`, `image`, `cc`, `source`: Basic details about the bike.
+   - `first_seen` & `last_seen`: Timestamps to track when the listing appeared and when it was last verified.
+   - `is_active`: Boolean (`1` or `0`) indicating if the listing is still live on the marketplace.
+
+2. **`price_history`**: Tracks price drops/increases for each listing.
+   - `listing_id`: Foreign key to the listing.
+   - `price` & `recorded_at`: The price at a given time.
+
+3. **`scrape_runs`**: Metadata about the scraper's execution.
+   - `started_at`, `finished_at`, `total_found`, `new_listings`, `updated`: Stats for each run.
+
+When the scraper finishes, it queries the `listings` table and exports everything to `public/listings.json` for the Cloudflare Pages dashboard to consume.
 
 ---
 

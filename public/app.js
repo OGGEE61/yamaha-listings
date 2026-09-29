@@ -51,8 +51,10 @@ function getFiltered() {
   const engine        = document.getElementById('filterEngine').value;
   const source        = document.getElementById('filterSource').value;
   const excludeTenere = document.getElementById('excludeTenere').checked;
+  const showInactive  = document.getElementById('showInactive') ? document.getElementById('showInactive').checked : false;
 
   return allListings.filter(l => {
+    if (!showInactive && l.is_active === 0) return false;
     if (source && l.source !== source) return false;
     if (model  && l.model  !== model)  return false;
 
@@ -287,7 +289,7 @@ function renderListings(listings) {
       </span>` : '';
 
     return `
-      <article class="listing-card${isNew ? ' new' : ''}">
+      <article class="listing-card${isNew ? ' new' : ''}" style="${l.is_active === 0 ? 'opacity: 0.6;' : ''}">
         ${imgHtml}
         <div class="listing-body">
           <div class="listing-title">${escHtml(l.title)}</div>
@@ -298,6 +300,7 @@ function renderListings(listings) {
             ${l.cc ? `<span class="listing-source" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd;">${l.cc} cc</span>` : ''}
             <span class="listing-source" style="background:var(--gray-200);color:var(--gray-800);border-color:var(--gray-300);">${escHtml(l.model || 'Unknown')}</span>
             <span class="listing-source">${escHtml(l.source || 'OLX.pl')}</span>
+            ${l.is_active === 0 ? `<span class="listing-source" style="background:#fecdd3;color:#e11d48;border-color:#fda4af;">Inactive</span>` : ''}
           </div>
         </div>
         <div class="listing-footer">

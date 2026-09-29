@@ -69,8 +69,8 @@ db.exec(`
 // ──────────────────────────────────────────────
 
 function exportPublicJson() {
-  const active = db.prepare(`
-    SELECT * FROM listings WHERE is_active = 1
+  const allListings = db.prepare(`
+    SELECT * FROM listings 
     ORDER BY cc DESC, first_seen DESC
   `).all();
 
@@ -79,7 +79,7 @@ function exportPublicJson() {
 
   fs.writeFileSync(
     PUBLIC_JSON_PATH,
-    JSON.stringify({ listings: active, updatedAt: new Date().toISOString() }, null, 2),
+    JSON.stringify({ listings: allListings, updatedAt: new Date().toISOString() }, null, 2),
     'utf8'
   );
 }
