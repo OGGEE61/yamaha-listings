@@ -59,6 +59,9 @@ function determineYamahaModel(title, description = '') {
   }
 
   if (/wr[ ]?250/i.test(t)) {
+    if (/wr[ ]?250[ ]?x/i.test(t) || /wr[ ]?250[ ]?x/i.test(d)) {
+      return 'WR 250X';
+    }
     // WR 250 is assumed to be WR250F since WR250Z is extremely rare and often confused.
     return 'WR 250F';
   }
@@ -101,7 +104,7 @@ function determineYamahaModel(title, description = '') {
 function extractCC(title, desc, model) {
   if (model === 'Tenere 700') return 700;
   if (model === 'WR 450F') return 450;
-  if (model === 'WR 250F' || model === 'YZ 250 2T' || model === 'YZ 250X') return 250;
+  if (model === 'WR 250F' || model === 'WR 250X' || model === 'YZ 250 2T' || model === 'YZ 250X') return 250;
   if (model === 'XJ6 Naked') return 600;
   
   const t = title.toLowerCase();
@@ -121,6 +124,8 @@ const SOURCES = {
       'https://www.olx.pl/motoryzacja/motocykle-skutery/cross/q-yz-250/',
       'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-wr-250/',
       'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-wr250/',
+      'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-wr-250x/',
+      'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-wr-250-x/',
       'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-wr-450/',
       'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-wr450/',
       'https://www.olx.pl/motoryzacja/motocykle-skutery/q-yamaha-dt/',
