@@ -1,6 +1,54 @@
 {
   "listings": [
     {
+      "id": "yamaha-tenere-yamaha-tenere-700-2023-rok-wyposazenie-turystyczne-CID5-ID1b0c0P.html",
+      "title": "Yamaha Tenere YAMAHA Tenere 700 2023 rok wyposażenie turystyczne",
+      "model": "Tenere 700",
+      "price": 34999,
+      "currency": "PLN",
+      "location": "Rzeszów",
+      "url": "https://www.olx.pl/d/oferta/yamaha-tenere-yamaha-tenere-700-2023-rok-wyposazenie-turystyczne-CID5-ID1b0c0P.html",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/4x5cs7h4n6gb2-PL/image",
+      "cc": 700,
+      "source": "OLX.pl",
+      "first_seen": "2026-10-01T07:21:18.282Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
+      "valid_until": "2026-10-30T11:25:20+01:00",
+      "is_active": 1
+    },
+    {
+      "id": "yamaha-tenere-tenere-700-2021r-cena-bez-negocjacji-CID5-ID1clz9x.html",
+      "title": "Yamaha Tenere Tenere 700  2021r. cena bez negocjacji",
+      "model": "Tenere 700",
+      "price": 35000,
+      "currency": "PLN",
+      "location": "Przyszowice",
+      "url": "https://www.olx.pl/d/oferta/yamaha-tenere-tenere-700-2021r-cena-bez-negocjacji-CID5-ID1clz9x.html",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/g5l6a0psjt4v1-PL/image",
+      "cc": 700,
+      "source": "OLX.pl",
+      "first_seen": "2026-10-01T07:21:18.282Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
+      "valid_until": "2026-10-16T08:29:09+02:00",
+      "is_active": 1
+    },
+    {
+      "id": "yamaha-tenere-yamaha-tenere-700-rally-gwarancja-yamaha-plock-CID5-ID1cl0FP.html",
+      "title": "Yamaha Tenere Yamaha Tenere 700 Rally Gwarancja Yamaha Płock",
+      "model": "Tenere 700",
+      "price": 49000,
+      "currency": "PLN",
+      "location": "Słupno",
+      "url": "https://www.olx.pl/d/oferta/yamaha-tenere-yamaha-tenere-700-rally-gwarancja-yamaha-plock-CID5-ID1cl0FP.html",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/f6fowf23nwmo-PL/image",
+      "cc": 700,
+      "source": "OLX.pl",
+      "first_seen": "2026-10-01T07:21:18.282Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
+      "valid_until": "2026-10-09T15:26:42+02:00",
+      "is_active": 1
+    },
+    {
       "id": "yamaha-xtz-690-tenere-700-1-wl-full-opcja-raty-CID5-ID1cxCYe.html",
       "title": "Yamaha XTZ 690 Tenere 700, 1 wł.Full Opcja, Raty",
       "model": "Tenere 700",
@@ -12,7 +60,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-30T15:27:53.988Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-29T13:55:02+01:00",
       "is_active": 1
     },
@@ -28,7 +76,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-30T15:27:53.988Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-29T22:00:54+01:00",
       "is_active": 1
     },
@@ -44,7 +92,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T09:41:37.240Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-14T12:36:14+02:00",
       "is_active": 1
     },
@@ -94,7 +142,7 @@
       "first_seen": "2026-09-28T08:25:21.692Z",
       "last_seen": "2026-09-30T15:27:53.988Z",
       "valid_until": "2026-10-15T10:27:15+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-tenere-yamaha-tenere-700-2022-world-rain-CID5-ID1csdx4.html",
@@ -108,7 +156,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-23T08:54:05+02:00",
       "is_active": 1
     },
@@ -124,7 +172,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-15T14:17:51+02:00",
       "is_active": 1
     },
@@ -140,7 +188,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-14T15:30:59+02:00",
       "is_active": 1
     },
@@ -156,7 +204,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-04T11:44:47+02:00",
       "is_active": 1
     },
@@ -172,7 +220,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-10T19:20:00+02:00",
       "is_active": 1
     },
@@ -190,7 +238,7 @@
       "first_seen": "2026-09-28T08:16:38.962Z",
       "last_seen": "2026-09-30T15:27:53.988Z",
       "valid_until": "2026-10-01T06:16:39+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-tenere-700-t7-2023-r-salon-polska-7300-przebieg-CID5-ID1bP4Kw.html",
@@ -204,7 +252,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-24T17:10:09+02:00",
       "is_active": 1
     },
@@ -220,7 +268,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-13T11:08:40+02:00",
       "is_active": 1
     },
@@ -236,7 +284,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-26T16:02:37+01:00",
       "is_active": 1
     },
@@ -252,7 +300,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-21T15:33:53+02:00",
       "is_active": 1
     },
@@ -286,7 +334,7 @@
       "first_seen": "2026-09-28T08:16:38.962Z",
       "last_seen": "2026-09-30T15:27:53.988Z",
       "valid_until": "2026-10-21T21:01:13+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-tenere-yamaha-tenere-700-2024-r-20-000-km-na-kat-a2-CID5-ID1cnUpD.html",
@@ -318,7 +366,7 @@
       "first_seen": "2026-09-28T08:16:38.962Z",
       "last_seen": "2026-09-30T15:27:53.988Z",
       "valid_until": "2026-10-01T06:16:46+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-xt-600-3tb-CID5-ID1cy4fZ.html",
@@ -334,7 +382,7 @@
       "first_seen": "2026-09-30T15:27:53.988Z",
       "last_seen": "2026-09-30T15:27:53.988Z",
       "valid_until": "2026-10-30T06:50:38+01:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-fz8-fazer-piekny-stan-gwarancja-fz1-z750-gsr-xj6-fz6-hornet-z1000-CID5-ID1caRS9.html",
@@ -348,7 +396,7 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T09:41:37.240Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-04T09:23:47+02:00",
       "is_active": 1
     },
@@ -364,7 +412,7 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T09:41:37.240Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-17T13:14:34+02:00",
       "is_active": 1
     },
@@ -380,7 +428,7 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T09:41:37.240Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-26T13:26:19+01:00",
       "is_active": 1
     },
@@ -396,7 +444,7 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T09:41:37.240Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-22T16:03:53+02:00",
       "is_active": 1
     },
@@ -412,7 +460,7 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T09:41:37.240Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-06T17:07:22+02:00",
       "is_active": 1
     },
@@ -424,11 +472,11 @@
       "currency": "PLN",
       "location": "Tuliszków",
       "url": "https://www.olx.pl/d/oferta/yamaha-xj-xj6-n-14r-abs-race-blue-raty-kredyt-transport-CID5-ID1bAten.html",
-      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/xsid1lg2pn2d2-PL/image",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/59a3sbf29ldx2-PL/image",
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T09:41:37.240Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-25T07:07:13+01:00",
       "is_active": 1
     },
@@ -476,7 +524,7 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T09:41:37.240Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-14T16:57:04+02:00",
       "is_active": 1
     },
@@ -492,7 +540,7 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T09:41:37.240Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-07T11:15:05+02:00",
       "is_active": 1
     },
@@ -524,7 +572,7 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:57:29.882Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-19T11:00:24+02:00",
       "is_active": 1
     },
@@ -540,8 +588,40 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-02T20:05:21+02:00",
+      "is_active": 1
+    },
+    {
+      "id": "yamaha-wr-450-f-enduro-CID5-ID1czu8p.html",
+      "title": "Yamaha WR 450 F enduro",
+      "model": "WR 450F",
+      "price": 15000,
+      "currency": "PLN",
+      "location": "Stalowa Wola",
+      "url": "https://www.olx.pl/d/oferta/yamaha-wr-450-f-enduro-CID5-ID1czu8p.html",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/214szf3q05uf3-PL/image",
+      "cc": 450,
+      "source": "OLX.pl",
+      "first_seen": "2026-10-01T07:21:18.282Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
+      "valid_until": "2026-10-31T07:19:08+01:00",
+      "is_active": 1
+    },
+    {
+      "id": "yamaha-wr450f-cj04-2004-rok-CID5-ID1cx0dh.html",
+      "title": "Yamaha WR450f CJ04  2004 rok",
+      "model": "WR 450F",
+      "price": 12900,
+      "currency": "PLN",
+      "location": "Ruda Śląska",
+      "url": "https://www.olx.pl/d/oferta/yamaha-wr450f-cj04-2004-rok-CID5-ID1cx0dh.html",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/9rzthf6o48m43-PL/image",
+      "cc": 450,
+      "source": "OLX.pl",
+      "first_seen": "2026-10-01T07:21:18.282Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
+      "valid_until": "2026-10-28T20:09:09+01:00",
       "is_active": 1
     },
     {
@@ -558,7 +638,7 @@
       "first_seen": "2026-09-30T15:27:53.988Z",
       "last_seen": "2026-09-30T15:27:53.988Z",
       "valid_until": "2026-10-16T11:24:28+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-wr450f-2005-CID5-ID1cx82r.html",
@@ -572,7 +652,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T07:09:28.802Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-28T22:34:59+01:00",
       "is_active": 1
     },
@@ -588,7 +668,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-01T13:21:06+02:00",
       "is_active": 1
     },
@@ -604,7 +684,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-09T11:39:04+02:00",
       "is_active": 1
     },
@@ -622,7 +702,7 @@
       "first_seen": "2026-09-28T07:37:29.330Z",
       "last_seen": "2026-09-30T15:27:53.988Z",
       "valid_until": "2026-10-20T11:57:32+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-wr-wr450f-nowy-model-2025-power-tuner-dealer-wwa-CID5-ID133rV7.html",
@@ -636,7 +716,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-11T14:20:53+02:00",
       "is_active": 1
     },
@@ -668,7 +748,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-20T18:52:59+02:00",
       "is_active": 1
     },
@@ -700,7 +780,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-14T15:09:07+02:00",
       "is_active": 1
     },
@@ -716,7 +796,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-08T10:27:35+02:00",
       "is_active": 1
     },
@@ -732,8 +812,56 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-11T14:20:56+02:00",
+      "is_active": 1
+    },
+    {
+      "id": "yamaha-wr250f-2023-enduro-tubliss-akrapovic-oslony-gripper-CID5-ID1cz5cF.html",
+      "title": "Yamaha Wr250f 2023 Enduro tubliss,akrapovic,osłony,gripper",
+      "model": "WR 250F",
+      "price": 22900,
+      "currency": "PLN",
+      "location": "Działdowo",
+      "url": "https://www.olx.pl/d/oferta/yamaha-wr250f-2023-enduro-tubliss-akrapovic-oslony-gripper-CID5-ID1cz5cF.html",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/8evdts8sr1qv3-PL/image",
+      "cc": 250,
+      "source": "OLX.pl",
+      "first_seen": "2026-10-01T07:21:18.282Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
+      "valid_until": "2026-10-30T21:51:19+01:00",
+      "is_active": 1
+    },
+    {
+      "id": "yamaha-wr-250-f-zarejestrowana-homologacja-CID5-ID1bHbob.html",
+      "title": "Yamaha WR 250 F zarejestrowana homologacja",
+      "model": "WR 250F",
+      "price": 16500,
+      "currency": "PLN",
+      "location": "Janów Lubelski",
+      "url": "https://www.olx.pl/d/oferta/yamaha-wr-250-f-zarejestrowana-homologacja-CID5-ID1bHbob.html",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/zwolua117uwz-PL/image",
+      "cc": 250,
+      "source": "OLX.pl",
+      "first_seen": "2026-10-01T07:21:18.282Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
+      "valid_until": "2026-10-27T19:07:12+01:00",
+      "is_active": 1
+    },
+    {
+      "id": "yamaha-wr-250-f-yzf-bez-wkladu-rozrusznik-swiatla-idealna-oryginalny-stan-CID5-ID1clGTp.html",
+      "title": "Yamaha WR 250 F / YZF  bez wkładu •Rozrusznik •Światła •IDEALNA •ORYGINALNY STAN",
+      "model": "WR 250F",
+      "price": 12000,
+      "currency": "PLN",
+      "location": "Zielona Góra",
+      "url": "https://www.olx.pl/d/oferta/yamaha-wr-250-f-yzf-bez-wkladu-rozrusznik-swiatla-idealna-oryginalny-stan-CID5-ID1clGTp.html",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/tgveq5u7e4td3-PL/image",
+      "cc": 250,
+      "source": "OLX.pl",
+      "first_seen": "2026-10-01T07:21:18.282Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
+      "valid_until": "2026-10-16T11:15:57+02:00",
       "is_active": 1
     },
     {
@@ -748,7 +876,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-30T15:27:53.988Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-14T00:03:44+02:00",
       "is_active": 1
     },
@@ -764,7 +892,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-30T15:27:53.988Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-29T17:51:23+01:00",
       "is_active": 1
     },
@@ -780,7 +908,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-30T15:27:53.988Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-30T13:40:09+01:00",
       "is_active": 1
     },
@@ -796,7 +924,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-30T15:27:53.988Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-04T15:27:51+02:00",
       "is_active": 1
     },
@@ -812,7 +940,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-30T15:27:53.988Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-29T16:52:24+01:00",
       "is_active": 1
     },
@@ -830,7 +958,7 @@
       "first_seen": "2026-09-30T15:27:53.988Z",
       "last_seen": "2026-09-30T15:27:53.988Z",
       "valid_until": "2026-10-18T11:45:57+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-cross-yz-250-2t-4-mth-po-kompletnym-remoncie-silnika-CID5-ID1cjy0s.html",
@@ -851,7 +979,7 @@
     {
       "id": "yamaha-wr-250-x-supermoto-raty-transport-CID5-ID1bbemI.html",
       "title": "Yamaha WR 250 x Supermoto Raty transport",
-      "model": "WR 250F",
+      "model": "WR 250X",
       "price": 13999,
       "currency": "PLN",
       "location": "Brzustowiec",
@@ -860,9 +988,9 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T02:34:28.009Z",
-      "last_seen": "2026-09-29T09:41:37.240Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-28T08:19:58+01:00",
-      "is_active": 0
+      "is_active": 1
     },
     {
       "id": "yamaha-wr250f-2022r-yzf-450-yz-CID5-ID1agQcP.html",
@@ -876,7 +1004,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-20T20:38:52+02:00",
       "is_active": 1
     },
@@ -884,7 +1012,7 @@
       "id": "yamaha-yz250-yz-250-2019r-2t-CID5-ID1bZ4X8.html",
       "title": "Yamaha yz250 YZ 250 2019R 2T",
       "model": "YZ 250 2T",
-      "price": 16900,
+      "price": 15900,
       "currency": "PLN",
       "location": "Iwaniska",
       "url": "https://www.olx.pl/d/oferta/yamaha-yz250-yz-250-2019r-2t-CID5-ID1bZ4X8.html",
@@ -892,7 +1020,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-27T10:40:59+01:00",
       "is_active": 1
     },
@@ -908,7 +1036,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-07T09:12:54+02:00",
       "is_active": 1
     },
@@ -940,7 +1068,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-18T08:19:24+02:00",
       "is_active": 1
     },
@@ -956,7 +1084,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-17T10:49:43+02:00",
       "is_active": 1
     },
@@ -988,7 +1116,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-21T09:08:32+02:00",
       "is_active": 1
     },
@@ -1020,14 +1148,14 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-25T15:14:35+01:00",
       "is_active": 1
     },
     {
       "id": "yamaha-wr-250-x-supermoto-stan-bardzo-dobry-CID5-ID1bYqWM.html",
       "title": "Yamaha WR 250 X Supermoto. Stan bardzo dobry",
-      "model": "WR 250F",
+      "model": "WR 250X",
       "price": 15700,
       "currency": "PLN",
       "location": "Krzyki",
@@ -1036,9 +1164,9 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-29T07:09:28.802Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-26T16:58:25+01:00",
-      "is_active": 0
+      "is_active": 1
     },
     {
       "id": "yamaha-dt400-unikat-transport-zamiana-za-wr250f-CID5-ID1ayu1w.html",
@@ -1052,14 +1180,14 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-15T14:51:10+02:00",
       "is_active": 1
     },
     {
       "id": "yamaha-wr-250-x-supermoto-a2-CID5-ID1anbCQ.html",
       "title": "Yamaha WR 250 X supermoto, a2",
-      "model": "WR 250F",
+      "model": "WR 250X",
       "price": 13444,
       "currency": "PLN",
       "location": "Centrum",
@@ -1068,7 +1196,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-24T11:07:42+02:00",
       "is_active": 1
     },
@@ -1100,7 +1228,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-21T15:48:52+02:00",
       "is_active": 1
     },
@@ -1116,7 +1244,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-20T15:48:33+02:00",
       "is_active": 1
     },
@@ -1180,7 +1308,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-25T13:41:19.858Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-07T18:01:27+02:00",
       "is_active": 1
     },
@@ -1188,7 +1316,7 @@
       "id": "yamaha-yz-250-2t-18mth-do-poprawek-CID5-ID1cst2e.html",
       "title": "Yamaha Yz 250 2t 18MTH, Do poprawek",
       "model": "YZ 250 2T",
-      "price": 5500,
+      "price": 5200,
       "currency": "PLN",
       "location": "Krosno",
       "url": "https://www.olx.pl/d/oferta/yamaha-yz-250-2t-18mth-do-poprawek-CID5-ID1cst2e.html",
@@ -1196,7 +1324,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-25T13:19:41.739Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-23T12:31:09+02:00",
       "is_active": 1
     },
@@ -1212,7 +1340,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-25T13:19:41.739Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-08T13:11:08+02:00",
       "is_active": 1
     },
@@ -1246,7 +1374,7 @@
       "first_seen": "2026-09-30T15:27:53.988Z",
       "last_seen": "2026-09-30T15:27:53.988Z",
       "valid_until": "2026-10-15T20:51:05+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "cross-yamaha-dt-125-kat-b-CID5-ID1atjl5.html",
@@ -1260,7 +1388,7 @@
       "cc": 125,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-12T14:04:56+02:00",
       "is_active": 1
     },
@@ -1304,11 +1432,11 @@
       "currency": "PLN",
       "location": "Skarszewy",
       "url": "https://www.olx.pl/d/oferta/yamaha-dt-yamaha-dt-125-po-remoncie-kategoria-b-a1-CID5-ID1bNgnM.html",
-      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/jokuso54j3jy-PL/image",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/0lpqbz5b9hue3-PL/image",
       "cc": 125,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-12T19:16:36+02:00",
       "is_active": 1
     },
@@ -1324,7 +1452,7 @@
       "cc": 125,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-02T01:53:40+02:00",
       "is_active": 1
     },
@@ -1356,7 +1484,7 @@
       "cc": 125,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-21T17:51:01+02:00",
       "is_active": 1
     },
@@ -1422,7 +1550,7 @@
       "first_seen": "2026-09-30T15:27:53.988Z",
       "last_seen": "2026-09-30T15:27:53.988Z",
       "valid_until": "2026-10-22T15:29:47+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-dt-80-enduro-silnik-ubezpieczenie-dowod-rejestracja-transport-CID5-ID1crsah.html",
@@ -1452,7 +1580,7 @@
       "cc": 50,
       "source": "OLX.pl",
       "first_seen": "2026-09-30T15:27:53.988Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-03T22:59:13+02:00",
       "is_active": 1
     },
@@ -1470,7 +1598,7 @@
       "first_seen": "2026-09-30T15:27:53.988Z",
       "last_seen": "2026-09-30T15:27:53.988Z",
       "valid_until": "2026-10-05T22:30:27+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-dt50-r-sm-supermoto-dt-50-am6-CID5-ID1ctDdu.html",
@@ -1484,7 +1612,7 @@
       "cc": 50,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-24T17:27:14+02:00",
       "is_active": 1
     },
@@ -1528,13 +1656,13 @@
       "currency": "PLN",
       "location": "Skała",
       "url": "https://www.olx.pl/d/oferta/yamaha-dt-50-am6-mozliwy-transport-CID5-ID1cwLJy.html",
-      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/kc67y61jp6md-PL/image",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/c89asut6v2xk2-PL/image",
       "cc": 50,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-09-29T09:41:37.240Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-27T14:50:24+01:00",
-      "is_active": 0
+      "is_active": 1
     },
     {
       "id": "jesienna-promocja-yamaha-tenere-xt-660-za-2016r-CID5-ID1cc68n.html",
@@ -1548,7 +1676,7 @@
       "cc": 0,
       "source": "OLX.pl",
       "first_seen": "2026-09-30T15:27:53.988Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-05T17:20:50+02:00",
       "is_active": 1
     },
@@ -1564,7 +1692,7 @@
       "cc": 0,
       "source": "OLX.pl",
       "first_seen": "2026-09-30T15:27:53.988Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-30T10:15:58+01:00",
       "is_active": 1
     },
@@ -1596,7 +1724,7 @@
       "cc": 0,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T11:39:48.792Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-28T12:51:54+01:00",
       "is_active": 1
     },
@@ -1628,7 +1756,7 @@
       "cc": 0,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:25:21.692Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-26T16:21:42+01:00",
       "is_active": 1
     },
@@ -1724,7 +1852,7 @@
       "cc": 0,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-27T18:34:35+01:00",
       "is_active": 1
     },
@@ -1740,7 +1868,7 @@
       "cc": 0,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-21T20:17:51+02:00",
       "is_active": 1
     },
@@ -1788,7 +1916,7 @@
       "cc": 0,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-15T15:59:19+02:00",
       "is_active": 1
     },
@@ -1804,7 +1932,7 @@
       "cc": 0,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-09-30T15:27:53.988Z",
+      "last_seen": "2026-10-01T07:21:18.282Z",
       "valid_until": "2026-10-15T09:51:12+02:00",
       "is_active": 1
     },
@@ -1854,8 +1982,8 @@
       "first_seen": "2026-09-28T07:47:24.335Z",
       "last_seen": "2026-09-30T15:27:53.988Z",
       "valid_until": "2026-10-21T17:10:45+02:00",
-      "is_active": 1
+      "is_active": 0
     }
   ],
-  "updatedAt": "2026-09-30T15:27:53.998Z"
+  "updatedAt": "2026-10-01T07:21:18.286Z"
 }
