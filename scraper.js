@@ -162,8 +162,8 @@ function fetchWithPuppeteer(url) {
   } catch (err) {
     console.error(`Puppeteer fetch error for ${url}:`, err.message);
     if (err.message.includes('BOT PROTECTION')) {
-      console.error('[FATAL] Scraper was blocked by bot protection. Aborting to protect database.');
-      process.exit(1);
+      console.error('[WARNING] Scraper was blocked by bot protection. Skipping this URL to protect database.');
+      return null;
     }
     return null;
   }
