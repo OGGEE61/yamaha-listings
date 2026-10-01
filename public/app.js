@@ -113,6 +113,15 @@ function debounceLoad() {
   debounceTimer = setTimeout(() => applyAndRender(0), 300);
 }
 
+function onModelChange() {
+  const model = document.getElementById('filterModel').value;
+  if (model) {
+    document.getElementById('filterEngine').value = ""; // Reset to All Engines
+    document.getElementById('excludeTenere').checked = false; // Uncheck hide toggle
+  }
+  loadListings();
+}
+
 // ──────────────────────────────────────────────
 // STATS
 // ──────────────────────────────────────────────
