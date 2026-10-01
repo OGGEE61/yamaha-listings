@@ -391,12 +391,21 @@ async function scrapeAll() {
       let page = 1;
       let hasMore = true;
       
-      while (hasMore && page <= 5) {
+      while (hasMore) {
         const { listings, hasMore: more } = await source.scrape(page, searchUrl);
         allListings.push(...listings);
         hasMore = more;
         page++;
-        if (hasMore) await delay(1500);
+        
+        if (hasMore) {
+          // Break it down into smaller pieces: take a longer 10-second pause every 5 pages
+          if (page % 5 === 0) {
+            console.log(`[Scraper] Reached page ${page}, taking a longer 10s break to avoid bot protection...`);
+            await delay(10000);
+          } else {
+            await delay(2000);
+          }
+        }
       }
     }
   }
