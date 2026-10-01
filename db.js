@@ -217,7 +217,7 @@ function getListings({ source, minPrice, maxPrice, search, model, engine, exclud
   }
 
   if (excludeTenere) {
-    where.push(`(model != 'Tenere 700' AND NOT (model = 'Yamaha Vintage' AND LOWER(title) LIKE '%tenere%'))`);
+    where.push(`(model != 'Tenere 700' AND model != 'XJ6 Naked' AND NOT (model = 'Yamaha Vintage' AND LOWER(title) LIKE '%tenere%'))`);
   }
 
   const whereClause = where.length ? 'WHERE ' + where.join(' AND ') : '';

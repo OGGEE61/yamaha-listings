@@ -71,10 +71,11 @@ function getFiltered() {
       if (!is4T) return false;
     }
 
-    // Hide Tenere toggle
+    // Hide Tenere toggle (also hides XJ6 by default)
     if (excludeTenere) {
       if (l.model === 'Tenere 700') return false;
       if (l.model === 'Yamaha Vintage' && /tenere/i.test(l.title)) return false;
+      if (l.model === 'XJ6 Naked') return false;
     }
 
     // Price
