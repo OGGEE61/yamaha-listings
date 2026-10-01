@@ -49,13 +49,7 @@ function determineYamahaModel(title, description = '') {
 
   const isVintage = /\b(dt|xt|tt|it)\b/i.test(t);
 
-  // Must NOT be a 125cc, 85cc explicitly (unless it's a vintage model like DT 125)
-  const isOtherCc = /\b125\b/.test(t) || /125cc/i.test(t) ||
-                    /\b85\b/.test(t)  || /85cc/i.test(t)  ||
-                    /\b125\b/.test(d) || /125cc/i.test(d) ||
-                    /\b85\b/.test(d)  || /85cc/i.test(d);
-  if (isOtherCc && !isVintage) return null;
-
+  // Check explicit models BEFORE applying generic CC filters
   if (/\b(tenere[\s-]*700|xtz[\s-]*700|xtz690|\bt7\b|t700)\b/i.test(t) && !/\bxt[\s-]?6/i.test(t)) {
     return 'Tenere 700';
   }
@@ -88,6 +82,14 @@ function determineYamahaModel(title, description = '') {
     if (/\bxj6[\s-]*s\b/i.test(t) || /\bxj[\s-]*6s\b/i.test(t)) return null;
     return 'XJ6 Naked';
   }
+
+  // Must NOT be a 125cc, 85cc explicitly (unless it's a vintage model like DT 125)
+  // We do this AFTER explicit model checks to avoid false positives from descriptions (e.g. "zamienię na 125" or "transport do 125km")
+  const isOtherCc = /\b125\b/.test(t) || /125cc/i.test(t) ||
+                    /\b85\b/.test(t)  || /85cc/i.test(t)  ||
+                    /\b125\b/.test(d) || /125cc/i.test(d) ||
+                    /\b85\b/.test(d)  || /85cc/i.test(d);
+  if (isOtherCc && !isVintage) return null;
 
   if (isVintage) {
     return 'Yamaha Vintage';
