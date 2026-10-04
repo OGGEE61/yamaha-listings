@@ -1,6 +1,22 @@
 {
   "listings": [
     {
+      "id": "yamaha-tenere-700-world-raid-2024-gwarancja-do-2028-CID5-ID1cCiCy.html",
+      "title": "Yamaha Tenere 700 World Raid 2024, gwarancja do 2028",
+      "model": "Tenere 700",
+      "price": 42700,
+      "currency": "PLN",
+      "location": "Stawiguda",
+      "url": "https://www.olx.pl/d/oferta/yamaha-tenere-700-world-raid-2024-gwarancja-do-2028-CID5-ID1cCiCy.html",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/fsc3gqqopifj1-PL/image",
+      "cc": 700,
+      "source": "OLX.pl",
+      "first_seen": "2026-10-04T13:11:43.280Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
+      "valid_until": "2026-11-03T09:27:20+01:00",
+      "is_active": 1
+    },
+    {
       "id": "yamaha-tenere-yamaha-tenere-700-2025-cesja-leasingu-bogato-doposazona-CID5-ID1cBMjD.html",
       "title": "Yamaha Tenere Yamaha Tenere 700 2025 cesja leasingu bogato doposażona",
       "model": "Tenere 700",
@@ -12,9 +28,9 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-10-03T12:21:19.207Z",
-      "last_seen": "2026-10-03T12:21:19.207Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-11-02T13:02:43+01:00",
-      "is_active": 0
+      "is_active": 1
     },
     {
       "id": "yamaha-tenere-yamaha-tenere-700-t7-t-7-acrapovic-motorex-dp-CID5-ID15GIfb.html",
@@ -28,7 +44,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-10-03T12:21:19.207Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-22T12:17:27+02:00",
       "is_active": 1
     },
@@ -92,7 +108,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-10-01T07:21:18.282Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-30T11:25:20+01:00",
       "is_active": 1
     },
@@ -110,7 +126,7 @@
       "first_seen": "2026-10-01T07:21:18.282Z",
       "last_seen": "2026-10-03T19:44:15.465Z",
       "valid_until": "2026-10-16T08:29:09+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-tenere-yamaha-tenere-700-rally-gwarancja-yamaha-plock-CID5-ID1cl0FP.html",
@@ -126,7 +142,7 @@
       "first_seen": "2026-10-01T07:21:18.282Z",
       "last_seen": "2026-10-03T19:44:15.465Z",
       "valid_until": "2026-10-09T15:26:42+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-xtz-690-tenere-700-1-wl-full-opcja-raty-CID5-ID1cxCYe.html",
@@ -140,7 +156,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-30T15:27:53.988Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-29T13:55:02+01:00",
       "is_active": 1
     },
@@ -152,11 +168,11 @@
       "currency": "PLN",
       "location": "Olsztyn",
       "url": "https://www.olx.pl/d/oferta/yamaha-tenere-yamaha-tenere-t7-olsztyn-CID5-ID1cxYIp.html",
-      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/mdo5lrbctnfb-PL/image",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/8sn54vo3pqun-PL/image",
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-30T15:27:53.988Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-29T22:00:54+01:00",
       "is_active": 1
     },
@@ -172,7 +188,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T09:41:37.240Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-14T12:36:14+02:00",
       "is_active": 1
     },
@@ -220,7 +236,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:25:21.692Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-15T10:27:15+02:00",
       "is_active": 1
     },
@@ -236,7 +252,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-23T08:54:05+02:00",
       "is_active": 1
     },
@@ -252,7 +268,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-15T14:17:51+02:00",
       "is_active": 1
     },
@@ -268,7 +284,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-14T15:30:59+02:00",
       "is_active": 1
     },
@@ -286,7 +302,7 @@
       "first_seen": "2026-09-28T08:16:38.962Z",
       "last_seen": "2026-10-03T19:44:15.465Z",
       "valid_until": "2026-10-04T11:44:47+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-tenere-700-xtz690-t7-2023r-CID5-ID1cgNCx.html",
@@ -300,7 +316,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-10T19:20:00+02:00",
       "is_active": 1
     },
@@ -332,7 +348,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-24T17:10:09+02:00",
       "is_active": 1
     },
@@ -348,7 +364,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-13T11:08:40+02:00",
       "is_active": 1
     },
@@ -364,7 +380,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-26T16:02:37+01:00",
       "is_active": 1
     },
@@ -380,7 +396,7 @@
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-21T15:33:53+02:00",
       "is_active": 1
     },
@@ -392,13 +408,13 @@
       "currency": "PLN",
       "location": "Stargard",
       "url": "https://www.olx.pl/d/oferta/yamaha-tenere-yamaha-tenere-700-doinwestowana-carplay-abs-super-stan-kufer-CID5-ID1crzdb.html",
-      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/vlqzdzpfhywm1-PL/image",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/5nsa40q86eah1-PL/image",
       "cc": 700,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:16:38.962Z",
-      "last_seen": "2026-09-29T07:09:28.802Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-22T17:02:32+02:00",
-      "is_active": 0
+      "is_active": 1
     },
     {
       "id": "yamaha-tenere-700-3-000-km-salon-pl-1-wlasciciel-po-pierwszym-przegladzie-aso-CID5-ID1cqLkj.html",
@@ -462,7 +478,7 @@
       "first_seen": "2026-10-03T12:21:19.207Z",
       "last_seen": "2026-10-03T19:44:15.465Z",
       "valid_until": "2026-11-02T09:10:42+01:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-xj-yamaha-xj6-600-35kw-kat-a2-lift-2014rok-27tys-km-kufer-bandit-650-CID5-ID1cBfhZ.html",
@@ -476,7 +492,7 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-10-02T21:15:49.408Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-11-01T18:31:26+01:00",
       "is_active": 1
     },
@@ -492,7 +508,7 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-10-02T21:15:49.408Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-17T18:17:59+02:00",
       "is_active": 1
     },
@@ -526,7 +542,7 @@
       "first_seen": "2026-10-01T16:52:11.475Z",
       "last_seen": "2026-10-03T19:44:15.465Z",
       "valid_until": "2026-10-19T14:41:59+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-xj6-n-naked-2011r-pelna-moc-CID5-ID1czwJu.html",
@@ -574,7 +590,7 @@
       "first_seen": "2026-09-29T09:41:37.240Z",
       "last_seen": "2026-10-03T19:44:15.465Z",
       "valid_until": "2026-10-04T09:23:47+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-xj-xj6-xj6n-2012r-abs-a2-35kw-leovince-CID5-ID1cmOzl.html",
@@ -588,7 +604,7 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T09:41:37.240Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-17T13:14:34+02:00",
       "is_active": 1
     },
@@ -604,7 +620,7 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T09:41:37.240Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-26T13:26:19+01:00",
       "is_active": 1
     },
@@ -620,7 +636,7 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T09:41:37.240Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-22T16:03:53+02:00",
       "is_active": 1
     },
@@ -652,7 +668,7 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T09:41:37.240Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-25T07:07:13+01:00",
       "is_active": 1
     },
@@ -700,7 +716,7 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-09-29T09:41:37.240Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-14T16:57:04+02:00",
       "is_active": 1
     },
@@ -748,7 +764,7 @@
       "cc": 600,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:57:29.882Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-19T11:00:24+02:00",
       "is_active": 1
     },
@@ -796,7 +812,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-10-02T21:15:49.408Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-11-01T21:40:19+01:00",
       "is_active": 1
     },
@@ -812,7 +828,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-10-01T14:16:15.555Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-31T15:13:01+01:00",
       "is_active": 1
     },
@@ -828,7 +844,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-10-01T07:21:18.282Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-31T07:19:08+01:00",
       "is_active": 1
     },
@@ -844,7 +860,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-10-01T07:21:18.282Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-28T20:09:09+01:00",
       "is_active": 1
     },
@@ -892,7 +908,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-31T13:31:08+01:00",
       "is_active": 1
     },
@@ -908,7 +924,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-09T11:39:04+02:00",
       "is_active": 1
     },
@@ -940,7 +956,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-11T14:20:53+02:00",
       "is_active": 1
     },
@@ -1004,7 +1020,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-14T15:09:07+02:00",
       "is_active": 1
     },
@@ -1020,7 +1036,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-08T10:27:35+02:00",
       "is_active": 1
     },
@@ -1036,7 +1052,7 @@
       "cc": 450,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-11T14:20:56+02:00",
       "is_active": 1
     },
@@ -1054,7 +1070,7 @@
       "first_seen": "2026-10-03T19:44:15.465Z",
       "last_seen": "2026-10-03T19:44:15.465Z",
       "valid_until": "2026-11-02T06:01:13+01:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-wr-250f-rok-2015-super-stan-51-mth-od-remontu-enduro-wrf-excf-homologacja-CID5-ID13YO61.html",
@@ -1068,7 +1084,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-10-03T14:34:55.527Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-11-02T14:41:40+01:00",
       "is_active": 1
     },
@@ -1084,7 +1100,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-10-02T21:15:49.408Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-11-01T17:31:14+01:00",
       "is_active": 1
     },
@@ -1100,7 +1116,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-10-02T16:08:43.017Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-11-01T16:28:10+01:00",
       "is_active": 1
     },
@@ -1148,7 +1164,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-10-01T21:39:09.370Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-31T20:44:42+01:00",
       "is_active": 1
     },
@@ -1180,7 +1196,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-10-01T14:16:15.555Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-31T12:10:47+01:00",
       "is_active": 1
     },
@@ -1196,7 +1212,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-10-01T07:21:18.282Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-30T21:51:19+01:00",
       "is_active": 1
     },
@@ -1244,7 +1260,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-30T15:27:53.988Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-14T00:03:44+02:00",
       "is_active": 1
     },
@@ -1260,7 +1276,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-30T15:27:53.988Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-29T17:51:23+01:00",
       "is_active": 1
     },
@@ -1300,7 +1316,7 @@
       "id": "yamaha-wr250f-zarejestrowana-CID5-ID1cxMEV.html",
       "title": "Yamaha WR250f Zarejestrowana",
       "model": "WR 250F",
-      "price": 14500,
+      "price": 14000,
       "currency": "PLN",
       "location": "Staszów",
       "url": "https://www.olx.pl/d/oferta/yamaha-wr250f-zarejestrowana-CID5-ID1cxMEV.html",
@@ -1308,9 +1324,9 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-30T15:27:53.988Z",
-      "last_seen": "2026-10-02T21:15:49.408Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-29T16:52:24+01:00",
-      "is_active": 0
+      "is_active": 1
     },
     {
       "id": "yamaha-wr250f-2022r-CID5-ID12LoTh.html",
@@ -1372,7 +1388,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-20T20:38:52+02:00",
       "is_active": 1
     },
@@ -1404,7 +1420,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-07T09:12:54+02:00",
       "is_active": 1
     },
@@ -1438,7 +1454,7 @@
       "first_seen": "2026-09-28T07:37:29.330Z",
       "last_seen": "2026-10-03T19:44:15.465Z",
       "valid_until": "2026-10-18T08:19:24+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-wr-yamaha-wr-250f-2009-zarejestrowana-na-a2-supermoto-enduro-CID5-ID1cmFkt.html",
@@ -1452,7 +1468,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-17T10:49:43+02:00",
       "is_active": 1
     },
@@ -1468,7 +1484,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-22T13:22:15+02:00",
       "is_active": 1
     },
@@ -1484,7 +1500,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-21T09:08:32+02:00",
       "is_active": 1
     },
@@ -1516,7 +1532,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-25T15:14:35+01:00",
       "is_active": 1
     },
@@ -1532,7 +1548,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-26T16:58:25+01:00",
       "is_active": 1
     },
@@ -1548,7 +1564,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-15T14:51:10+02:00",
       "is_active": 1
     },
@@ -1564,7 +1580,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-24T11:07:42+02:00",
       "is_active": 1
     },
@@ -1596,7 +1612,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-21T15:48:52+02:00",
       "is_active": 1
     },
@@ -1612,7 +1628,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:37:29.330Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-20T15:48:33+02:00",
       "is_active": 1
     },
@@ -1678,7 +1694,7 @@
       "first_seen": "2026-09-25T13:41:19.858Z",
       "last_seen": "2026-10-03T19:44:15.465Z",
       "valid_until": "2026-10-07T18:01:27+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-yz-250-2t-18mth-do-poprawek-CID5-ID1cst2e.html",
@@ -1692,7 +1708,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-25T13:19:41.739Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-23T12:31:09+02:00",
       "is_active": 1
     },
@@ -1708,7 +1724,7 @@
       "cc": 250,
       "source": "OLX.pl",
       "first_seen": "2026-09-25T13:19:41.739Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-08T13:11:08+02:00",
       "is_active": 1
     },
@@ -1729,6 +1745,22 @@
       "is_active": 0
     },
     {
+      "id": "yamaha-dt-125-re-na-kat-b-CID5-ID1cpBOq.html",
+      "title": "Yamaha dt 125 re na kat b",
+      "model": "Yamaha Vintage",
+      "price": 12500,
+      "currency": "PLN",
+      "location": "Ćmińsk Rządowy-Kobylaki",
+      "url": "https://www.olx.pl/d/oferta/yamaha-dt-125-re-na-kat-b-CID5-ID1cpBOq.html",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/9smmcpkmq2pc2-PL/image",
+      "cc": 125,
+      "source": "OLX.pl",
+      "first_seen": "2026-10-04T13:11:43.280Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
+      "valid_until": "2026-10-20T18:00:19+02:00",
+      "is_active": 1
+    },
+    {
       "id": "yamaha-dt-125r-1996r-CID5-ID1cBLp4.html",
       "title": "Yamaha DT 125R 1996r",
       "model": "Yamaha Vintage",
@@ -1740,7 +1772,7 @@
       "cc": 125,
       "source": "OLX.pl",
       "first_seen": "2026-10-03T12:21:19.207Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-11-02T11:50:34+01:00",
       "is_active": 1
     },
@@ -1756,7 +1788,7 @@
       "cc": 125,
       "source": "OLX.pl",
       "first_seen": "2026-10-03T12:21:19.207Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-28T20:38:18+01:00",
       "is_active": 1
     },
@@ -1784,11 +1816,11 @@
       "currency": "PLN",
       "location": "Tuchola",
       "url": "https://www.olx.pl/d/oferta/yamaha-yz-yamaha-yz-silnik-i-rama-dt-125-CID5-ID1bhkV6.html",
-      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/qwnn190ph3v22-PL/image",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/jyiky3w8k2iq2-PL/image",
       "cc": 125,
       "source": "OLX.pl",
       "first_seen": "2026-10-01T14:16:15.555Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-19T10:13:32+02:00",
       "is_active": 1
     },
@@ -1804,7 +1836,7 @@
       "cc": 125,
       "source": "OLX.pl",
       "first_seen": "2026-10-01T14:16:15.555Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-24T15:01:37+02:00",
       "is_active": 1
     },
@@ -1900,7 +1932,7 @@
       "cc": 125,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-12T19:16:36+02:00",
       "is_active": 1
     },
@@ -1948,7 +1980,7 @@
       "cc": 125,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-21T17:51:01+02:00",
       "is_active": 1
     },
@@ -2062,7 +2094,7 @@
       "first_seen": "2026-09-30T15:27:53.988Z",
       "last_seen": "2026-10-03T19:44:15.465Z",
       "valid_until": "2026-10-03T22:59:13+02:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-dt-50-74-r-CID5-ID1ccjs5.html",
@@ -2092,7 +2124,7 @@
       "cc": 50,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-24T17:27:14+02:00",
       "is_active": 1
     },
@@ -2140,8 +2172,24 @@
       "cc": 50,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-27T14:50:24+01:00",
+      "is_active": 1
+    },
+    {
+      "id": "yamaha-xt-2-wlasciciel-CID5-ID1bN406.html",
+      "title": "Yamaha XT 2 właściciel",
+      "model": "Yamaha Vintage",
+      "price": 17400,
+      "currency": "PLN",
+      "location": "Nowogrodziec",
+      "url": "https://www.olx.pl/d/oferta/yamaha-xt-2-wlasciciel-CID5-ID1bN406.html",
+      "image": "https://ireland.apollo.olxcdn.com:443/v1/files/wk0h5mh7o4jl1-PL/image",
+      "cc": 0,
+      "source": "OLX.pl",
+      "first_seen": "2026-10-04T13:11:43.280Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
+      "valid_until": "2026-10-29T13:21:31+01:00",
       "is_active": 1
     },
     {
@@ -2156,7 +2204,7 @@
       "cc": 0,
       "source": "OLX.pl",
       "first_seen": "2026-10-03T19:44:15.465Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-29T16:10:30+01:00",
       "is_active": 1
     },
@@ -2172,7 +2220,7 @@
       "cc": 0,
       "source": "OLX.pl",
       "first_seen": "2026-10-03T12:21:19.207Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-17T21:31:31+02:00",
       "is_active": 1
     },
@@ -2204,7 +2252,7 @@
       "cc": 0,
       "source": "OLX.pl",
       "first_seen": "2026-09-30T15:27:53.988Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-30T10:15:58+01:00",
       "is_active": 1
     },
@@ -2236,7 +2284,7 @@
       "cc": 0,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T11:39:48.792Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-28T12:51:54+01:00",
       "is_active": 1
     },
@@ -2268,7 +2316,7 @@
       "cc": 0,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T08:25:21.692Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-26T16:21:42+01:00",
       "is_active": 1
     },
@@ -2366,7 +2414,7 @@
       "first_seen": "2026-09-28T07:47:24.335Z",
       "last_seen": "2026-10-03T19:44:15.465Z",
       "valid_until": "2026-10-27T18:34:35+01:00",
-      "is_active": 1
+      "is_active": 0
     },
     {
       "id": "yamaha-xt-yamaha-xt-660-r-enduro-tet-swietny-stan-CID5-ID1cqIWf.html",
@@ -2380,7 +2428,7 @@
       "cc": 0,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-21T20:17:51+02:00",
       "is_active": 1
     },
@@ -2428,7 +2476,7 @@
       "cc": 0,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-15T15:59:19+02:00",
       "is_active": 1
     },
@@ -2444,7 +2492,7 @@
       "cc": 0,
       "source": "OLX.pl",
       "first_seen": "2026-09-28T07:47:24.335Z",
-      "last_seen": "2026-10-03T19:44:15.465Z",
+      "last_seen": "2026-10-04T13:11:43.280Z",
       "valid_until": "2026-10-15T09:51:12+02:00",
       "is_active": 1
     },
@@ -2497,5 +2545,5 @@
       "is_active": 0
     }
   ],
-  "updatedAt": "2026-10-03T19:44:15.468Z"
+  "updatedAt": "2026-10-04T13:11:43.284Z"
 }
