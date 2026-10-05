@@ -1,11 +1,10 @@
 /* ============================================
-   Yamaha Listings Tracker — Static Dashboard
-   No server required. Reads from /listings.json
+   Yamaha Listings Tracker — D1-Powered Dashboard
+   Fetches & filters directly from Cloudflare D1
    ============================================ */
 
 const PAGE_SIZE = 24;
 let currentPage = 0;
-let allListings = [];   // full dataset loaded once
 let debounceTimer = null;
 let priceChart = null;
 
@@ -14,39 +13,18 @@ let priceChart = null;
 // ──────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', async () => {
-  await fetchAllListings();
-  applyAndRender();
+  await loadListings(0);
 });
 
-async function fetchAllListings() {
-  try {
-    const res = await fetch('./listings.json');
-    if (!res.ok) throw new Error('not found');
-    const data = await res.json();
-    allListings = data.listings || [];
-
-    // Show last updated time
-    if (data.updatedAt) {
-      setText('lastUpdated', `Last scraped ${timeAgo(data.updatedAt)}`);
-      const statusPill = document.getElementById('scrapeStatus');
-      if (statusPill) {
-        statusPill.innerHTML = `<span class="status-dot" style="background:#10b981"></span><span class="status-label">Up to date</span>`;
-      }
-    }
-  } catch (err) {
-    document.getElementById('listingsGrid').innerHTML =
-      '<div class="empty-state"><p>Could not load listings.json. Run the scraper first.</p></div>';
-  }
-}
-
 // ──────────────────────────────────────────────
-// FILTERING (client-side)
+// DATA FETCHING & FILTERING (via Cloudflare D1 API)
 // ──────────────────────────────────────────────
 
-function getFiltered() {
-  const search        = document.getElementById('filterSearch').value.trim().toLowerCase();
-  const minPrice      = parseInt(document.getElementById('filterMin').value) || 0;
-  const maxPrice      = parseInt(document.getElementById('filterMax').value) || Infinity;
+async function loadListings(page = 0) {
+  currentPage = page;
+  const search        = document.getElementById('filterSearch').value.trim();
+  const minPrice      = document.getElementById('filterMin').value;
+  const maxPrice      = document.getElementById('filterMax').value;
   const model         = document.getElementById('filterModel').value;
   const engine        = document.getElementById('filterEngine').value;
   const source        = document.getElementById('filterSource').value;
@@ -54,65 +32,121 @@ function getFiltered() {
   const showInactive  = document.getElementById('showInactive') ? document.getElementById('showInactive').checked : false;
   const iconicBlue    = document.getElementById('filterIconicBlue') ? document.getElementById('filterIconicBlue').checked : false;
 
-  return allListings.filter(l => {
-    if (!showInactive && l.is_active === 0) return false;
-    if (source && l.source !== source) return false;
-    if (model  && l.model  !== model)  return false;
-    if (iconicBlue && l.iconic_blue !== 1) return false;
+  const params = new URLSearchParams();
+  params.set('limit', PAGE_SIZE);
+  params.set('offset', page * PAGE_SIZE);
+  if (search) params.set('search', search);
+  if (minPrice) params.set('minPrice', minPrice);
+  if (maxPrice) params.set('maxPrice', maxPrice);
+  if (model) params.set('model', model);
+  if (engine) params.set('engine', engine);
+  if (source) params.set('source', source);
+  if (excludeTenere) params.set('excludeTenere', 'true');
+  if (showInactive) params.set('activeOnly', 'false');
+  if (iconicBlue) params.set('iconicBlue', 'true');
 
-    // Engine filter
-    if (engine === '2T') {
-      const is2T = l.model === 'YZ 250 2T' || l.model === 'YZ 250X' ||
-                   (l.model === 'Yamaha Vintage' && /\b(dt|it)\b/i.test(l.title));
-      if (!is2T) return false;
+  try {
+    const res = await fetch(`/api/listings?${params.toString()}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    const listings = data.listings || [];
+    const total = data.total || 0;
+    const stats = data.stats || { total, avgPrice: 0, minPrice: null, maxPrice: null, newToday: 0, prices: [] };
+
+    // Update status & timestamps
+    if (data.updatedAt) {
+      setText('lastUpdated', `Last scraped ${timeAgo(data.updatedAt)}`);
+      const statusPill = document.getElementById('scrapeStatus');
+      if (statusPill) {
+        statusPill.innerHTML = `<span class="status-dot" style="background:#10b981"></span><span class="status-label">Up to date</span>`;
+      }
     }
-    if (engine === '4T') {
-      const is4T = l.model === 'WR 250F' || l.model === 'WR 450F' ||
-                   l.model === 'Tenere 700' ||
-                   (l.model === 'Yamaha Vintage' && /\b(xt|tt)\b/i.test(l.title));
-      if (!is4T) return false;
-    }
 
-    // Hide Tenere toggle (also hides XJ6 by default)
-    if (excludeTenere) {
-      if (l.model === 'Tenere 700') return false;
-      if (l.model === 'Yamaha Vintage' && /tenere/i.test(l.title)) return false;
-      if (l.model === 'XJ6 Naked') return false;
-    }
+    renderStats(stats);
+    renderPriceChart(stats.prices || []);
+    setText('listingMeta', `Showing ${listings.length} of ${total} listings`);
+    renderListings(listings);
+    renderPagination(total, page);
 
-    // Price
-    if (l.price && minPrice && l.price < minPrice) return false;
-    if (l.price && maxPrice < Infinity && l.price > maxPrice) return false;
-
-    // Search
-    if (search && !l.title.toLowerCase().includes(search)) return false;
-
-    return true;
-  });
+  } catch (err) {
+    console.warn('[Dashboard] Direct D1 query failed, trying /listings.json fallback...', err);
+    await fallbackFetchAll(page);
+  }
 }
 
-// ──────────────────────────────────────────────
-// RENDER
-// ──────────────────────────────────────────────
+// Fallback in case /api/listings is unavailable
+let cachedFallbackListings = null;
+async function fallbackFetchAll(page = 0) {
+  try {
+    if (!cachedFallbackListings) {
+      const res = await fetch('./listings.json');
+      if (!res.ok) throw new Error('listings.json not found');
+      const data = await res.json();
+      cachedFallbackListings = data.listings || [];
+    }
+
+    const search        = document.getElementById('filterSearch').value.trim().toLowerCase();
+    const minPrice      = parseInt(document.getElementById('filterMin').value) || 0;
+    const maxPrice      = parseInt(document.getElementById('filterMax').value) || Infinity;
+    const model         = document.getElementById('filterModel').value;
+    const engine        = document.getElementById('filterEngine').value;
+    const source        = document.getElementById('filterSource').value;
+    const excludeTenere = document.getElementById('excludeTenere').checked;
+    const showInactive  = document.getElementById('showInactive')?.checked || false;
+    const iconicBlue    = document.getElementById('filterIconicBlue')?.checked || false;
+
+    const filtered = cachedFallbackListings.filter(l => {
+      if (!showInactive && l.is_active === 0) return false;
+      if (source && l.source !== source) return false;
+      if (model  && l.model  !== model)  return false;
+      if (iconicBlue && l.iconic_blue !== 1) return false;
+      if (engine === '2T') {
+        const is2T = l.model === 'YZ 250 2T' || l.model === 'YZ 250X' || (l.model === 'Yamaha Vintage' && /\b(dt|it)\b/i.test(l.title));
+        if (!is2T) return false;
+      }
+      if (engine === '4T') {
+        const is4T = l.model === 'WR 250F' || l.model === 'WR 450F' || l.model === 'Tenere 700' || (l.model === 'Yamaha Vintage' && /\b(xt|tt)\b/i.test(l.title));
+        if (!is4T) return false;
+      }
+      if (excludeTenere) {
+        if (l.model === 'Tenere 700' || l.model === 'XJ6 Naked' || (l.model === 'Yamaha Vintage' && /tenere/i.test(l.title))) return false;
+      }
+      if (l.price && minPrice && l.price < minPrice) return false;
+      if (l.price && maxPrice < Infinity && l.price > maxPrice) return false;
+      if (search && !l.title.toLowerCase().includes(search)) return false;
+      return true;
+    });
+
+    const total = filtered.length;
+    const slice = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+    const prices = filtered.map(l => l.price).filter(Boolean);
+
+    renderStats({
+      total,
+      avgPrice: prices.length ? Math.round(prices.reduce((a,b)=>a+b,0)/prices.length) : 0,
+      minPrice: prices.length ? Math.min(...prices) : null,
+      maxPrice: prices.length ? Math.max(...prices) : null,
+      newToday: filtered.filter(l => l.first_seen && new Date(l.first_seen).toDateString() === new Date().toDateString()).length,
+    });
+    renderPriceChart(prices);
+    setText('listingMeta', `Showing ${slice.length} of ${total} listings`);
+    renderListings(slice);
+    renderPagination(total, page);
+
+  } catch (e) {
+    document.getElementById('listingsGrid').innerHTML =
+      '<div class="empty-state"><p>Could not load listings. Please ensure Cloudflare D1 is connected.</p></div>';
+  }
+}
 
 function applyAndRender(page = 0) {
-  currentPage = page;
-  const filtered = getFiltered();
-  const total    = filtered.length;
-  const slice    = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
-
-  renderStats(allListings, filtered);
-  renderPriceChart(filtered);
-  setText('listingMeta', `Showing ${slice.length} of ${total} listings`);
-  renderListings(slice);
-  renderPagination(total, page);
+  loadListings(page);
 }
-
-function loadListings(page = 0) { applyAndRender(page); }
 
 function debounceLoad() {
   clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() => applyAndRender(0), 300);
+  debounceTimer = setTimeout(() => loadListings(0), 300);
 }
 
 function onModelChange() {
@@ -121,31 +155,26 @@ function onModelChange() {
     document.getElementById('filterEngine').value = ""; // Reset to All Engines
     document.getElementById('excludeTenere').checked = false; // Uncheck hide toggle
   }
-  loadListings();
+  loadListings(0);
 }
 
 // ──────────────────────────────────────────────
 // STATS
 // ──────────────────────────────────────────────
 
-function renderStats(all, filtered) {
-  const prices = filtered.map(l => l.price).filter(Boolean);
-  setText('statTotal',    filtered.length);
-  setText('statAvg',      prices.length ? formatPrice(Math.round(prices.reduce((a,b)=>a+b,0)/prices.length)) : '—');
-  setText('statMin',      prices.length ? formatPrice(Math.min(...prices)) : '—');
-  setText('statMax',      prices.length ? formatPrice(Math.max(...prices)) : '—');
-
-  const today = new Date().toDateString();
-  const newToday = filtered.filter(l => l.first_seen && new Date(l.first_seen).toDateString() === today).length;
-  setText('statNewToday', newToday);
+function renderStats(stats) {
+  setText('statTotal',    stats.total || 0);
+  setText('statAvg',      stats.avgPrice ? formatPrice(stats.avgPrice) : '—');
+  setText('statMin',      stats.minPrice ? formatPrice(stats.minPrice) : '—');
+  setText('statMax',      stats.maxPrice ? formatPrice(stats.maxPrice) : '—');
+  setText('statNewToday', stats.newToday || 0);
 }
 
-function renderPriceChart(filtered) {
-  const prices = filtered.map(l => l.price).filter(Boolean);
+function renderPriceChart(prices) {
   const canvas = document.getElementById('priceChartCanvas');
   const container = document.getElementById('priceChartContainer');
 
-  if (prices.length === 0) {
+  if (!prices || prices.length === 0) {
     if (priceChart) { priceChart.destroy(); priceChart = null; }
     canvas.style.display = 'none';
     if (!document.getElementById('noChartData')) {
@@ -365,26 +394,13 @@ async function triggerScrape() {
   const btn = document.getElementById('btnScrape');
   
   if (statusPill) {
-    statusPill.innerHTML = `<span class="status-dot" style="background:#f59e0b; animation: pulse 1.5s infinite"></span><span class="status-label">Fetching...</span>`;
+    statusPill.innerHTML = `<span class="status-dot" style="background:#f59e0b; animation: pulse 1.5s infinite"></span><span class="status-label">Refreshing...</span>`;
   }
   if (btn) btn.disabled = true;
 
   try {
-    // Add cache buster to force fetching fresh listings.json
-    const res = await fetch(`./listings.json?t=${Date.now()}`);
-    if (!res.ok) throw new Error('not found');
-    const data = await res.json();
-    allListings = data.listings || [];
-
-    if (data.updatedAt) {
-      setText('lastUpdated', `Last scraped ${timeAgo(data.updatedAt)}`);
-    }
-    applyAndRender(0); // Go back to first page
-    
-    if (statusPill) {
-      statusPill.innerHTML = `<span class="status-dot" style="background:#10b981"></span><span class="status-label">Up to date</span>`;
-    }
-    showToast('Dashboard data refreshed!', 'success');
+    await loadListings(0);
+    showToast('Dashboard data refreshed from D1!', 'success');
   } catch (err) {
     if (statusPill) {
       statusPill.innerHTML = `<span class="status-dot" style="background:#ef4444"></span><span class="status-label">Error</span>`;
@@ -438,4 +454,3 @@ function showToast(msg, type = '') {
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 4000);
 }
-

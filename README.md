@@ -25,12 +25,14 @@
 
 ## Dashboard
 
-Static frontend hosted on **Cloudflare Pages** — no server, no database.
+Hosted on **Cloudflare Workers** with **Cloudflare D1 SQL Database** — zero physical database files in the Git repository.
 
+- **Card Grid View:** Interactive card grid with live price distribution histogram
+- **Table List View (`/list`):** High-density table list view directly querying Cloudflare D1
+- **Iconic Blue Verification (`/verify.html`):** Human-in-the-loop review interface for AI color detection
 - Filter by engine type (2T / 4T)
 - Filter by exact model
-- Price range filter
-- Full-text search
+- Real-time price range & full-text search
 - Toggle to hide Ténéré 700 listings
 
 ---
@@ -43,14 +45,18 @@ GitHub Actions (runs twice daily: 9:00 + 19:00 CEST)
        ├─ fetches OLX.pl listings via Puppeteer
        ├─ verifies each listing (title + description)
        ├─ classifies the exact Yamaha model
-       └─ saves → public/listings.json + git commit
+       └─ syncs directly to Cloudflare D1 via Worker API (POST /api/sync-listings)
 
-Cloudflare Pages (auto-deploys on every push)
-  └─ serves public/ as a static site
-       └─ app.js loads listings.json and filters in-browser
+Cloudflare Worker (yamaha-listings)
+  ├─ serves static frontend via Cloudflare Assets (public/)
+  └─ executes real-time SQL queries against Cloudflare D1 (env.DB)
+       ├─ GET /api/listings (paginated, SQL-filtered)
+       ├─ GET /api/stats (live aggregates)
+       ├─ GET /api/price-history/:id
+       └─ POST /api/verify-blue
 ```
 
-No external database server needed — `listings.json` committed to the repo **is** the database for the frontend, generated from a local SQLite database (`listings.db`) during the scraping process.
+No data files are committed to Git — the Git repository contains purely application code, while all listing records and price history are managed directly in Cloudflare D1.
 
 ---
 

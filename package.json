@@ -7,7 +7,10 @@
     "start": "node server.js",
     "dev": "node server.js",
     "scrape": "node scraper.js",
-    "color-check": "node vision.js"
+    "color-check": "node vision.js",
+    "deploy": "wrangler deploy",
+    "worker:dev": "wrangler dev",
+    "d1:query": "wrangler d1 execute yamaha-listings-db --remote"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",

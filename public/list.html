@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yamaha Listings — Table List View (Cloudflare D1)</title>
+  <meta name="description" content="Table list view of Yamaha motorcycle listings powered by Cloudflare D1." />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=4" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .nav-tab {
+      padding: 8px 18px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      background: var(--bg-card);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-tab:hover {
+      background: var(--bg-card-hover);
+      color: #fff;
+      border-color: var(--border-bright);
+    }
+    .nav-tab.active {
+      background: #ffffff;
+      color: #0032a0;
+      border-color: #ffffff;
+      font-weight: 700;
+    }
+
+    .table-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow-x: auto;
+      margin-top: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    }
+    .listings-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+    .listings-table th {
+      background: rgba(0, 0, 0, 0.25);
+      padding: 14px 16px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      user-select: none;
+    }
+    .listings-table th.sortable {
+      cursor: pointer;
+    }
+    .listings-table th.sortable:hover {
+      color: #fff;
+    }
+    .listings-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      vertical-align: middle;
+    }
+    .listings-table tr:hover td {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .table-thumb {
+      width: 52px;
+      height: 38px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      display: block;
+    }
+    .table-title-link {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      max-width: 380px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+      transition: color 0.15s;
+    }
+    .table-title-link:hover {
+      color: #60a5fa;
+      text-decoration: underline;
+    }
+    .table-price {
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
+      white-space: nowrap;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .status-badge.active {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .status-badge.inactive {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+    .badge-iconic {
+      background: rgba(59, 130, 246, 0.25);
+      color: #93c5fd;
+      border: 1px solid #3b82f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <img src="Yamaha_Motor_Racing_logo.svg" alt="Yamaha Factory Racing" class="brand-logo" />
+      
+      <nav class="nav-tabs">
+        <a href="index.html" class="nav-tab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Card Grid
+        </a>
+        <a href="list.html" class="nav-tab active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          Table List (D1)
+        </a>
+        <a href="verify.html" class="nav-tab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Iconic Blue Verification
+        </a>
+      </nav>
+
+      <div class="header-actions">
+        <div class="status-pill" id="scrapeStatus">
+          <span class="status-dot"></span>
+          <span class="status-label">D1 Connected</span>
+        </div>
+        <button class="btn-scrape" id="btnScrape" onclick="fetchTableListings(currentPage)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+            <path d="M23 4v6h-6M1 20v-6h6"/>
+            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+          </svg>
+          Refresh D1
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">All Database Records (Cloudflare D1)</h2>
+        <div class="filters-container">
+          <div class="filter-group">
+            <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input type="text" id="filterSearch" placeholder="Search title or location…" oninput="debounceSearch()" />
+          </div>
+          <div class="filter-group">
+            <span class="filter-prefix">PLN</span>
+            <input type="number" id="filterMin" placeholder="Min price" oninput="debounceSearch()" />
+            <span class="filter-separator">-</span>
+            <input type="number" id="filterMax" placeholder="Max price" oninput="debounceSearch()" />
+          </div>
+          <div class="filter-group select-wrapper">
+            <select id="filterModel" onchange="fetchTableListings(0)">
+              <option value="">All Models</option>
+              <option value="YZ 250 2T">YZ 250 2T</option>
+              <option value="YZ 250X">YZ 250X</option>
+              <option value="WR 250F">WR 250F</option>
+              <option value="WR 450F">WR 450F</option>
+              <option value="Tenere 700">Tenere 700</option>
+              <option value="XJ6 Naked">XJ6 Naked</option>
+              <option value="Yamaha Vintage">Yamaha Vintage (DT, XT, TT, IT)</option>
+            </select>
+          </div>
+          <div class="filter-group select-wrapper">
+            <select id="filterEngine" onchange="fetchTableListings(0)">
+              <option value="">All Engines</option>
+              <option value="2T">2-Stroke (2T)</option>
+              <option value="4T">4-Stroke (4T)</option>
+            </select>
+          </div>
+          <label class="toggle-container">
+            <input type="checkbox" id="showInactive" onchange="fetchTableListings(0)">
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">Include Inactive</span>
+          </label>
+          <label class="toggle-container">
+            <input type="checkbox" id="filterIconicBlue" onchange="fetchTableListings(0)">
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">Iconic Blue Only</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="listing-meta" id="tableMeta">Loading listings directly from Cloudflare D1 SQL…</div>
+
+      <!-- Table View -->
+      <div class="table-container">
+        <table class="listings-table">
+          <thead>
+            <tr>
+              <th style="width: 60px;">Image</th>
+              <th>Title</th>
+              <th>Model</th>
+              <th>Displacement</th>
+              <th>Price</th>
+              <th>Location</th>
+              <th>Source</th>
+              <th>First Seen</th>
+              <th>Status</th>
+              <th>Iconic Blue</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td colspan="11" style="text-align:center; padding: 40px;">
+                <div class="loading-spinner"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination" id="tablePagination"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span id="lastUpdated">Cloudflare D1 Database View</span>
+    <span>· Real-time SQL queries against Cloudflare D1 · Zero static file dependency</span>
+  </footer>
+
+  <script>
+    const PAGE_SIZE = 50;
+    let currentPage = 0;
+    let debounceTimer = null;
+
+    function debounceSearch() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => fetchTableListings(0), 300);
+    }
+
+    async function fetchTableListings(page = 0) {
+      currentPage = page;
+      const search = document.getElementById('filterSearch').value.trim();
+      const minPrice = document.getElementById('filterMin').value;
+      const maxPrice = document.getElementById('filterMax').value;
+      const model = document.getElementById('filterModel').value;
+      const engine = document.getElementById('filterEngine').value;
+      const showInactive = document.getElementById('showInactive').checked;
+      const iconicBlue = document.getElementById('filterIconicBlue').checked;
+
+      const params = new URLSearchParams();
+      params.set('limit', PAGE_SIZE);
+      params.set('offset', page * PAGE_SIZE);
+      if (search) params.set('search', search);
+      if (minPrice) params.set('minPrice', minPrice);
+      if (maxPrice) params.set('maxPrice', maxPrice);
+      if (model) params.set('model', model);
+      if (engine) params.set('engine', engine);
+      if (showInactive) params.set('activeOnly', 'false');
+      if (iconicBlue) params.set('iconicBlue', 'true');
+
+      try {
+        const res = await fetch(`/api/listings?${params.toString()}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        const listings = data.listings || [];
+        const total = data.total || 0;
+
+        document.getElementById('tableMeta').textContent = `Displaying ${listings.length} rows of ${total} total matching listings in Cloudflare D1`;
+        renderTable(listings);
+        renderTablePagination(total, page);
+
+      } catch (err) {
+        document.getElementById('tableBody').innerHTML = `
+          <tr><td colspan="11" style="text-align:center; padding: 30px; color:#ef4444;">
+            Failed to query Cloudflare D1: ${err.message}
+          </td></tr>`;
+      }
+    }
+
+    function renderTable(items) {
+      const tbody = document.getElementById('tableBody');
+      if (!items || items.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; padding: 40px; color: var(--text-muted);">No records found matching current query.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = items.map(item => {
+        const thumb = item.image
+          ? `<img src="${item.image}" class="table-thumb" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MiIgaGVpZ2h0PSIzOCIgZmlsbD0iIzBhMmQ4MiI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIvPjwvc3ZnPg=='"/>`
+          : `<div style="width:52px;height:38px;background:rgba(255,255,255,0.05);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);">🏍️</div>`;
+
+        const price = item.price ? `${item.price.toLocaleString('pl-PL')} zł` : '—';
+        const dateStr = item.first_seen ? item.first_seen.slice(0, 10) : '—';
+        const statusBadge = item.is_active === 1
+          ? `<span class="status-badge active">Active</span>`
+          : `<span class="status-badge inactive">Inactive</span>`;
+
+        const iconicBadge = item.iconic_blue === 1
+          ? `<span class="badge-iconic">Iconic Blue</span>`
+          : `<span style="color:var(--text-muted);font-size:11px;">No</span>`;
+
+        return `
+          <tr>
+            <td>${thumb}</td>
+            <td>
+              <a href="${item.url}" target="_blank" rel="noopener" class="table-title-link" title="${item.title}">
+                ${item.title}
+              </a>
+            </td>
+            <td><strong>${item.model || 'Unknown'}</strong></td>
+            <td>${item.cc ? item.cc + ' cc' : '—'}</td>
+            <td class="table-price">${price}</td>
+            <td>${item.location || '—'}</td>
+            <td><span style="font-size:11px;color:var(--text-secondary);">${item.source || 'OLX.pl'}</span></td>
+            <td style="color:var(--text-muted);white-space:nowrap;">${dateStr}</td>
+            <td>${statusBadge}</td>
+            <td>${iconicBadge}</td>
+            <td>
+              <a href="${item.url}" target="_blank" rel="noopener" style="color:#60a5fa;text-decoration:none;font-weight:600;font-size:12px;">
+                Open ↗
+              </a>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderTablePagination(total, page) {
+      const container = document.getElementById('tablePagination');
+      const totalPages = Math.ceil(total / PAGE_SIZE);
+      if (totalPages <= 1) { container.innerHTML = ''; return; }
+
+      const pages = [];
+      pages.push(`<button class="page-btn" onclick="fetchTableListings(${page - 1})" ${page === 0 ? 'disabled' : ''}>← Prev</button>`);
+      for (let i = 0; i < totalPages; i++) {
+        if (i === 0 || i === totalPages - 1 || (i >= page - 2 && i <= page + 2)) {
+          pages.push(`<button class="page-btn${i === page ? ' active' : ''}" onclick="fetchTableListings(${i})">${i + 1}</button>`);
+        } else if (i === page - 3 || i === page + 3) {
+          pages.push(`<span style="color:var(--text-muted)">…</span>`);
+        }
+      }
+      pages.push(`<button class="page-btn" onclick="fetchTableListings(${page + 1})" ${page >= totalPages - 1 ? 'disabled' : ''}>Next →</button>`);
+      container.innerHTML = pages.join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => fetchTableListings(0));
+  </script>
+</body>
+</html>

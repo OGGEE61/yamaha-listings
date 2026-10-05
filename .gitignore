@@ -1,3 +1,7 @@
 venv/
 node_modules/
 .env
+.wrangler/
+listings.db*
+listings.json
+public/listings.json

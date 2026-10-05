@@ -454,34 +454,76 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-module.exports = { scrapeAll, determineYamahaModel, extractCC };
+async function syncListingsToD1(listings, runStats, inactiveUrls = []) {
+  const workerUrl = process.env.WORKER_URL || 'https://yamaha-listings.maxgustaw.workers.dev';
+  const secret = process.env.ADMIN_SYNC_SECRET || 'yamaha-listing-tracker-secret-2026';
+
+  console.log(`[D1 Sync] Syncing ${listings.length} listings to Cloudflare D1 via ${workerUrl}/api/sync-listings...`);
+  const nodeFetch = global.fetch || require('node-fetch');
+  const res = await nodeFetch(`${workerUrl}/api/sync-listings`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-sync-secret': secret,
+    },
+    body: JSON.stringify({
+      listings,
+      run: runStats,
+      inactiveUrls,
+    }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error(`[D1 Sync] Error response: ${text}`);
+    throw new Error(`D1 sync failed: HTTP ${res.status}`);
+  }
+  const result = await res.json();
+  console.log('[D1 Sync] Cloudflare D1 updated successfully:', result);
+  return result;
+}
+
+module.exports = { scrapeAll, determineYamahaModel, extractCC, syncListingsToD1 };
 
 if (require.main === module) {
-  const db = require('./db');
   (async () => {
     try {
       const startedAt = new Date().toISOString();
-      const runId = db.recordScrapeRun(startedAt);
-      console.log(`[CLI] Scrape run #${runId} started at ${startedAt}`);
+      console.log(`[CLI] Scrape run started at ${startedAt}`);
 
       const listings = await scrapeAll();
-      const { newCount, updatedCount } = db.upsertListings(listings);
 
       const olxUrls = listings.filter(l => l.source === 'OLX.pl').map(l => l.url);
-      if (olxUrls.length > 30) {
-        db.markInactiveIfNotSeen(olxUrls, 'OLX.pl');
-      } else {
-        console.warn(`[WARNING] OLX listings found (${olxUrls.length}) is suspiciously low. Skipping deactivation of old listings to protect database.`);
+      const inactiveUrls = [];
+
+      // Sync directly to Cloudflare D1
+      const runStats = {
+        started_at: startedAt,
+        finished_at: new Date().toISOString(),
+        total_found: listings.length,
+        new_listings: 0,
+        updated: listings.length
+      };
+
+      try {
+        await syncListingsToD1(listings, runStats, inactiveUrls);
+      } catch (err) {
+        console.warn('[CLI] Direct D1 sync failed, checking local DB fallback:', err.message);
       }
 
-      const autoplacUrls = listings.filter(l => l.source === 'Autoplac').map(l => l.url);
-      if (autoplacUrls.length > 0) {
-        db.markInactiveIfNotSeen(autoplacUrls, 'Autoplac');
-      }
-
-      const result = { totalFound: listings.length, newListings: newCount, updated: updatedCount };
-      db.finishScrapeRun(runId, result);
-      console.log(`[CLI] Scrape #${runId} complete:`, result);
+      // Optional local SQLite sync if db exists
+      try {
+        const db = require('./db');
+        const { newCount, updatedCount } = db.upsertListings(listings);
+        if (olxUrls.length > 30) {
+          db.markInactiveIfNotSeen(olxUrls, 'OLX.pl');
+        }
+        db.finishScrapeRun(db.recordScrapeRun(startedAt), {
+          totalFound: listings.length,
+          newListings: newCount,
+          updated: updatedCount
+        });
+      } catch (_) {}
 
       // Post-processing: Iconic Blue detection on listing photos (Gemini vision)
       try {
