@@ -66,6 +66,28 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_price_hist_listing ON price_history(listing_id);
 `);
 
+// ── Migration: Iconic Blue (vision check) columns ──
+//   iconic_blue            NULL = not checked yet, 1 = has Iconic Blue part, 0 = none
+//   iconic_blue_parts      JSON array of detected parts (e.g. ["plastiki","felgi"])
+//   iconic_blue_image      image URL that was analysed (re-check if image changes)
+//   iconic_blue_checked_at ISO timestamp of the check
+//   iconic_blue_verified   1 = human verified, 0 = pending/auto
+{
+  const existingCols = new Set(db.prepare('PRAGMA table_info(listings)').all().map(c => c.name));
+  const newCols = {
+    iconic_blue:            'INTEGER',
+    iconic_blue_parts:      'TEXT',
+    iconic_blue_image:      'TEXT',
+    iconic_blue_checked_at: 'TEXT',
+    iconic_blue_verified:   'INTEGER',
+    iconic_blue_title:      'TEXT',
+    search_url:             'TEXT',
+  };
+  for (const [name, type] of Object.entries(newCols)) {
+    if (!existingCols.has(name)) db.exec(`ALTER TABLE listings ADD COLUMN ${name} ${type} DEFAULT ${(type === 'INTEGER' ? '0' : 'NULL')}`);
+  }
+}
+
 // ──────────────────────────────────────────────
 // PUBLIC JSON EXPORT  (for the static dashboard)
 // ──────────────────────────────────────────────
@@ -93,9 +115,9 @@ function exportPublicJson() {
 const stmtGet    = db.prepare('SELECT * FROM listings WHERE id = ?');
 const stmtInsert = db.prepare(`
   INSERT INTO listings
-    (id, title, model, price, currency, location, url, image, cc, source, first_seen, last_seen, valid_until, is_active)
+    (id, title, model, price, currency, location, url, image, cc, source, first_seen, last_seen, valid_until, is_active, search_url)
   VALUES
-    (@id, @title, @model, @price, @currency, @location, @url, @image, @cc, @source, @first_seen, @last_seen, @valid_until, 1)
+    (@id, @title, @model, @price, @currency, @location, @url, @image, @cc, @source, @first_seen, @last_seen, @valid_until, 1, @search_url)
 `);
 const stmtUpdate = db.prepare(`
   UPDATE listings SET
@@ -160,6 +182,7 @@ function upsertListings(newItems) {
           first_seen:  now,
           last_seen:   now,
           valid_until: item.validUntil || null,
+          search_url:  item.searchUrl || null,
         });
 
         if (item.price !== null && item.price !== undefined) {
@@ -315,6 +338,39 @@ function getPriceHistory(listingId) {
   ).all(listingId);
 }
 
+// ──────────────────────────────────────────────
+// ICONIC BLUE (vision check)
+// ──────────────────────────────────────────────
+
+/** Listings with an image that was never analysed, or whose image changed since. Active first. */
+function getListingsNeedingColorCheck(limit = 500) {
+  return db.prepare(`
+    SELECT id, title, image FROM listings
+    WHERE image IS NOT NULL AND image != ''
+      AND (iconic_blue IS NULL OR iconic_blue_image IS NULL OR iconic_blue_image != image)
+    ORDER BY is_active DESC, first_seen DESC
+    LIMIT ?
+  `).all(limit);
+}
+
+function setColorCheckResult(id, { iconicBlue, parts, image, title }) {
+  db.prepare(`
+    UPDATE listings SET
+      iconic_blue = ?, iconic_blue_parts = ?, iconic_blue_image = ?, iconic_blue_checked_at = ?, iconic_blue_verified = 0, iconic_blue_title = ?
+    WHERE id = ?
+  `).run(iconicBlue ? 1 : 0, JSON.stringify(parts || []), image, new Date().toISOString(), title || null, id);
+}
+
+function verifyIconicBlue(id, isBlue) {
+  const listing = db.prepare('SELECT title FROM listings WHERE id = ?').get(id);
+  db.prepare(`
+    UPDATE listings SET
+      iconic_blue = ?, iconic_blue_verified = 1, iconic_blue_title = ?
+    WHERE id = ?
+  `).run(isBlue ? 1 : 0, listing ? listing.title : null, id);
+  exportPublicJson();
+}
+
 module.exports = {
   upsertListings,
   markInactiveIfNotSeen,
@@ -323,4 +379,8 @@ module.exports = {
   recordScrapeRun,
   finishScrapeRun,
   getPriceHistory,
+  getListingsNeedingColorCheck,
+  setColorCheckResult,
+  verifyIconicBlue,
+  exportPublicJson,
 };

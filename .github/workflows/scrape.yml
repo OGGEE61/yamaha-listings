@@ -39,6 +39,7 @@ jobs:
         run: node scraper.js
         env:
           PUPPETEER_SKIP_DOWNLOAD: 'false'
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
       - name: Commit updated listings
         run: |

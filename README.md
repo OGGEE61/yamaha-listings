@@ -54,6 +54,14 @@ No external database server needed — `listings.json` committed to the repo **i
 
 ---
 
+## 👁️ Iconic Blue Detection (Computer Vision / AI)
+
+Each newly scraped listing is evaluated by an AI model (Google Gemini Vision API) to detect the characteristic Yamaha "Iconic Blue" / "Racing Blue" color exclusively on plastics or wheels. 
+- **How it works:** A secondary script (`vision.js`) runs after scraping, analyzing images and tagging listings with the `iconic_blue` flag if the color is found.
+- **Human-in-the-Loop Verification:** Because AI models aren't perfect, there is a built-in verification panel (`/verify.html`) available on the local server. A human can quickly confirm or reject the AI's classification. Verified listings are marked and skipped in future AI checks, significantly saving API token costs.
+
+---
+
 ## 🗄️ Data Model
 
 The data is stored in a local SQLite database (`listings.db`) which contains the following tables:

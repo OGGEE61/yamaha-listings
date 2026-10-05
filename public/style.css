@@ -520,6 +520,7 @@ body {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  min-height: 45px; /* Ensures 2 lines of space to prevent card jumping */
 }
 
 .listing-price {
@@ -564,6 +565,19 @@ body {
   border: 1px solid rgba(255,255,255,0.2);
   border-radius: 100px;
   padding: 3px 10px;
+}
+
+/* Iconic Blue tag (Gemini vision result) */
+.listing-source.tag-iconic-blue {
+  background: linear-gradient(135deg, #0033a0, #1e50c8);
+  color: #fff;
+  border-color: #6b8cff;
+  box-shadow: 0 0 10px rgba(30, 80, 200, 0.55);
+  cursor: help;
+}
+
+.toggle-container input#filterIconicBlue:checked + .toggle-slider {
+  background: linear-gradient(135deg, #0033a0, #1e50c8);
 }
 
 .listing-footer {

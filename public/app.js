@@ -52,11 +52,13 @@ function getFiltered() {
   const source        = document.getElementById('filterSource').value;
   const excludeTenere = document.getElementById('excludeTenere').checked;
   const showInactive  = document.getElementById('showInactive') ? document.getElementById('showInactive').checked : false;
+  const iconicBlue    = document.getElementById('filterIconicBlue') ? document.getElementById('filterIconicBlue').checked : false;
 
   return allListings.filter(l => {
     if (!showInactive && l.is_active === 0) return false;
     if (source && l.source !== source) return false;
     if (model  && l.model  !== model)  return false;
+    if (iconicBlue && l.iconic_blue !== 1) return false;
 
     // Engine filter
     if (engine === '2T') {
@@ -298,6 +300,14 @@ function renderListings(listings) {
         ${timeAgo(l.first_seen)}
       </span>` : '';
 
+    let iconicBlueTag = '';
+    if (l.iconic_blue === 1) {
+      let parts = [];
+      try { parts = JSON.parse(l.iconic_blue_parts || '[]'); } catch (_) {}
+      const tip = parts.length ? `Iconic Blue: ${parts.join(', ')}` : 'Iconic Blue';
+      iconicBlueTag = `<span class="listing-source tag-iconic-blue" title="${escHtml(tip)}">Iconic Blue</span>`;
+    }
+
     return `
       <article class="listing-card${isNew ? ' new' : ''}" style="${l.is_active === 0 ? 'opacity: 0.6;' : ''}">
         ${imgHtml}
@@ -308,6 +318,7 @@ function renderListings(listings) {
             ${location}
             ${dateChip}
             ${l.cc ? `<span class="listing-source" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd;">${l.cc} cc</span>` : ''}
+            ${iconicBlueTag}
             <span class="listing-source" style="background:var(--gray-200);color:var(--gray-800);border-color:var(--gray-300);">${escHtml(l.model || 'Unknown')}</span>
             <span class="listing-source">${escHtml(l.source || 'OLX.pl')}</span>
             ${l.is_active === 0 ? `<span class="listing-source" style="background:#fecdd3;color:#e11d48;border-color:#fda4af;">Inactive</span>` : ''}

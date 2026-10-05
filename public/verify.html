@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Yamaha Listings — Verify Iconic Blue</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=4" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .verify-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .verify-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .verify-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      cursor: pointer;
+    }
+    .verify-body {
+      padding: 16px;
+      flex-grow: 1;
+    }
+    .verify-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+    .verify-actions {
+      display: flex;
+      gap: 10px;
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      background: var(--bg-dark-blue);
+    }
+    .btn-action {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      color: white;
+      transition: opacity 0.2s;
+    }
+    .btn-action:hover { opacity: 0.8; }
+    .btn-yes { background: var(--blue); }
+    .btn-no { background: var(--gray-700); border: 1px solid var(--gray-600); }
+    .filter-bar {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+    .verified-badge {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+    .badge-verified-yes { background: #1e3a8a; color: #60a5fa; border: 1px solid #1e40af; }
+    .badge-verified-no { background: #3f3f46; color: #a1a1aa; border: 1px solid #52525b; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <h2>Iconic Blue Verification <span id="count-badge" class="badge">...</span></h2>
+      <a href="/" style="color:var(--text-muted); text-decoration:none;">&larr; Back to Dashboard</a>
+    </div>
+  </header>
+  <main class="main">
+    <div class="filter-bar">
+      <label class="toggle-container">
+        <input type="checkbox" id="showAll" onchange="renderCards()">
+        <span class="toggle-slider"></span>
+        <span class="toggle-label">Show already verified</span>
+      </label>
+      <label class="toggle-container">
+        <input type="checkbox" id="showNonBlue" onchange="renderCards()">
+        <span class="toggle-slider"></span>
+        <span class="toggle-label">Show detected as NON-blue</span>
+      </label>
+    </div>
+    
+    <div class="verify-grid" id="grid">
+      <div class="loading-spinner"></div>
+    </div>
+  </main>
+
+  <script>
+    let listings = [];
+
+    async function loadData() {
+      const res = await fetch('/listings.json');
+      const data = await res.json();
+      listings = data.listings || [];
+      renderCards();
+    }
+
+    async function verify(id, isBlue) {
+      const el = document.getElementById(`card-${id}`);
+      if (el) el.style.opacity = '0.5';
+
+      try {
+        await fetch('/api/verify-blue', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, isBlue })
+        });
+        
+        // Update local state and re-render
+        const item = listings.find(l => l.id === id);
+        if (item) {
+          item.iconic_blue = isBlue ? 1 : 0;
+          item.iconic_blue_verified = 1;
+        }
+        renderCards();
+      } catch (e) {
+        alert('Failed to verify: ' + e.message);
+        if (el) el.style.opacity = '1';
+      }
+    }
+
+    function renderCards() {
+      const showAll = document.getElementById('showAll').checked;
+      const showNonBlue = document.getElementById('showNonBlue').checked;
+
+      const filtered = listings.filter(l => {
+        if (!showAll && l.iconic_blue_verified === 1) return false;
+        if (!showNonBlue && l.iconic_blue !== 1) return false;
+        if (showNonBlue && l.iconic_blue === 1 && !showAll && l.iconic_blue_verified === 1) return false;
+        // Don't show items that were never checked by the model
+        if (l.iconic_blue === null || l.iconic_blue === undefined) return false;
+        return true;
+      });
+
+      document.getElementById('count-badge').textContent = filtered.length;
+
+      const grid = document.getElementById('grid');
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><h3>All caught up!</h3><p>No listings match these filters.</p></div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(l => {
+        let parts = [];
+        try { parts = JSON.parse(l.iconic_blue_parts || '[]'); } catch (_) {}
+        const partsText = parts.length ? parts.join(', ') : 'none';
+        
+        let verifiedBadge = '';
+        if (l.iconic_blue_verified === 1) {
+          verifiedBadge = l.iconic_blue === 1 
+            ? `<div class="verified-badge badge-verified-yes">VERIFIED BLUE</div>` 
+            : `<div class="verified-badge badge-verified-no">VERIFIED NOT BLUE</div>`;
+        }
+
+        return `
+          <div class="verify-card" id="card-${l.id}">
+            <a href="${l.url}" target="_blank">
+              <img src="${l.image || ''}" class="verify-img" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMzMzMiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiLz48L3N2Zz4='">
+            </a>
+            <div class="verify-body">
+              <a href="${l.url}" target="_blank" class="verify-title" style="color: inherit; text-decoration: none;">${l.title} 🔗</a>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Model says: ${l.iconic_blue ? '🔵 YES' : '⚪ NO'} (${partsText})</div>
+              ${verifiedBadge}
+            </div>
+            <div class="verify-actions">
+              <button class="btn-action btn-yes" onclick="verify('${l.id}', true)">It IS blue</button>
+              <button class="btn-action btn-no" onclick="verify('${l.id}', false)">Not blue</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', loadData);
+  </script>
+</body>
+</html>

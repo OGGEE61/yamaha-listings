@@ -7,6 +7,7 @@ const express = require('express');
 const cron = require('node-cron');
 const path = require('path');
 const { scrapeAll } = require('./scraper');
+const { runColorCheck } = require('./vision');
 const db = require('./db');
 
 const app = express();
@@ -46,6 +47,18 @@ app.get('/api/stats', (req, res) => {
 app.get('/api/price-history/:id', (req, res) => {
   const history = db.getPriceHistory(req.params.id);
   res.json(history);
+});
+
+// POST /api/verify-blue
+app.post('/api/verify-blue', (req, res) => {
+  const { id, isBlue } = req.body;
+  if (!id || isBlue === undefined) return res.status(400).json({ error: 'Missing id or isBlue' });
+  try {
+    db.verifyIconicBlue(id, isBlue);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // POST /api/scrape — manually trigger a scrape
@@ -98,6 +111,13 @@ async function runScrape() {
     scrapeStatus.lastRun = new Date().toISOString();
     scrapeStatus.lastResult = result;
     console.log(`[Server] Scrape #${runId} complete:`, result);
+
+    // Post-processing: Iconic Blue detection (Gemini vision)
+    try {
+      await runColorCheck();
+    } catch (err) {
+      console.error('[Server] Iconic Blue check failed:', err.message);
+    }
   } catch (err) {
     console.error('[Server] Scrape error:', err);
   } finally {
@@ -124,6 +144,6 @@ app.listen(PORT, () => {
   console.log(`🔄 Scraping every 30 minutes`);
   
   // Run initial scrape on startup
-  console.log('[Server] Running initial scrape...');
-  runScrape();
+  // console.log('[Server] Running initial scrape...');
+  // runScrape();
 });

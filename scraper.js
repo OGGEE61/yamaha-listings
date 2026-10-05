@@ -43,7 +43,7 @@ function determineYamahaModel(title, description = '') {
   }
 
   // Reject Super Tenere / 1200cc models
-  if (/\b(super tenere|supertenere|xt1200|xtz1200|xtz 1200|xtz 750|1200ze)\b/i.test(t)) {
+  if (/\b(super tenere|supertenere|xt1200|xtz1200|xtz 1200|xt 1200|xtz 750|1200ze|1200z|1200)\b/i.test(t)) {
       return null;
   }
 
@@ -153,7 +153,7 @@ const SOURCES = {
 // ──────────────────────────────────────────────
 function fetchWithPuppeteer(url) {
   try {
-    const scriptPath = require('path').join(__dirname, 'puppeteer_fetcher.js');
+    const scriptPath = require('path').join(__dirname, 'scripts', 'puppeteer_fetcher.js');
     
     // Call the puppeteer script
     const html = execSync(`node "${scriptPath}" "${url}"`, { 
@@ -207,9 +207,10 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
           if (!modelName) continue;
 
           const location = offer.areaServed ? (offer.areaServed.name || '') : '';
+          const cleanUrl = offer.url ? offer.url.split('?')[0] : '';
 
           listings.push({
-            id: offer.url ? offer.url.split('/').filter(Boolean).pop() : null,
+            id: cleanUrl ? cleanUrl.split('/').filter(Boolean).pop() : null,
             title,
             model: modelName,
             cc: extractCC(title, '', modelName),
@@ -219,6 +220,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
             url: offer.url || '',
             image: (offer.image && offer.image[0]) || null,
             source: 'OLX.pl',
+            searchUrl: searchUrl,
             scrapedAt: new Date().toISOString(),
             validUntil: offer.priceValidUntil || null,
           });
@@ -239,6 +241,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
 
     let href = $el.find('a[href]').first().attr('href') || '';
     if (href && !href.startsWith('http')) href = SOURCES.olx.baseUrl + href;
+    href = href.split('?')[0];
     if (seen.has(href)) return;
 
     const priceText = $el.find('[data-testid="ad-price"]').text().trim();
@@ -258,6 +261,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
       url: href,
       image: img,
       source: 'OLX.pl',
+      searchUrl: searchUrl,
       scrapedAt: new Date().toISOString(),
       validUntil: null,
     });
@@ -305,6 +309,7 @@ async function scrapeAutoplac(pageNum = 1, searchUrl) {
     if (!modelName) return;
 
     let fullUrl = href.startsWith('http') ? href : 'https://autoplac.pl' + href;
+    fullUrl = fullUrl.split('?')[0];
     if (seen.has(fullUrl)) return;
     seen.add(fullUrl);
 
@@ -326,6 +331,7 @@ async function scrapeAutoplac(pageNum = 1, searchUrl) {
       url: fullUrl,
       image: img,
       source: 'Autoplac',
+      searchUrl: searchUrl,
       scrapedAt: new Date().toISOString(),
       validUntil: null,
     });
@@ -338,9 +344,9 @@ async function scrapeAutoplac(pageNum = 1, searchUrl) {
   return { listings: preliminaryListings, hasMore };
 }
 
-async function fetchDescription(url) {
+async function fetchDetails(url) {
   const html = fetchWithPuppeteer(url);
-  if (!html) return '';
+  if (!html) return { desc: '', image: null };
   const $ = cheerio.load(html);
   
   let desc = '';
@@ -364,12 +370,15 @@ async function fetchDescription(url) {
     desc = $('div[data-cy="ad_description"] > div').text().trim();
   }
   
-  return desc;
+  const image = $('meta[property="og:image"]').attr('content') || null;
+  
+  return { desc, image };
 }
 
 function parsePrice(text) {
   if (!text) return null;
-  const cleaned = text.replace(/[^\d]/g, '');
+  const firstPart = text.split(/zł|pln|\n/i)[0];
+  const cleaned = firstPart.replace(/[^\d]/g, '');
   const num = parseInt(cleaned, 10);
   return isNaN(num) ? null : num;
 }
@@ -421,12 +430,15 @@ async function scrapeAll() {
   const verifiedListings = [];
   
   for (const listing of unique) {
-    console.log(`[Scraper] Checking description for: ${listing.title.substring(0, 40)}...`);
-    const desc = await fetchDescription(listing.url);
-    const finalModel = determineYamahaModel(listing.title, desc);
+    console.log(`[Scraper] Checking details for: ${listing.title.substring(0, 40)}...`);
+    const details = await fetchDetails(listing.url);
+    if (details.image) {
+      listing.image = details.image;
+    }
+    const finalModel = determineYamahaModel(listing.title, details.desc);
     if (finalModel) {
       listing.model = finalModel;
-      listing.cc = extractCC(listing.title, desc, finalModel);
+      listing.cc = extractCC(listing.title, details.desc, finalModel);
       verifiedListings.push(listing);
     } else {
       console.log(`[Scraper] ❌ REJECTED based on description: ${listing.url}`);
@@ -470,6 +482,13 @@ if (require.main === module) {
       const result = { totalFound: listings.length, newListings: newCount, updated: updatedCount };
       db.finishScrapeRun(runId, result);
       console.log(`[CLI] Scrape #${runId} complete:`, result);
+
+      // Post-processing: Iconic Blue detection on listing photos (Gemini vision)
+      try {
+        await require('./vision').runColorCheck();
+      } catch (err) {
+        console.error('[CLI] Iconic Blue check failed (scrape results kept):', err.message);
+      }
     } catch (err) {
       console.error('[CLI] Scrape error:', err);
       process.exit(1);

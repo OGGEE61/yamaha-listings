@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "scrape": "node scraper.js"
+    "scrape": "node scraper.js",
+    "color-check": "node vision.js"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",
