@@ -8,7 +8,7 @@
 
 ---
 
-## 🏍️ What it tracks
+## What it tracks
 
 | Model | Type | Notes |
 |---|---|---|
@@ -23,7 +23,7 @@
 
 ---
 
-## 🌐 Dashboard
+## Dashboard
 
 Static frontend hosted on **Cloudflare Pages** — no server, no database.
 
@@ -35,7 +35,7 @@ Static frontend hosted on **Cloudflare Pages** — no server, no database.
 
 ---
 
-## ⚙️ How it works
+## How it works
 
 ```
 GitHub Actions (runs twice daily: 9:00 + 19:00 CEST)
@@ -54,7 +54,7 @@ No external database server needed — `listings.json` committed to the repo **i
 
 ---
 
-## 👁️ Iconic Blue Detection (Computer Vision / AI)
+## Iconic Blue Detection (Computer Vision / AI)
 
 Each newly scraped listing is evaluated by an AI model (Google Gemini Vision API) to detect the characteristic Yamaha "Iconic Blue" / "Racing Blue" color exclusively on plastics or wheels. 
 - **How it works:** A secondary script (`vision.js`) runs after scraping, analyzing images and tagging listings with the `iconic_blue` flag if the color is found.
@@ -62,7 +62,7 @@ Each newly scraped listing is evaluated by an AI model (Google Gemini Vision API
 
 ---
 
-## 🗄️ Data Model
+## Data Model
 
 The data is stored in a local SQLite database (`listings.db`) which contains the following tables:
 
@@ -83,7 +83,7 @@ When the scraper finishes, it queries the `listings` table and exports everythin
 
 ---
 
-## 🚀 Local development
+## Local development
 
 ```bash
 npm install
@@ -99,14 +99,14 @@ node server.js        # http://localhost:3000
 
 ---
 
-## 🔧 GitHub Actions
+## GitHub Actions
 
 The workflow at [`.github/workflows/scrape.yml`](.github/workflows/scrape.yml) runs automatically.
 You can also trigger it manually: **Actions → Scrape Yamaha Listings → Run workflow**.
 
 ---
 
-## 📦 Stack
+## Stack
 
 - **Scraper:** Node.js + Puppeteer (headless Chrome)
 - **Frontend:** Vanilla HTML/CSS/JS — zero dependencies
