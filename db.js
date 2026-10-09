@@ -61,9 +61,18 @@ db.exec(`
     updated      INTEGER NOT NULL DEFAULT 0
   );
 
+  CREATE TABLE IF NOT EXISTS rejected_listings (
+    id          TEXT PRIMARY KEY,
+    url         TEXT NOT NULL,
+    title       TEXT,
+    reason      TEXT,
+    rejected_at TEXT NOT NULL
+  );
+
   CREATE INDEX IF NOT EXISTS idx_listings_source    ON listings(source);
   CREATE INDEX IF NOT EXISTS idx_listings_is_active ON listings(is_active);
   CREATE INDEX IF NOT EXISTS idx_price_hist_listing ON price_history(listing_id);
+  CREATE INDEX IF NOT EXISTS idx_rejected_url       ON rejected_listings(url);
 `);
 
 // ── Migration: Iconic Blue (vision check) columns ──
@@ -82,6 +91,7 @@ db.exec(`
     iconic_blue_verified:   'INTEGER',
     iconic_blue_title:      'TEXT',
     search_url:             'TEXT',
+    iconic_blue_tag:        'TEXT',
   };
   for (const [name, type] of Object.entries(newCols)) {
     if (!existingCols.has(name)) db.exec(`ALTER TABLE listings ADD COLUMN ${name} ${type} DEFAULT ${(type === 'INTEGER' ? '0' : 'NULL')}`);
@@ -95,7 +105,7 @@ db.exec(`
 function exportPublicJson() {
   const allListings = db.prepare(`
     SELECT * FROM listings 
-    ORDER BY cc DESC, first_seen DESC
+    ORDER BY is_active DESC, cc DESC, first_seen DESC
   `).all();
 
   const publicDir = path.join(__dirname, 'public');
@@ -136,14 +146,32 @@ const stmtAddPrice = db.prepare(`
   INSERT INTO price_history (listing_id, price, recorded_at) VALUES (?, ?, ?)
 `);
 
+function getRejectedIds() {
+  const rows = db.prepare('SELECT id, url FROM rejected_listings').all();
+  const ids = new Set(rows.map(r => r.id));
+  const urls = new Set(rows.map(r => r.url));
+  return { ids, urls };
+}
+
+function getRejectedListings() {
+  return db.prepare('SELECT * FROM rejected_listings ORDER BY rejected_at DESC').all();
+}
+
 function upsertListings(newItems) {
   const now = new Date().toISOString();
   let newCount = 0;
   let updatedCount = 0;
 
+  const { ids: rejectedIds, urls: rejectedUrls } = getRejectedIds();
+
   const run = db.transaction((items) => {
     for (const item of items) {
       if (!item.id) item.id = item.url.split('/').filter(Boolean).pop();
+
+      // Skip any listing that has been rejected / blacklisted
+      if (rejectedIds.has(item.id) || (item.url && rejectedUrls.has(item.url))) {
+        continue;
+      }
 
       const existing = stmtGet.get(item.id);
 
@@ -215,15 +243,29 @@ function markInactiveIfNotSeen(seenUrls, source) {
   exportPublicJson();
 }
 
+function updateListingActiveStatus(id, isActive) {
+  const now = new Date().toISOString();
+  db.prepare(`
+    UPDATE listings 
+    SET is_active = ?, last_seen = ?
+    WHERE id = ?
+  `).run(isActive ? 1 : 0, now, id);
+
+  exportPublicJson();
+  return { id, is_active: isActive ? 1 : 0, last_seen: now };
+}
+
 // ──────────────────────────────────────────────
 // QUERY LISTINGS
 // ──────────────────────────────────────────────
 
-function getListings({ source, minPrice, maxPrice, search, model, engine, excludeTenere, activeOnly = true, limit = 200, offset = 0 } = {}) {
+function getListings({ source, minPrice, maxPrice, search, model, engine, excludeTenere, activeOnly = true, iconicBlue, hitlOnly, limit = 200, offset = 0 } = {}) {
   const where = [];
   const params = [];
 
   if (activeOnly)       { where.push('is_active = 1'); }
+  if (iconicBlue)       { where.push('iconic_blue = 1'); }
+  if (hitlOnly)         { where.push('iconic_blue_verified = 1'); }
   if (source)           { where.push('source = ?');    params.push(source); }
   if (model)            { where.push('model = ?');     params.push(model); }
   if (minPrice != null) { where.push('price >= ?');    params.push(minPrice); }
@@ -244,12 +286,36 @@ function getListings({ source, minPrice, maxPrice, search, model, engine, exclud
   }
 
   const whereClause = where.length ? 'WHERE ' + where.join(' AND ') : '';
-  const sql = `SELECT * FROM listings ${whereClause} ORDER BY cc DESC, first_seen DESC LIMIT ? OFFSET ?`;
+  const sql = `SELECT * FROM listings ${whereClause} ORDER BY is_active DESC, cc DESC, first_seen DESC LIMIT ? OFFSET ?`;
 
   const listings = db.prepare(sql).all(...params, limit, offset);
   const total    = db.prepare(`SELECT COUNT(*) as cnt FROM listings ${whereClause}`).get(...params).cnt;
 
-  return { listings, total };
+  // Price stats for currently filtered set
+  const priceWhereClause = where.length ? whereClause + ' AND price IS NOT NULL' : 'WHERE price IS NOT NULL';
+  const priceStats = db.prepare(`SELECT AVG(price) as avg_price, MIN(price) as min_price, MAX(price) as max_price FROM listings ${priceWhereClause}`).get(...params);
+  const pricesRows = db.prepare(`SELECT price FROM listings ${priceWhereClause} ORDER BY price ASC`).all(...params);
+  const prices = pricesRows.map(r => r.price).filter(p => p != null);
+
+  const todayPrefix = new Date().toISOString().slice(0, 10) + '%';
+  const newTodayWhere = where.length ? whereClause + ' AND first_seen LIKE ?' : 'WHERE first_seen LIKE ?';
+  const newToday = db.prepare(`SELECT COUNT(*) as cnt FROM listings ${newTodayWhere}`).get(...params, todayPrefix).cnt;
+
+  const lastRun = db.prepare('SELECT finished_at, started_at FROM scrape_runs ORDER BY id DESC LIMIT 1').get();
+
+  return {
+    listings,
+    total,
+    stats: {
+      total,
+      avgPrice: priceStats && priceStats.avg_price ? Math.round(priceStats.avg_price) : 0,
+      minPrice: priceStats ? priceStats.min_price : null,
+      maxPrice: priceStats ? priceStats.max_price : null,
+      newToday: newToday || 0,
+      prices
+    },
+    updatedAt: lastRun?.finished_at || lastRun?.started_at || (listings[0]?.last_seen) || new Date().toISOString()
+  };
 }
 
 // ──────────────────────────────────────────────
@@ -361,19 +427,43 @@ function setColorCheckResult(id, { iconicBlue, parts, image, title }) {
   `).run(iconicBlue ? 1 : 0, JSON.stringify(parts || []), image, new Date().toISOString(), title || null, id);
 }
 
-function verifyIconicBlue(id, isBlue) {
+function verifyIconicBlue(id, isBlue, tag = null) {
   const listing = db.prepare('SELECT title FROM listings WHERE id = ?').get(id);
   db.prepare(`
     UPDATE listings SET
-      iconic_blue = ?, iconic_blue_verified = 1, iconic_blue_title = ?
+      iconic_blue = ?, iconic_blue_verified = 1, iconic_blue_tag = ?, iconic_blue_title = ?
     WHERE id = ?
-  `).run(isBlue ? 1 : 0, listing ? listing.title : null, id);
+  `).run(isBlue ? 1 : 0, tag || null, listing ? listing.title : null, id);
   exportPublicJson();
+}
+
+function rejectListing(id, reason = 'Odrzucone manualnie') {
+  const listing = db.prepare('SELECT url, title FROM listings WHERE id = ?').get(id);
+  const now = new Date().toISOString();
+  const url = listing?.url || '';
+  const title = listing?.title || '';
+
+  db.transaction(() => {
+    db.prepare(`
+      INSERT OR REPLACE INTO rejected_listings (id, url, title, reason, rejected_at)
+      VALUES (?, ?, ?, ?, ?)
+    `).run(id, url, title, reason, now);
+
+    db.prepare('DELETE FROM price_history WHERE listing_id = ?').run(id);
+    db.prepare('DELETE FROM listings WHERE id = ?').run(id);
+  })();
+
+  exportPublicJson();
+  return { success: true, id, url, title, reason, rejected_at: now };
 }
 
 module.exports = {
   upsertListings,
   markInactiveIfNotSeen,
+  updateListingActiveStatus,
+  rejectListing,
+  getRejectedIds,
+  getRejectedListings,
   getListings,
   getStats,
   recordScrapeRun,

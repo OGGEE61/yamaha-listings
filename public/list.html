@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -48,94 +48,485 @@
       border-radius: var(--radius-lg);
       overflow-x: auto;
       margin-top: 20px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+      scrollbar-width: thin;
+      scrollbar-color: #3b82f6 rgba(15, 23, 42, 0.6);
     }
+    .table-container::-webkit-scrollbar {
+      height: 8px;
+    }
+    .table-container::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 4px;
+    }
+    .table-container::-webkit-scrollbar-thumb {
+      background: #2563eb;
+      border-radius: 4px;
+    }
+
     .listings-table {
       width: 100%;
+      min-width: 1060px;
       border-collapse: collapse;
       text-align: left;
       font-size: 13px;
     }
     .listings-table th {
-      background: rgba(0, 0, 0, 0.25);
+      background: rgba(3, 13, 36, 0.95);
       padding: 14px 16px;
-      font-weight: 600;
-      color: var(--text-secondary);
+      font-weight: 700;
+      color: #93c5fd;
       border-bottom: 1px solid var(--border);
       white-space: nowrap;
       user-select: none;
-    }
-    .listings-table th.sortable {
-      cursor: pointer;
-    }
-    .listings-table th.sortable:hover {
-      color: #fff;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
     }
     .listings-table td {
-      padding: 12px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       vertical-align: middle;
     }
     .listings-table tr:hover td {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(59, 130, 246, 0.06);
     }
+
     .table-thumb {
-      width: 52px;
-      height: 38px;
+      width: 56px;
+      height: 42px;
       object-fit: cover;
-      border-radius: 4px;
+      border-radius: 6px;
       border: 1px solid var(--border);
       display: block;
     }
+
     .table-title-link {
       color: #ffffff;
       text-decoration: none;
       font-weight: 600;
-      display: inline-block;
-      max-width: 380px;
-      white-space: nowrap;
+      font-size: 13px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
       overflow: hidden;
-      text-overflow: ellipsis;
-      vertical-align: middle;
+      max-width: 300px;
+      min-width: 180px;
       transition: color 0.15s;
     }
     .table-title-link:hover {
       color: #60a5fa;
       text-decoration: underline;
     }
-    .table-price {
-      font-weight: 700;
-      font-size: 14px;
-      color: #fff;
+
+    .table-model-box {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
       white-space: nowrap;
     }
-    .status-badge {
+    .table-model-name {
+      font-weight: 700;
+      color: #ffffff;
+      font-size: 13px;
+    }
+    .table-sub-tag {
+      font-size: 11px;
+      color: #93c5fd;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 1px 6px;
+      border-radius: 4px;
       display: inline-block;
-      padding: 2px 8px;
+      width: fit-content;
+    }
+
+    .table-price {
+      font-weight: 800;
+      font-size: 14px;
+      color: #ffffff;
+      white-space: nowrap;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
       border-radius: 4px;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      white-space: nowrap;
     }
     .status-badge.active {
-      background: rgba(16, 185, 129, 0.2);
-      color: #10b981;
-      border: 1px solid rgba(16, 185, 129, 0.4);
+      background: rgba(59, 130, 246, 0.18);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.4);
     }
     .status-badge.inactive {
-      background: rgba(239, 68, 68, 0.2);
-      color: #ef4444;
-      border: 1px solid rgba(239, 68, 68, 0.4);
+      background: rgba(100, 116, 139, 0.18);
+      color: #94a3b8;
+      border: 1px solid rgba(100, 116, 139, 0.3);
     }
+
+
+
+    .iconic-cell-box {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-start;
+    }
+
     .badge-iconic {
-      background: rgba(59, 130, 246, 0.25);
+      background: rgba(59, 130, 246, 0.22);
       color: #93c5fd;
       border: 1px solid #3b82f6;
-      padding: 2px 6px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .badge-iconic.verified {
+      background: rgba(37, 99, 235, 0.35);
+      border-color: #60a5fa;
+      color: #ffffff;
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+    }
+    .badge-iconic.ai {
+      background: rgba(30, 41, 59, 0.7);
+      border-color: #475569;
+      color: #94a3b8;
+    }
+    .badge-iconic-neutral {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #94a3b8;
+      padding: 3px 8px;
       border-radius: 4px;
       font-size: 11px;
       font-weight: 600;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .badge-iconic-neutral.verified {
+      border-color: rgba(148, 163, 184, 0.4);
+      color: #cbd5e1;
+      background: rgba(71, 85, 105, 0.25);
+    }
+
+    .btn-edit-qual {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #93c5fd;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      white-space: nowrap;
+    }
+    .btn-edit-qual:hover {
+      background: rgba(59, 130, 246, 0.25);
+      border-color: #3b82f6;
+      color: #ffffff;
+    }
+
+    .hitl-tag-chip {
+      font-size: 10px;
+      font-weight: 600;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      color: #bfdbfe;
+      padding: 2px 7px;
+      border-radius: 10px;
+      white-space: nowrap;
+      max-width: 170px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+    }
+
+    /* Modal kwalifikacji HITL */
+    .qual-modal {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      background: #0A2D82;
+      color: #ffffff;
+      padding: 0;
+      width: 90%;
+      max-width: 520px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      margin: auto;
+    }
+    .qual-modal::backdrop {
+      background: rgba(5, 15, 45, 0.85);
+      backdrop-filter: blur(4px);
+    }
+    .qual-modal-content {
+      padding: 22px;
+    }
+    .qual-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding-bottom: 12px;
+    }
+    .qual-modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+    .qual-modal-subtitle {
+      font-size: 12px;
+      color: #93c5fd;
+      line-height: 1.4;
+      max-width: 420px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .qual-modal-close {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 2px 6px;
+      line-height: 1;
+    }
+    .qual-modal-close:hover {
+      color: #ffffff;
+    }
+    .qual-section {
+      margin-bottom: 16px;
+    }
+    .qual-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #cbd5e1;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .qual-choice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .btn-qual-toggle {
+      padding: 10px 14px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.06);
+      color: #cbd5e1;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-qual-toggle.active-blue {
+      background: #2563eb;
+      border-color: #60a5fa;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+    }
+    .btn-qual-toggle.active-not-blue {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: #cbd5e1;
+      color: #ffffff;
+    }
+    .qual-tags-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .qual-pill-btn {
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #93c5fd;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .qual-pill-btn:hover {
+      background: rgba(59, 130, 246, 0.25);
+      color: #ffffff;
+      border-color: #3b82f6;
+    }
+    .qual-pill-btn.selected {
+      background: #2563eb;
+      border-color: #93c5fd;
+      color: #ffffff;
+    }
+    .qual-input {
+      width: 100%;
+      background: rgba(5, 20, 60, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: #ffffff;
+      font-size: 12px;
+      outline: none;
+      box-sizing: border-box;
+    }
+    .qual-input:focus {
+      border-color: #3b82f6;
+    }
+    .qual-modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .btn-qual-cancel {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #cbd5e1;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-qual-save {
+      background: #2563eb;
+      border: 1px solid #60a5fa;
+      color: #ffffff;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-qual-save:hover {
+      background: #1d4ed8;
+    }
+
+    .table-actions-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      width: 76px;
+    }
+    .btn-table-cv,
+    .btn-table-open,
+    .btn-table-reject {
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      justify-content: center;
+      padding: 3px 6px;
+      font-size: 11px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-table-cv {
+      background: rgba(59, 130, 246, 0.16);
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      color: #93c5fd;
+    }
+    .btn-table-cv:hover {
+      background: #2563eb;
+      color: #fff;
+    }
+    .btn-table-open {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .btn-table-open:hover {
+      background: rgba(255, 255, 255, 0.18);
+      color: #60a5fa;
+      border-color: #60a5fa;
+    }
+
+    .btn-table-reject {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.28);
+      color: #fca5a5;
+    }
+    .btn-table-reject:hover {
+      background: #dc2626;
+      border-color: #ef4444;
+      color: #ffffff;
+    }
+    .btn-table-reject:disabled {
+      opacity: 0.5;
+      cursor: wait;
+    }
+
+    .table-source-date-box {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      align-items: flex-start;
+    }
+    .table-source-tag {
+      font-size: 10px;
+      font-weight: 700;
+      color: #93c5fd;
+      background: rgba(59, 130, 246, 0.12);
+      padding: 1px 5px;
+      border-radius: 3px;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+    .table-date-text {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .btn-batch-active {
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid #3b82f6;
+      color: #ffffff;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-batch-active:hover {
+      background: #2563eb;
+    }
+    .btn-batch-active:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
   </style>
 </head>
@@ -156,15 +547,15 @@
         </a>
         <a href="verify.html" class="nav-tab">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          Iconic Blue Verification
+          HITL Studio (Model CV)
         </a>
       </nav>
 
       <div class="header-actions">
-        <div class="status-pill" id="scrapeStatus">
-          <span class="status-dot"></span>
-          <span class="status-label">D1 Connected</span>
-        </div>
+        <button class="btn-batch-active" id="btnBatchCheck" onclick="checkVisibleListingsActiveBatch()" title="Sprawdź na żywo czy widoczne ogłoszenia na stronie nadal istnieją na OLX">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+          Weryfikuj statusy (OLX)
+        </button>
         <button class="btn-scrape" id="btnScrape" onclick="fetchTableListings(currentPage)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
             <path d="M23 4v6h-6M1 20v-6h6"/>
@@ -180,17 +571,37 @@
     <section class="section">
       <div class="section-header">
         <h2 class="section-title">All Database Records (Cloudflare D1)</h2>
-        <div class="filters-container">
-          <div class="filter-group">
-            <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <input type="text" id="filterSearch" placeholder="Search title or location…" oninput="debounceSearch()" />
-          </div>
-          <div class="filter-group">
+        <div class="listing-meta" id="tableMeta">Loading listings directly from Cloudflare D1 SQL…</div>
+      </div>
+
+      <div class="filters-container">
+        <!-- Row 1: ALL TOGGLES & PRICE -->
+        <div class="filters-row filters-row-toggles">
+          <label class="toggle-container">
+            <input type="checkbox" id="showInactive" onchange="fetchTableListings(0)">
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">Include Inactive</span>
+          </label>
+          <label class="toggle-container" title="Only bikes with plastics/rims in Yamaha Icon Blue (CV)">
+            <input type="checkbox" id="filterIconicBlue" onchange="fetchTableListings(0)">
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">Iconic Blue Only</span>
+          </label>
+          <label class="toggle-container" title="Show only listings confirmed by a human verifier">
+            <input type="checkbox" id="filterHitl" onchange="fetchTableListings(0)">
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">HITL Verified Only</span>
+          </label>
+          <div class="filter-group price-filter-group">
             <span class="filter-prefix">PLN</span>
             <input type="number" id="filterMin" placeholder="Min price" oninput="debounceSearch()" />
             <span class="filter-separator">-</span>
             <input type="number" id="filterMax" placeholder="Max price" oninput="debounceSearch()" />
           </div>
+        </div>
+
+        <!-- Row 2: DROPDOWNS AND SEARCH AT THE END -->
+        <div class="filters-row filters-row-inputs">
           <div class="filter-group select-wrapper">
             <select id="filterModel" onchange="fetchTableListings(0)">
               <option value="">All Models</option>
@@ -210,42 +621,39 @@
               <option value="4T">4-Stroke (4T)</option>
             </select>
           </div>
-          <label class="toggle-container">
-            <input type="checkbox" id="showInactive" onchange="fetchTableListings(0)">
-            <span class="toggle-slider"></span>
-            <span class="toggle-label">Include Inactive</span>
-          </label>
-          <label class="toggle-container">
-            <input type="checkbox" id="filterIconicBlue" onchange="fetchTableListings(0)">
-            <span class="toggle-slider"></span>
-            <span class="toggle-label">Iconic Blue Only</span>
-          </label>
+          <div class="filter-group select-wrapper">
+            <select id="filterSource" onchange="fetchTableListings(0)">
+              <option value="">All Sources</option>
+              <option value="OLX.pl">OLX.pl</option>
+              <option value="Autoplac">Autoplac</option>
+            </select>
+          </div>
+          <div class="filter-group search-filter-group">
+            <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input type="text" id="filterSearch" placeholder="Search title, description or location…" oninput="debounceSearch()" />
+          </div>
         </div>
       </div>
-
-      <div class="listing-meta" id="tableMeta">Loading listings directly from Cloudflare D1 SQL…</div>
 
       <!-- Table View -->
       <div class="table-container">
         <table class="listings-table">
           <thead>
             <tr>
-              <th style="width: 60px;">Image</th>
-              <th>Title</th>
-              <th>Model</th>
-              <th>Displacement</th>
-              <th>Price</th>
-              <th>Location</th>
-              <th>Source</th>
-              <th>First Seen</th>
-              <th>Status</th>
-              <th>Iconic Blue</th>
-              <th>Action</th>
+              <th style="width: 65px;">Miniaturka</th>
+              <th>Tytuł ogłoszenia</th>
+              <th style="width: 130px;">Model & Silnik</th>
+              <th style="width: 105px;">Cena</th>
+              <th style="width: 110px;">Lokalizacja</th>
+              <th style="width: 90px;">Źródło & Data</th>
+              <th style="width: 85px;">Status</th>
+              <th style="width: 120px;">Iconic Blue</th>
+              <th style="width: 76px;">Akcje</th>
             </tr>
           </thead>
           <tbody id="tableBody">
             <tr>
-              <td colspan="11" style="text-align:center; padding: 40px;">
+              <td colspan="9" style="text-align:center; padding: 40px;">
                 <div class="loading-spinner"></div>
               </td>
             </tr>
@@ -262,10 +670,12 @@
     <span>· Real-time SQL queries against Cloudflare D1 · Zero static file dependency</span>
   </footer>
 
+  <script src="cv-heatmap.js"></script>
   <script>
     const PAGE_SIZE = 50;
     let currentPage = 0;
     let debounceTimer = null;
+    let currentTableItems = [];
 
     function debounceSearch() {
       clearTimeout(debounceTimer);
@@ -279,8 +689,10 @@
       const maxPrice = document.getElementById('filterMax').value;
       const model = document.getElementById('filterModel').value;
       const engine = document.getElementById('filterEngine').value;
+      const source = document.getElementById('filterSource') ? document.getElementById('filterSource').value : '';
       const showInactive = document.getElementById('showInactive').checked;
       const iconicBlue = document.getElementById('filterIconicBlue').checked;
+      const hitlOnly = document.getElementById('filterHitl') ? document.getElementById('filterHitl').checked : false;
 
       const params = new URLSearchParams();
       params.set('limit', PAGE_SIZE);
@@ -290,25 +702,27 @@
       if (maxPrice) params.set('maxPrice', maxPrice);
       if (model) params.set('model', model);
       if (engine) params.set('engine', engine);
+      if (source) params.set('source', source);
       if (showInactive) params.set('activeOnly', 'false');
       if (iconicBlue) params.set('iconicBlue', 'true');
+      if (hitlOnly) params.set('hitlOnly', 'true');
 
       try {
         const res = await fetch(`/api/listings?${params.toString()}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
 
-        const listings = data.listings || [];
+        currentTableItems = data.listings || [];
         const total = data.total || 0;
 
-        document.getElementById('tableMeta').textContent = `Displaying ${listings.length} rows of ${total} total matching listings in Cloudflare D1`;
-        renderTable(listings);
+        document.getElementById('tableMeta').textContent = `Wyświetlono ${currentTableItems.length} z ${total} rekordów w bazie Cloudflare D1`;
+        renderTable(currentTableItems);
         renderTablePagination(total, page);
 
       } catch (err) {
         document.getElementById('tableBody').innerHTML = `
-          <tr><td colspan="11" style="text-align:center; padding: 30px; color:#ef4444;">
-            Failed to query Cloudflare D1: ${err.message}
+          <tr><td colspan="9" style="text-align:center; padding: 30px; color:#ef4444;">
+            Błąd pobierania danych: ${err.message}
           </td></tr>`;
       }
     }
@@ -316,50 +730,192 @@
     function renderTable(items) {
       const tbody = document.getElementById('tableBody');
       if (!items || items.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; padding: 40px; color: var(--text-muted);">No records found matching current query.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 40px; color: var(--text-muted);">Brak ogłoszeń spełniających wybrane kryteria.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = items.map(item => {
         const thumb = item.image
-          ? `<img src="${item.image}" class="table-thumb" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MiIgaGVpZ2h0PSIzOCIgZmlsbD0iIzBhMmQ4MiI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIvPjwvc3ZnPg=='"/>`
-          : `<div style="width:52px;height:38px;background:rgba(255,255,255,0.05);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);">🏍️</div>`;
+          ? `<img src="${item.image}" class="table-thumb" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NiIgaGVpZ2h0PSI0MiIgZmlsbD0iIzBhMmQ4MiI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIvPjwvc3ZnPg=='"/>`
+          : `<div style="width:56px;height:42px;background:rgba(255,255,255,0.05);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:11px;">Brak</div>`;
 
         const price = item.price ? `${item.price.toLocaleString('pl-PL')} zł` : '—';
         const dateStr = item.first_seen ? item.first_seen.slice(0, 10) : '—';
-        const statusBadge = item.is_active === 1
-          ? `<span class="status-badge active">Active</span>`
-          : `<span class="status-badge inactive">Inactive</span>`;
 
-        const iconicBadge = item.iconic_blue === 1
-          ? `<span class="badge-iconic">Iconic Blue</span>`
-          : `<span style="color:var(--text-muted);font-size:11px;">No</span>`;
+        // Inactive aging calculation
+        let rowStyle = '';
+        let statusBadge = '';
+        if (item.is_active === 1) {
+          statusBadge = `<span class="status-badge active">Aktywne</span>`;
+        } else {
+          const aging = window.cvHeatmapEngine
+            ? window.cvHeatmapEngine.getInactiveAging(item.last_seen || item.first_seen)
+            : { grayscale: 80, opacity: 0.55, label: 'dawno temu' };
+          rowStyle = `filter: grayscale(${aging.grayscale}%); opacity: ${aging.opacity};`;
+          statusBadge = `<span class="status-badge inactive" title="Widziane: ${aging.label}">Nieaktywne (${aging.label})</span>`;
+        }
+
+        // Iconic Blue qualification with manual override and tag
+        let iconicBadgeHtml = '';
+        const tagText = item.iconic_blue_tag || '';
+        const hasTag = tagText ? `<span class="hitl-tag-chip" title="Tag weryfikacji: ${tagText}">${tagText}</span>` : '';
+
+        if (item.iconic_blue === 1) {
+          if (item.iconic_blue_verified === 1) {
+            iconicBadgeHtml = `<span class="badge-iconic verified" title="Ground Truth (zatwierdzone przez człowieka)">Ground Truth: Blue</span>`;
+          } else {
+            iconicBadgeHtml = `<span class="badge-iconic ai" title="Predykcja modelu AI">AI: Iconic Blue</span>`;
+          }
+        } else {
+          if (item.iconic_blue_verified === 1) {
+            iconicBadgeHtml = `<span class="badge-iconic-neutral verified" title="Ręcznie odrzucone / inny kolor">Zweryfikowane: Nie-blue</span>`;
+          } else {
+            iconicBadgeHtml = `<span class="badge-iconic-neutral" title="Brak cech Iconic Blue">Nie-blue</span>`;
+          }
+        }
+
+        const iconicCell = `
+          <div class="iconic-cell-box">
+            <div style="display:flex; align-items:center; gap:6px;">
+              ${iconicBadgeHtml}
+              <button class="btn-edit-qual" onclick="openQualModal('${item.id}')" title="Manualna korekta kwalifikacji Iconic Blue i dodanie tagu">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Zmień
+              </button>
+            </div>
+            ${hasTag}
+          </div>
+        `;
 
         return `
-          <tr>
+          <tr id="row-${item.id}" style="${rowStyle}">
             <td>${thumb}</td>
             <td>
               <a href="${item.url}" target="_blank" rel="noopener" class="table-title-link" title="${item.title}">
                 ${item.title}
               </a>
             </td>
-            <td><strong>${item.model || 'Unknown'}</strong></td>
-            <td>${item.cc ? item.cc + ' cc' : '—'}</td>
-            <td class="table-price">${price}</td>
-            <td>${item.location || '—'}</td>
-            <td><span style="font-size:11px;color:var(--text-secondary);">${item.source || 'OLX.pl'}</span></td>
-            <td style="color:var(--text-muted);white-space:nowrap;">${dateStr}</td>
-            <td>${statusBadge}</td>
-            <td>${iconicBadge}</td>
             <td>
-              <a href="${item.url}" target="_blank" rel="noopener" style="color:#60a5fa;text-decoration:none;font-weight:600;font-size:12px;">
-                Open ↗
-              </a>
+              <div class="table-model-box">
+                <span class="table-model-name">${item.model || 'Unknown'}</span>
+                ${item.cc ? `<span class="table-sub-tag">${item.cc} cc</span>` : ''}
+              </div>
+            </td>
+            <td class="table-price">${price}</td>
+            <td style="color:var(--text-secondary);font-size:12px;">${item.location || '—'}</td>
+            <td>
+              <div class="table-source-date-box">
+                <span class="table-source-tag">${item.source || 'OLX.pl'}</span>
+                <span class="table-date-text">${dateStr}</span>
+              </div>
+            </td>
+            <td>${statusBadge}</td>
+            <td>${iconicCell}</td>
+            <td>
+              <div class="table-actions-cell">
+                <button class="btn-table-cv" onclick="openCvModalFromTable('${item.id}')" title="Otwórz analizę Heatmap CV">
+                  Heatmap
+                </button>
+                <a href="${item.url}" target="_blank" rel="noopener" class="btn-table-open" title="Otwórz w nowej karcie">
+                  OLX ↗
+                </a>
+                <button class="btn-table-reject" onclick="rejectListingItem('${item.id}', this)" title="Odrzuć ogłoszenie (usuń z bazy i trwale zablokuj przed ponownym zaciąganiem)">
+                  ✕ Odrzuć
+                </button>
+              </div>
             </td>
           </tr>
         `;
       }).join('');
     }
+
+    async function rejectListingItem(id, btnEl) {
+      if (!id) return;
+      const tr = btnEl ? btnEl.closest('tr') : null;
+      const titleLink = tr ? tr.querySelector('.table-title-link') : null;
+      const title = titleLink ? titleLink.textContent.trim() : id;
+
+      if (!confirm(`Czy na pewno chcesz odrzucić to ogłoszenie i dodać do czarnej listy?\n\n"${title}"\n\nOgłoszenie zostanie bezpowrotnie usunięte z bazy, a scraper NIGDY więcej go nie pobierze.`)) {
+        return;
+      }
+
+      if (btnEl) {
+        btnEl.disabled = true;
+        btnEl.textContent = 'Usuwanie...';
+      }
+
+      try {
+        const res = await fetch('/api/reject-listing', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, reason: 'Odrzucone ręcznie z listy tabelarycznej' })
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        if (tr) {
+          tr.style.transition = 'all 0.35s ease';
+          tr.style.opacity = '0';
+          tr.style.transform = 'translateX(25px)';
+          setTimeout(() => {
+            tr.remove();
+            currentTableItems = currentTableItems.filter(l => l.id !== id);
+            const meta = document.getElementById('tableMeta');
+            if (meta) {
+              meta.textContent = `Wyświetlono ${currentTableItems.length} rekordów (odrzucono 1)`;
+            }
+          }, 350);
+        }
+      } catch (err) {
+        alert('Błąd podczas odrzucania: ' + err.message);
+        if (btnEl) {
+          btnEl.disabled = false;
+          btnEl.textContent = '✕ Odrzuć';
+        }
+      }
+    }
+    window.rejectListingItem = rejectListingItem;
+
+    function openCvModalFromTable(id) {
+      const item = currentTableItems.find(l => l.id === id);
+      if (item && window.cvHeatmapEngine) {
+        window.cvHeatmapEngine.openModal(item);
+      }
+    }
+    window.openCvModalFromTable = openCvModalFromTable;
+
+    async function checkVisibleListingsActiveBatch() {
+      if (!currentTableItems || currentTableItems.length === 0) return;
+      const btn = document.getElementById('btnBatchCheck');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = `Weryfikacja (0/${currentTableItems.length})...`;
+      }
+
+      let done = 0;
+      for (const item of currentTableItems) {
+        try {
+          const res = await fetch('/api/check-listing-active', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: item.id, url: item.url })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            item.is_active = data.isActive ? 1 : 0;
+            item.last_seen = data.last_seen || new Date().toISOString();
+          }
+        } catch (_) {}
+        done++;
+        if (btn) btn.textContent = `Sprawdzono ${done}/${currentTableItems.length}...`;
+        renderTable(currentTableItems);
+      }
+
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Weryfikuj statusy (OLX)';
+      }
+    }
+    window.checkVisibleListingsActiveBatch = checkVisibleListingsActiveBatch;
 
     function renderTablePagination(total, page) {
       const container = document.getElementById('tablePagination');
@@ -379,7 +935,196 @@
       container.innerHTML = pages.join('');
     }
 
-    document.addEventListener('DOMContentLoaded', () => fetchTableListings(0));
+    // ──────────────────────────────────────────────
+    // QUALIFICATION MODAL & TAGGING (HITL Override)
+    // ──────────────────────────────────────────────
+    let currentQualItem = null;
+    let selectedQualChoice = true;
+
+    function openQualModal(id) {
+      const item = currentTableItems.find(l => l.id === id);
+      if (!item) return;
+      currentQualItem = item;
+
+      // Determine initial choice: default to 1 (Iconic Blue) if user wants to override, or current state
+      selectedQualChoice = (item.iconic_blue === 1);
+
+      document.getElementById('qualModalListingTitle').textContent = item.title || 'Ogłoszenie Yamaha';
+      document.getElementById('qualTagInput').value = item.iconic_blue_tag || '';
+
+      updateQualChoiceButtons();
+      highlightActiveTagPill(item.iconic_blue_tag || '');
+
+      const dialog = document.getElementById('qualModal');
+      if (dialog && typeof dialog.showModal === 'function') {
+        dialog.showModal();
+      }
+    }
+    window.openQualModal = openQualModal;
+
+    function closeQualModal() {
+      const dialog = document.getElementById('qualModal');
+      if (dialog && dialog.open) {
+        dialog.close();
+      }
+      currentQualItem = null;
+    }
+    window.closeQualModal = closeQualModal;
+
+    function setQualChoice(isBlue) {
+      selectedQualChoice = isBlue;
+      updateQualChoiceButtons();
+    }
+    window.setQualChoice = setQualChoice;
+
+    function updateQualChoiceButtons() {
+      const btnBlue = document.getElementById('btnQualChoiceBlue');
+      const btnNotBlue = document.getElementById('btnQualChoiceNotBlue');
+      if (selectedQualChoice) {
+        btnBlue.className = 'btn-qual-toggle active-blue';
+        btnNotBlue.className = 'btn-qual-toggle';
+      } else {
+        btnBlue.className = 'btn-qual-toggle';
+        btnNotBlue.className = 'btn-qual-toggle active-not-blue';
+      }
+    }
+
+    function applyTagPill(tag) {
+      const input = document.getElementById('qualTagInput');
+      input.value = tag;
+      highlightActiveTagPill(tag);
+    }
+    window.applyTagPill = applyTagPill;
+
+    function highlightActiveTagPill(currentVal) {
+      document.querySelectorAll('#qualTagsContainer .qual-pill-btn').forEach(btn => {
+        const text = btn.getAttribute('data-tag') || btn.textContent.replace(/^[^\s]+\s*/, '');
+        btn.classList.toggle('selected', currentVal.includes(text));
+      });
+    }
+
+    async function saveQualification() {
+      if (!currentQualItem) return;
+      const btnSave = document.getElementById('btnQualSave');
+      const tag = document.getElementById('qualTagInput').value.trim();
+      const isBlue = selectedQualChoice;
+      const id = currentQualItem.id;
+
+      btnSave.disabled = true;
+      btnSave.textContent = 'Zapisywanie...';
+
+      try {
+        const res = await fetch('/api/verify-blue', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, isBlue, tag: tag || null })
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        // Update local object in current table list
+        currentQualItem.iconic_blue = isBlue ? 1 : 0;
+        currentQualItem.iconic_blue_verified = 1;
+        currentQualItem.iconic_blue_tag = tag || null;
+
+        // Re-render table with updated status and tag badge
+        renderTable(currentTableItems);
+
+        closeQualModal();
+      } catch (err) {
+        alert('Błąd zapisu kwalifikacji: ' + err.message);
+      } finally {
+        btnSave.disabled = false;
+        btnSave.textContent = 'Zapisz kwalifikację';
+      }
+    }
+    window.saveQualification = saveQualification;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchTableListings(0);
+
+      // Listen for verification updates from Heatmap modal
+      window.addEventListener('hitl-verified', (e) => {
+        const { id, isBlue, tag, verified } = e.detail || {};
+        const item = currentTableItems.find(l => l.id === id);
+        if (item) {
+          item.iconic_blue = isBlue ? 1 : 0;
+          item.iconic_blue_verified = verified || 1;
+          if (tag !== undefined) item.iconic_blue_tag = tag;
+          renderTable(currentTableItems);
+        }
+      });
+
+      // Synchronize with modal listing-rejected
+      window.addEventListener('listing-rejected', (e) => {
+        const { id } = e.detail;
+        currentTableItems = currentTableItems.filter(l => l.id !== id);
+        allTableData = allTableData.filter(l => l.id !== id);
+        const row = document.getElementById(`row-${id}`);
+        if (row) {
+          row.style.transition = 'all 0.3s ease';
+          row.style.opacity = '0';
+          row.style.transform = 'translateX(25px)';
+          setTimeout(() => row.remove(), 320);
+        }
+        const meta = document.getElementById('tableMeta');
+        if (meta) {
+          meta.textContent = `Wyświetlono ${currentTableItems.length} rekordów`;
+        }
+      });
+
+      // Close modal on outside click
+      const dialog = document.getElementById('qualModal');
+      if (dialog) {
+        dialog.addEventListener('click', (e) => {
+          const rect = dialog.getBoundingClientRect();
+          if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
+            dialog.close();
+          }
+        });
+      }
+    });
   </script>
+
+  <!-- Modal: Manualna Kwalifikacja Iconic Blue & Tagi HITL -->
+  <dialog id="qualModal" class="qual-modal">
+    <div class="qual-modal-content">
+      <div class="qual-modal-header">
+        <div>
+          <h3 class="qual-modal-title">Manualna edycja kwalifikacji Iconic Blue</h3>
+          <p class="qual-modal-subtitle" id="qualModalListingTitle">—</p>
+        </div>
+        <button class="qual-modal-close" onclick="closeQualModal()">✕</button>
+      </div>
+
+      <div class="qual-section">
+        <label class="qual-label">Decyzja kwalifikacji koloru:</label>
+        <div class="qual-choice-grid">
+          <button type="button" class="btn-qual-toggle active-blue" id="btnQualChoiceBlue" onclick="setQualChoice(true)">
+            Iconic Blue (Niebieski)
+          </button>
+          <button type="button" class="btn-qual-toggle" id="btnQualChoiceNotBlue" onclick="setQualChoice(false)">
+            Nie-blue (Inny kolor)
+          </button>
+        </div>
+      </div>
+
+      <div class="qual-section">
+        <label class="qual-label">Tag przyczyny / wyjaśnienia (kliknij lub wpisz):</label>
+        <div class="qual-tags-pills" id="qualTagsContainer">
+          <button type="button" class="qual-pill-btn" data-tag="Słabe zdjęcie / miniatura" onclick="applyTagPill('Słabe zdjęcie / miniatura')">Słabe zdjęcie / miniatura</button>
+          <button type="button" class="qual-pill-btn" data-tag="Pozostałe zdjęcia niebieskie" onclick="applyTagPill('Pozostałe zdjęcia niebieskie')">Pozostałe zdjęcia niebieskie</button>
+          <button type="button" class="qual-pill-btn" data-tag="Wielokolorowy / zmiana plastików" onclick="applyTagPill('Wielokolorowy / zmiana plastików')">Wielokolorowy</button>
+          <button type="button" class="qual-pill-btn" data-tag="Złe oświetlenie / cień" onclick="applyTagPill('Złe oświetlenie / cień')">Złe oświetlenie</button>
+          <button type="button" class="qual-pill-btn" data-tag="Zweryfikowane manualnie" onclick="applyTagPill('Zweryfikowane manualnie')">Potwierdzone ręcznie</button>
+        </div>
+        <input type="text" id="qualTagInput" class="qual-input" placeholder="Wpisz powód (np. zdjęcie nr 1 jest kijowe, na pozostałych niebieski)..." />
+      </div>
+
+      <div class="qual-modal-footer">
+        <button type="button" class="btn-qual-cancel" onclick="closeQualModal()">Anuluj</button>
+        <button type="button" class="btn-qual-save" id="btnQualSave" onclick="saveQualification()">Zapisz kwalifikację</button>
+      </div>
+    </div>
+  </dialog>
 </body>
 </html>

@@ -34,6 +34,7 @@ export default {
         const excludeTenere = searchParams.get('excludeTenere') === 'true';
         const activeOnly    = searchParams.get('activeOnly') !== 'false';
         const iconicBlue    = searchParams.get('iconicBlue') === 'true';
+        const hitlOnly      = searchParams.get('hitlOnly') === 'true';
         const limit         = Math.min(parseInt(searchParams.get('limit') || '24', 10), 500);
         const offset        = Math.max(parseInt(searchParams.get('offset') || '0', 10), 0);
 
@@ -53,6 +54,9 @@ export default {
         }
         if (iconicBlue) {
           where.push('iconic_blue = 1');
+        }
+        if (hitlOnly) {
+          where.push('iconic_blue_verified = 1');
         }
         if (minPrice !== null && !isNaN(minPrice)) {
           where.push('price >= ?');
@@ -80,7 +84,7 @@ export default {
         const whereClause = where.length ? 'WHERE ' + where.join(' AND ') : '';
 
         // Query listings for current page
-        const sqlListings = `SELECT * FROM listings ${whereClause} ORDER BY cc DESC, first_seen DESC LIMIT ? OFFSET ?`;
+        const sqlListings = `SELECT * FROM listings ${whereClause} ORDER BY is_active DESC, cc DESC, first_seen DESC LIMIT ? OFFSET ?`;
         // Query total count
         const sqlTotal = `SELECT COUNT(*) as cnt FROM listings ${whereClause}`;
         // Query price stats for currently filtered set
@@ -188,7 +192,7 @@ export default {
       // ──────────────────────────────────────────────
       if (pathname === '/api/verify-blue' && request.method === 'POST') {
         const body = await request.json();
-        const { id, isBlue } = body;
+        const { id, isBlue, tag } = body;
         if (!id || isBlue === undefined) {
           return new Response(JSON.stringify({ error: 'Missing id or isBlue' }), {
             status: 400,
@@ -199,13 +203,86 @@ export default {
         await env.DB.prepare(`
           UPDATE listings SET
             iconic_blue = ?,
-            iconic_blue_verified = 1
+            iconic_blue_verified = 1,
+            iconic_blue_tag = ?
           WHERE id = ?
-        `).bind(isBlue ? 1 : 0, id).run();
+        `).bind(isBlue ? 1 : 0, tag || null, id).run();
 
-        return new Response(JSON.stringify({ success: true }), {
+        return new Response(JSON.stringify({ success: true, id, isBlue, tag }), {
           headers: { 'Content-Type': 'application/json', ...corsHeaders }
         });
+      }
+
+      // ──────────────────────────────────────────────
+      // API: /api/reject-listing (Blacklist & delete from D1)
+      // ──────────────────────────────────────────────
+      if (pathname === '/api/reject-listing' && request.method === 'POST') {
+        const body = await request.json();
+        const { id, reason } = body;
+        if (!id) {
+          return new Response(JSON.stringify({ error: 'Missing id' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders }
+          });
+        }
+
+        const listing = await env.DB.prepare('SELECT url, title FROM listings WHERE id = ?').bind(id).first();
+        const url = listing?.url || '';
+        const title = listing?.title || '';
+        const now = new Date().toISOString();
+
+        await env.DB.batch([
+          env.DB.prepare(
+            'INSERT OR REPLACE INTO rejected_listings (id, url, title, reason, rejected_at) VALUES (?, ?, ?, ?, ?)'
+          ).bind(id, url, title, reason || 'Odrzucone manualnie', now),
+          env.DB.prepare('DELETE FROM price_history WHERE listing_id = ?').bind(id),
+          env.DB.prepare('DELETE FROM listings WHERE id = ?').bind(id),
+        ]);
+
+        return new Response(JSON.stringify({ success: true, id, url, title, reason, rejected_at: now }), {
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        });
+      }
+
+      // ──────────────────────────────────────────────
+      // API: /api/rejected-listings (List blacklisted items)
+      // ──────────────────────────────────────────────
+      if (pathname === '/api/rejected-listings') {
+        const { results } = await env.DB.prepare('SELECT * FROM rejected_listings ORDER BY rejected_at DESC').all();
+        return new Response(JSON.stringify(results || []), {
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        });
+      }
+
+      // ──────────────────────────────────────────────
+      // API: /api/proxy-image (CORS-friendly image proxy)
+      // ──────────────────────────────────────────────
+      if (pathname === '/api/proxy-image') {
+        const imageUrl = searchParams.get('url');
+        if (!imageUrl) {
+          return new Response('Missing url', { status: 400, headers: corsHeaders });
+        }
+        try {
+          const upstream = await fetch(imageUrl, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+              'Accept': 'image/*,*/*'
+            }
+          });
+          if (!upstream.ok) {
+            return new Response('Upstream error', { status: upstream.status, headers: corsHeaders });
+          }
+          const contentType = upstream.headers.get('content-type') || 'image/jpeg';
+          return new Response(upstream.body, {
+            headers: {
+              'Content-Type': contentType,
+              'Cache-Control': 'public, max-age=604800, s-maxage=604800, immutable',
+              ...corsHeaders
+            }
+          });
+        } catch (e) {
+          return new Response(e.message, { status: 500, headers: corsHeaders });
+        }
       }
 
       // ──────────────────────────────────────────────
@@ -226,6 +303,11 @@ export default {
         const { listings = [], run, inactiveUrls } = payload;
         const now = new Date().toISOString();
 
+        // Fetch rejected listings so we NEVER re-insert them into D1
+        const rejectedRows = await env.DB.prepare('SELECT id, url FROM rejected_listings').all();
+        const rejectedIds = new Set((rejectedRows.results || []).map(r => r.id));
+        const rejectedUrls = new Set((rejectedRows.results || []).map(r => r.url));
+
         const statements = [];
 
         // 1. Record scrape run if provided
@@ -240,6 +322,9 @@ export default {
         // 2. Upsert listings in batches
         for (const item of listings) {
           const id = item.id || item.url.split('/').filter(Boolean).pop();
+          if (rejectedIds.has(id) || (item.url && rejectedUrls.has(item.url))) {
+            continue; // Skip blacklisted listing
+          }
           statements.push(
             env.DB.prepare(`
               INSERT INTO listings (
@@ -328,7 +413,7 @@ export default {
       // ──────────────────────────────────────────────
       if (pathname === '/listings.json') {
         const [listingsRes, lastRunRes] = await Promise.all([
-          env.DB.prepare('SELECT * FROM listings ORDER BY cc DESC, first_seen DESC').all(),
+          env.DB.prepare('SELECT * FROM listings ORDER BY is_active DESC, cc DESC, first_seen DESC').all(),
           env.DB.prepare('SELECT finished_at, started_at FROM scrape_runs ORDER BY id DESC LIMIT 1').first(),
         ]);
 

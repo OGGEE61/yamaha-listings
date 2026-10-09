@@ -31,6 +31,7 @@ async function loadListings(page = 0) {
   const excludeTenere = document.getElementById('excludeTenere').checked;
   const showInactive  = document.getElementById('showInactive') ? document.getElementById('showInactive').checked : false;
   const iconicBlue    = document.getElementById('filterIconicBlue') ? document.getElementById('filterIconicBlue').checked : false;
+  const hitlOnly      = document.getElementById('filterHitl') ? document.getElementById('filterHitl').checked : false;
 
   const params = new URLSearchParams();
   params.set('limit', PAGE_SIZE);
@@ -44,6 +45,7 @@ async function loadListings(page = 0) {
   if (excludeTenere) params.set('excludeTenere', 'true');
   if (showInactive) params.set('activeOnly', 'false');
   if (iconicBlue) params.set('iconicBlue', 'true');
+  if (hitlOnly) params.set('hitlOnly', 'true');
 
   try {
     const res = await fetch(`/api/listings?${params.toString()}`);
@@ -59,12 +61,13 @@ async function loadListings(page = 0) {
       setText('lastUpdated', `Last scraped ${timeAgo(data.updatedAt)}`);
       const statusPill = document.getElementById('scrapeStatus');
       if (statusPill) {
-        statusPill.innerHTML = `<span class="status-dot" style="background:#10b981"></span><span class="status-label">Up to date</span>`;
+        statusPill.innerHTML = `<span class="status-dot" style="background:#3b82f6"></span><span class="status-label">Up to date</span>`;
       }
     }
 
     renderStats(stats);
-    renderPriceChart(stats.prices || []);
+    const chartPrices = (stats.prices && stats.prices.length > 0) ? stats.prices : (listings ? listings.map(l => l.price).filter(Boolean) : []);
+    renderPriceChart(chartPrices);
     setText('listingMeta', `Showing ${listings.length} of ${total} listings`);
     renderListings(listings);
     renderPagination(total, page);
@@ -95,12 +98,14 @@ async function fallbackFetchAll(page = 0) {
     const excludeTenere = document.getElementById('excludeTenere').checked;
     const showInactive  = document.getElementById('showInactive')?.checked || false;
     const iconicBlue    = document.getElementById('filterIconicBlue')?.checked || false;
+    const hitlOnly      = document.getElementById('filterHitl')?.checked || false;
 
     const filtered = cachedFallbackListings.filter(l => {
       if (!showInactive && l.is_active === 0) return false;
       if (source && l.source !== source) return false;
       if (model  && l.model  !== model)  return false;
       if (iconicBlue && l.iconic_blue !== 1) return false;
+      if (hitlOnly && l.iconic_blue_verified !== 1) return false;
       if (engine === '2T') {
         const is2T = l.model === 'YZ 250 2T' || l.model === 'YZ 250X' || (l.model === 'Yamaha Vintage' && /\b(dt|it)\b/i.test(l.title));
         if (!is2T) return false;
@@ -116,6 +121,17 @@ async function fallbackFetchAll(page = 0) {
       if (l.price && maxPrice < Infinity && l.price > maxPrice) return false;
       if (search && !l.title.toLowerCase().includes(search)) return false;
       return true;
+    });
+
+    // Default sort: Active first, then CC descending, then first_seen descending
+    filtered.sort((a, b) => {
+      const aActive = a.is_active !== undefined ? a.is_active : 1;
+      const bActive = b.is_active !== undefined ? b.is_active : 1;
+      if (bActive !== aActive) return bActive - aActive; // 1 before 0
+      const aCc = a.cc || 0;
+      const bCc = b.cc || 0;
+      if (bCc !== aCc) return bCc - aCc; // higher cc first
+      return new Date(b.first_seen || 0) - new Date(a.first_seen || 0);
     });
 
     const total = filtered.length;
@@ -170,9 +186,13 @@ function renderStats(stats) {
   setText('statNewToday', stats.newToday || 0);
 }
 
-function renderPriceChart(prices) {
+function renderPriceChart(rawPrices) {
   const canvas = document.getElementById('priceChartCanvas');
   const container = document.getElementById('priceChartContainer');
+
+  const prices = (rawPrices || [])
+    .map(p => Number(p))
+    .filter(p => !isNaN(p) && p > 0);
 
   if (!prices || prices.length === 0) {
     if (priceChart) { priceChart.destroy(); priceChart = null; }
@@ -219,13 +239,14 @@ function renderPriceChart(prices) {
     priceChart.data.labels = labels;
     priceChart.data.datasets[0].data = data;
     priceChart.update();
+    if (typeof priceChart.resize === 'function') priceChart.resize();
   } else {
     const ctx = canvas.getContext('2d');
     
-    // Create gradient
-    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-    gradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
-    gradient.addColorStop(1, 'rgba(255, 255, 255, 0.1)');
+    // Yamaha Racing Blue gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, 260);
+    gradient.addColorStop(0, 'rgba(59, 130, 246, 0.90)');
+    gradient.addColorStop(1, 'rgba(30, 64, 175, 0.25)');
 
     Chart.defaults.color = '#cbd5e1';
     Chart.defaults.font.family = 'Inter, sans-serif';
@@ -238,7 +259,9 @@ function renderPriceChart(prices) {
           label: 'Listings',
           data: data,
           backgroundColor: gradient,
-          borderRadius: 4,
+          borderColor: 'rgba(147, 197, 253, 0.5)',
+          borderWidth: 1,
+          borderRadius: 6,
           borderSkipped: false,
           hoverBackgroundColor: '#ffffff'
         }]
@@ -246,16 +269,24 @@ function renderPriceChart(prices) {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+          padding: {
+            top: 10,
+            bottom: 12,
+            left: 6,
+            right: 6
+          }
+        },
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: 'rgba(10, 45, 130, 0.95)',
-            titleColor: '#fff',
-            bodyColor: '#fff',
+            backgroundColor: 'rgba(10, 23, 56, 0.95)',
+            titleColor: '#ffffff',
+            bodyColor: '#93c5fd',
             titleFont: { size: 13, weight: 'bold' },
             bodyFont: { size: 14 },
             padding: 12,
-            borderColor: 'rgba(255,255,255,0.2)',
+            borderColor: 'rgba(59, 130, 246, 0.4)',
             borderWidth: 1,
             displayColors: false,
             callbacks: {
@@ -268,27 +299,37 @@ function renderPriceChart(prices) {
         scales: {
           y: {
             beginAtZero: true,
-            ticks: { stepSize: 1, precision: 0 },
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: {
+              stepSize: 1,
+              precision: 0,
+              color: '#94a3b8',
+              font: { family: 'Inter, sans-serif', size: 12 }
+            },
+            grid: { color: 'rgba(255, 255, 255, 0.06)' },
             border: { display: false }
           },
           x: {
+            ticks: {
+              color: '#cbd5e1',
+              font: { family: 'Inter, sans-serif', size: 12, weight: '500' },
+              maxRotation: 0,
+              autoSkip: true
+            },
             grid: { display: false },
             border: { display: false }
           }
         },
-        animation: { duration: 600 }
+        animation: { duration: 400 }
       }
     });
   }
 }
 
-// ──────────────────────────────────────────────
-// LISTINGS RENDER
-// ──────────────────────────────────────────────
+let currentRenderedListings = [];
 
 function renderListings(listings) {
   const grid = document.getElementById('listingsGrid');
+  currentRenderedListings = listings || [];
 
   if (!listings || listings.length === 0) {
     grid.innerHTML = `
@@ -329,16 +370,56 @@ function renderListings(listings) {
         ${timeAgo(l.first_seen)}
       </span>` : '';
 
-    let iconicBlueTag = '';
+    // Inactive aging calculation
+    let cardClass = 'listing-card' + (isNew ? ' new' : '');
+    let cardStyle = '';
+    let inactiveBadge = '';
+    if (l.is_active === 0) {
+      cardClass += ' is-inactive';
+      const aging = window.cvHeatmapEngine
+        ? window.cvHeatmapEngine.getInactiveAging(l.last_seen || l.first_seen)
+        : { grayscale: 85, opacity: 0.52, days: 30, label: 'dawno temu' };
+      cardStyle = `filter: grayscale(${aging.grayscale}%); opacity: ${aging.opacity};`;
+      inactiveBadge = `<span class="listing-inactive-badge" title="Ogłoszenie nieaktualne od ${aging.days} dni (ostatnio widziane: ${aging.label})">Nieaktywne · widziane ${aging.label}</span>`;
+    }
+
+    // CV Model & Human-in-the-Loop badges
+    let cvBadge = '';
+    let partsChips = '';
     if (l.iconic_blue === 1) {
       let parts = [];
-      try { parts = JSON.parse(l.iconic_blue_parts || '[]'); } catch (_) {}
-      const tip = parts.length ? `Iconic Blue: ${parts.join(', ')}` : 'Iconic Blue';
-      iconicBlueTag = `<span class="listing-source tag-iconic-blue" title="${escHtml(tip)}">Iconic Blue</span>`;
+      try {
+        parts = Array.isArray(l.iconic_blue_parts) ? l.iconic_blue_parts : JSON.parse(l.iconic_blue_parts || '[]');
+      } catch (_) {}
+
+      if (l.iconic_blue_verified === 1) {
+        cvBadge = `
+          <span class="badge-cv-hitl verified" onclick="inspectCvListing('${escHtml(l.id)}')" title="Weryfikacja człowieka (HITL Ground Truth): Potwierdzone Iconic Blue">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Iconic Blue
+            <span class="hitl-pill hitl-ok">HITL Verified</span>
+          </span>`;
+      } else {
+        cvBadge = `
+          <span class="badge-cv-hitl pending" onclick="inspectCvListing('${escHtml(l.id)}')" title="Predykcja AI (Gemini Vision): czeka na weryfikację człowieka">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+            Iconic Blue
+            <span class="hitl-pill hitl-ai">AI Pred</span>
+          </span>`;
+      }
+
+      if (parts.length) {
+        partsChips = parts.map(p => `<span class="cv-part-tag" style="font-size:10px;">${escHtml(p)}</span>`).join('');
+      }
+    }
+
+    let tagChip = '';
+    if (l.iconic_blue_tag) {
+      tagChip = `<span class="hitl-tag-chip" style="font-size:10px;cursor:pointer;" onclick="inspectCvListing('${escHtml(l.id)}')" title="Tag HITL: ${escHtml(l.iconic_blue_tag)}">${escHtml(l.iconic_blue_tag)}</span>`;
     }
 
     return `
-      <article class="listing-card${isNew ? ' new' : ''}" style="${l.is_active === 0 ? 'opacity: 0.6;' : ''}">
+      <article class="${cardClass}" id="card-${escHtml(l.id)}" data-id="${escHtml(l.id)}" style="${cardStyle}">
         ${imgHtml}
         <div class="listing-body">
           <div class="listing-title">${escHtml(l.title)}</div>
@@ -347,23 +428,93 @@ function renderListings(listings) {
             ${location}
             ${dateChip}
             ${l.cc ? `<span class="listing-source" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd;">${l.cc} cc</span>` : ''}
-            ${iconicBlueTag}
+            ${cvBadge}
+            ${tagChip}
+            ${partsChips}
             <span class="listing-source" style="background:var(--gray-200);color:var(--gray-800);border-color:var(--gray-300);">${escHtml(l.model || 'Unknown')}</span>
             <span class="listing-source">${escHtml(l.source || 'OLX.pl')}</span>
-            ${l.is_active === 0 ? `<span class="listing-source" style="background:#fecdd3;color:#e11d48;border-color:#fda4af;">Inactive</span>` : ''}
+            ${inactiveBadge}
           </div>
         </div>
         <div class="listing-footer">
+          <button class="btn-cv-inspect" onclick="inspectCvListing('${escHtml(l.id)}')" title="Otwórz analizę Computer Vision i Heatmapę">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            Heatmap CV
+          </button>
           <a class="listing-link" href="${escHtml(l.url)}" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
             </svg>
             View Listing
           </a>
+          <button class="btn-card-reject" onclick="rejectListingFromCard('${escHtml(l.id)}', this)" title="Odrzuć ogłoszenie (usuń z bazy i dodaj do czarnej listy)">
+            ✕
+          </button>
         </div>
       </article>`;
   }).join('');
 }
+
+function inspectCvListing(id) {
+  const item = currentRenderedListings.find(l => l.id === id) || (cachedFallbackListings && cachedFallbackListings.find(l => l.id === id));
+  if (item && window.cvHeatmapEngine) {
+    window.cvHeatmapEngine.openModal(item);
+  }
+}
+window.inspectCvListing = inspectCvListing;
+
+async function rejectListingFromCard(id, btnEl) {
+  if (!id) return;
+  const card = btnEl ? btnEl.closest('.listing-card') : null;
+  const titleEl = card ? card.querySelector('.listing-title') : null;
+  const title = titleEl ? titleEl.textContent.trim() : id;
+
+  if (!confirm(`Czy na pewno chcesz odrzucić to ogłoszenie i dodać do czarnej listy?\n\n"${title}"\n\nOgłoszenie zostanie bezpowrotnie usunięte z bazy, a scraper NIGDY więcej go nie pobierze.`)) {
+    return;
+  }
+
+  if (btnEl) {
+    btnEl.disabled = true;
+    btnEl.textContent = '…';
+  }
+
+  try {
+    const res = await fetch('/api/reject-listing', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, reason: 'Odrzucone z kafelka' })
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    if (card) {
+      card.style.transition = 'all 0.35s ease';
+      card.style.opacity = '0';
+      card.style.transform = 'scale(0.85)';
+      setTimeout(() => {
+        card.remove();
+        currentRenderedListings = currentRenderedListings.filter(l => l.id !== id);
+      }, 350);
+    }
+  } catch (err) {
+    alert('Błąd podczas odrzucania ogłoszenia: ' + err.message);
+    if (btnEl) {
+      btnEl.disabled = false;
+      btnEl.textContent = '✕';
+    }
+  }
+}
+window.rejectListingFromCard = rejectListingFromCard;
+
+window.addEventListener('hitl-verified', (e) => {
+  const { id, isBlue, tag, verified } = e.detail;
+  const item = currentRenderedListings.find(l => l.id === id);
+  if (item) {
+    item.iconic_blue = isBlue ? 1 : 0;
+    item.iconic_blue_verified = verified;
+    if (tag !== undefined) item.iconic_blue_tag = tag;
+    renderListings(currentRenderedListings);
+  }
+});
 
 function renderPagination(total, page) {
   const container = document.getElementById('pagination');
@@ -454,3 +605,19 @@ function showToast(msg, type = '') {
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 4000);
 }
+
+// Global listener for modal rejection
+window.addEventListener('listing-rejected', (e) => {
+  const { id } = e.detail;
+  allListings = allListings.filter(l => l.id !== id);
+  currentRenderedListings = currentRenderedListings.filter(l => l.id !== id);
+  updateKPIs(allListings);
+  const card = document.getElementById(`card-${id}`);
+  if (card) {
+    card.style.transition = 'all 0.3s ease';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.85)';
+    setTimeout(() => card.remove(), 320);
+  }
+});
+

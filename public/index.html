@@ -28,7 +28,7 @@
         </a>
         <a href="verify.html" class="nav-tab">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          Iconic Blue Verification
+          HITL Studio (Model CV)
         </a>
       </nav>
 
@@ -52,35 +52,35 @@
     <!-- Stats Bar -->
     <section class="stats-grid" id="statsGrid">
       <div class="stat-card">
-        <div class="stat-icon stat-icon--blue">
+        <div class="stat-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         </div>
         <div class="stat-value" id="statTotal">—</div>
         <div class="stat-label">Active Listings</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon stat-icon--green">
+        <div class="stat-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 100 7h5a3.5 3.5 0 110 7H6"/></svg>
         </div>
         <div class="stat-value" id="statAvg">—</div>
         <div class="stat-label">Average Price</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon stat-icon--amber">
+        <div class="stat-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </div>
         <div class="stat-value" id="statMin">—</div>
         <div class="stat-label">Lowest Price</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon stat-icon--red">
+        <div class="stat-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
         </div>
         <div class="stat-value" id="statMax">—</div>
         <div class="stat-label">Highest Price</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon stat-icon--purple">
+        <div class="stat-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
         </div>
         <div class="stat-value" id="statNewToday">—</div>
@@ -103,17 +103,42 @@
     <section class="section">
       <div class="section-header">
         <h2 class="section-title">Listings</h2>
-        <div class="filters-container">
-          <div class="filter-group">
-            <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <input type="text" id="filterSearch" placeholder="Search title…" oninput="debounceLoad()" />
-          </div>
-          <div class="filter-group">
+        <div class="listing-meta" id="listingMeta">Loading listings…</div>
+      </div>
+
+      <div class="filters-container">
+        <!-- Row 1: ALL TOGGLES & PRICE -->
+        <div class="filters-row filters-row-toggles">
+          <label class="toggle-container">
+            <input type="checkbox" id="excludeTenere" onchange="loadListings()" checked>
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">Hide Tenere & XJ6</span>
+          </label>
+          <label class="toggle-container">
+            <input type="checkbox" id="showInactive" onchange="loadListings()">
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">Show Past</span>
+          </label>
+          <label class="toggle-container" title="Only bikes with plastics/rims in Yamaha Icon Blue (detected from photo)">
+            <input type="checkbox" id="filterIconicBlue" onchange="loadListings()">
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">Iconic Blue (CV)</span>
+          </label>
+          <label class="toggle-container" title="Show only listings confirmed by a human verifier">
+            <input type="checkbox" id="filterHitl" onchange="loadListings()">
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">HITL Verified Only</span>
+          </label>
+          <div class="filter-group price-filter-group">
             <span class="filter-prefix">PLN</span>
             <input type="number" id="filterMin" placeholder="Min price" oninput="debounceLoad()" />
             <span class="filter-separator">-</span>
             <input type="number" id="filterMax" placeholder="Max price" oninput="debounceLoad()" />
           </div>
+        </div>
+
+        <!-- Row 2: DROPDOWNS AND SEARCH AT THE END -->
+        <div class="filters-row filters-row-inputs">
           <div class="filter-group select-wrapper">
             <select id="filterModel" onchange="onModelChange()">
               <option value="">All Models</option>
@@ -140,26 +165,12 @@
               <option value="Autoplac">Autoplac</option>
             </select>
           </div>
-          <label class="toggle-container">
-            <input type="checkbox" id="excludeTenere" onchange="loadListings()" checked>
-            <span class="toggle-slider"></span>
-            <span class="toggle-label">Hide Tenere & XJ6</span>
-          </label>
-          <label class="toggle-container">
-            <input type="checkbox" id="showInactive" onchange="loadListings()">
-            <span class="toggle-slider"></span>
-            <span class="toggle-label">Show Past</span>
-          </label>
-          <label class="toggle-container" title="Only bikes with plastics/rims in Yamaha Icon Blue (detected from photo)">
-            <input type="checkbox" id="filterIconicBlue" onchange="loadListings()">
-            <span class="toggle-slider"></span>
-            <span class="toggle-label">Iconic Blue</span>
-          </label>
+          <div class="filter-group search-filter-group">
+            <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input type="text" id="filterSearch" placeholder="Search title or location…" oninput="debounceLoad()" />
+          </div>
         </div>
       </div>
-
-      <!-- Listing count -->
-      <div class="listing-meta" id="listingMeta">Loading listings…</div>
 
       <!-- Grid -->
       <div class="listings-grid" id="listingsGrid">
@@ -177,6 +188,7 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="cv-heatmap.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

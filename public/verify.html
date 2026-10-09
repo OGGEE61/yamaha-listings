@@ -1,77 +1,208 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Yamaha Listings — Verify Iconic Blue</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yamaha Listings — Human-in-the-Loop (HITL) Studio</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=4" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
     .verify-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 22px;
       margin-top: 20px;
     }
     .verify-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: var(--radius-lg);
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+    .verify-card:hover {
+      border-color: var(--border-bright);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    .verify-card.focused {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 2px #3b82f6, 0 12px 35px rgba(59, 130, 246, 0.4);
+    }
+    .verify-media-box {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      background: #030d24;
+      overflow: hidden;
     }
     .verify-img {
+      position: absolute;
+      inset: 0;
       width: 100%;
-      height: 200px;
+      height: 100%;
       object-fit: cover;
+      display: block;
+    }
+    .verify-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+      pointer-events: none;
+    }
+    .verify-media-tools {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      right: 8px;
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+      background: rgba(0, 10, 30, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 4px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .btn-media-toggle {
+      flex: 1;
+      padding: 4px 8px;
+      border: none;
+      background: transparent;
+      color: #cbd5e1;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 4px;
       cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-media-toggle:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .btn-media-toggle.active {
+      background: #2563eb;
+      color: #fff;
     }
     .verify-body {
-      padding: 16px;
+      padding: 16px 18px;
       flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .verify-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
     }
     .verify-title {
-      font-weight: 600;
-      margin-bottom: 8px;
-      font-size: 15px;
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
+      line-height: 1.4;
+      text-decoration: none;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .verify-title:hover {
+      color: #60a5fa;
+    }
+    .verify-meta-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
     }
     .verify-actions {
       display: flex;
       gap: 10px;
-      padding: 16px;
+      padding: 14px 18px;
       border-top: 1px solid var(--border);
-      background: var(--bg-dark-blue);
+      background: rgba(5, 20, 60, 0.6);
     }
     .btn-action {
       flex: 1;
-      padding: 8px;
+      padding: 10px 14px;
       border: none;
-      border-radius: 6px;
-      font-weight: 600;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 13px;
       cursor: pointer;
       color: white;
-      transition: opacity 0.2s;
-    }
-    .btn-action:hover { opacity: 0.8; }
-    .btn-yes { background: var(--blue); }
-    .btn-no { background: var(--gray-700); border: 1px solid var(--gray-600); }
-    .filter-bar {
+      transition: all 0.2s;
       display: flex;
-      gap: 15px;
-      margin-bottom: 20px;
       align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: var(--font-sans);
     }
-    .verified-badge {
-      display: inline-block;
-      margin-top: 5px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: bold;
+    .btn-action:hover {
+      filter: brightness(1.15);
+      transform: translateY(-1px);
     }
-    .badge-verified-yes { background: #1e3a8a; color: #60a5fa; border: 1px solid #1e40af; }
-    .badge-verified-no { background: #3f3f46; color: #a1a1aa; border: 1px solid #52525b; }
+    .btn-yes {
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      border: 1px solid #60a5fa;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+    }
+    .btn-no {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+      color: #cbd5e1;
+    }
+    .btn-no:hover {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: #ef4444;
+      color: #fff;
+    }
+    .btn-inspect-mini {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--border);
+      color: #93c5fd;
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .btn-inspect-mini:hover {
+      background: rgba(59, 130, 246, 0.3);
+      color: #fff;
+    }
+    .btn-reject-listing {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 12px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-reject-listing:hover {
+      background: #dc2626;
+      border-color: #ef4444;
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .btn-reject-listing:disabled {
+      opacity: 0.5;
+      cursor: wait;
+    }
   </style>
 </head>
 <body>
@@ -90,23 +221,104 @@
         </a>
         <a href="verify.html" class="nav-tab active">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          Iconic Blue Verification (<span id="count-badge">...</span>)
+          HITL Studio (Model CV) (<span id="count-badge">...</span>)
         </a>
       </nav>
     </div>
   </header>
+
   <main class="main">
-    <div class="filter-bar">
-      <label class="toggle-container">
-        <input type="checkbox" id="showAll" onchange="renderCards()">
-        <span class="toggle-slider"></span>
-        <span class="toggle-label">Show already verified</span>
-      </label>
-      <label class="toggle-container">
-        <input type="checkbox" id="showNonBlue" onchange="renderCards()">
-        <span class="toggle-slider"></span>
-        <span class="toggle-label">Show detected as NON-blue</span>
-      </label>
+    <!-- HITL Active Learning Architecture Banner -->
+    <section class="hitl-workflow-banner">
+      <div class="hitl-banner-top">
+        <div class="hitl-banner-title">
+          <span>Human-in-the-Loop (HITL) AI Verification Studio</span>
+          <span class="hitl-badge-active-learning">Active Learning Loop</span>
+        </div>
+        <div class="hitl-shortcuts-pill">
+          <span>Skróty klawiszowe:</span>
+          <span><span class="kbd-key">Y</span> = Potwierdź Blue</span>
+          <span><span class="kbd-key">N</span> = Odrzuć</span>
+          <span><span class="kbd-key">H</span> = Heatmap</span>
+        </div>
+      </div>
+      <p class="hitl-step-text" style="max-width: 900px; font-size: 13px;">
+        Model Computer Vision (Gemini Vision + spektralna segmentacja barwy Yamaha Racing Blue #0033A0) analizuje zdjęcia motocykli.
+        Weryfikacja ekspercka (człowiek w pętli) koryguje niepewne przypadki, budując certyfikowany zbiór Ground Truth w bazie danych.
+      </p>
+
+      <div class="hitl-pipeline-steps">
+        <div class="hitl-step-box">
+          <div class="hitl-step-num">Krok 1 · Ingestion</div>
+          <div class="hitl-step-text">Pobieranie zdjęć ogłoszeń (OLX / Autoplac)</div>
+        </div>
+        <div class="hitl-step-box">
+          <div class="hitl-step-num">Krok 2 · AI Vision</div>
+          <div class="hitl-step-text">Klasyfikacja elementów (Gemini 3.8 Flash Vision)</div>
+        </div>
+        <div class="hitl-step-box">
+          <div class="hitl-step-num">Krok 3 · CV Heatmap</div>
+          <div class="hitl-step-text">Generowanie mapy cieplnej nasycenia błękitu</div>
+        </div>
+        <div class="hitl-step-box active-step">
+          <div class="hitl-step-num">Krok 4 · HITL Review</div>
+          <div class="hitl-step-text"><strong>Weryfikator ludzki</strong> potwierdza / odrzuca</div>
+        </div>
+        <div class="hitl-step-box">
+          <div class="hitl-step-num">Krok 5 · Ground Truth</div>
+          <div class="hitl-step-text">Zapis w Cloudflare D1 / SQLite jako baza wiedzy</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI Metrics Ribbon (White & Blue Palette) -->
+    <section class="hitl-kpi-bar" id="kpiBar">
+      <div class="hitl-kpi-card">
+        <span class="hitl-kpi-val" id="kpiPending">—</span>
+        <span class="hitl-kpi-lbl">Oczekuje na weryfikację</span>
+      </div>
+      <div class="hitl-kpi-card">
+        <span class="hitl-kpi-val" id="kpiVerified">—</span>
+        <span class="hitl-kpi-lbl">Zweryfikowane (Ground Truth)</span>
+      </div>
+      <div class="hitl-kpi-card">
+        <span class="hitl-kpi-val" id="kpiBlueCount">—</span>
+        <span class="hitl-kpi-lbl">Potwierdzone Iconic Blue</span>
+      </div>
+      <div class="hitl-kpi-card">
+        <span class="hitl-kpi-val" id="kpiNonBlueCount">—</span>
+        <span class="hitl-kpi-lbl">Inny kolor / Odrzucone</span>
+      </div>
+      <div class="hitl-kpi-card">
+        <span class="hitl-kpi-val" id="kpiProgressPct">—%</span>
+        <span class="hitl-kpi-lbl">Postęp weryfikacji</span>
+      </div>
+    </section>
+
+    <!-- Filter and View Mode Toolbar -->
+    <div class="section-header" style="flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
+      <div class="filters-container" style="flex-wrap: wrap;">
+        <label class="toggle-container">
+          <input type="checkbox" id="showAll" onchange="renderCards()">
+          <span class="toggle-slider"></span>
+          <span class="toggle-label">Pokaż już zweryfikowane</span>
+        </label>
+        <label class="toggle-container">
+          <input type="checkbox" id="showNonBlue" onchange="renderCards()">
+          <span class="toggle-slider"></span>
+          <span class="toggle-label">Pokaż wykryte jako NIE-blue</span>
+        </label>
+      </div>
+
+      <!-- Global Heatmap Default Mode -->
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:12px;color:var(--text-secondary);font-weight:600;">Globalny podgląd:</span>
+        <div class="cv-mode-bar" style="margin:0;">
+          <button class="cv-mode-btn active" id="btnGlobalPhoto" onclick="setGlobalViewMode('photo')">Zdjęcia</button>
+          <button class="cv-mode-btn" id="btnGlobalHeatmap" onclick="setGlobalViewMode('heatmap')">Heatmap CV</button>
+          <button class="cv-mode-btn" id="btnGlobalMask" onclick="setGlobalViewMode('mask')">Maska</button>
+        </div>
+      </div>
     </div>
     
     <div class="verify-grid" id="grid">
@@ -114,17 +326,84 @@
     </div>
   </main>
 
+  <script src="cv-heatmap.js"></script>
   <script>
     let listings = [];
+    let globalMode = 'photo'; // 'photo' | 'heatmap' | 'mask'
+    let focusedIndex = 0;
 
     async function loadData() {
-      const res = await fetch('/listings.json');
-      const data = await res.json();
-      listings = data.listings || [];
+      try {
+        // Try D1 API first with inactive included
+        const res = await fetch('/api/listings?limit=500&activeOnly=false');
+        if (!res.ok) throw new Error('API unavailable');
+        const data = await res.json();
+        listings = data.listings || [];
+      } catch (_) {
+        try {
+          const res = await fetch('/listings.json');
+          const data = await res.json();
+          listings = data.listings || [];
+        } catch (e) {
+          console.error('Failed to load listings', e);
+        }
+      }
+      updateKpis();
       renderCards();
     }
 
-    async function verify(id, isBlue) {
+    function updateKpis() {
+      const checked = listings.filter(l => l.iconic_blue !== null && l.iconic_blue !== undefined);
+      const verified = checked.filter(l => l.iconic_blue_verified === 1);
+      const pending = checked.filter(l => l.iconic_blue_verified !== 1);
+      const blues = checked.filter(l => l.iconic_blue === 1);
+      const nonBlues = checked.filter(l => l.iconic_blue === 0);
+
+      const pct = checked.length > 0 ? Math.round((verified.length / checked.length) * 100) : 0;
+
+      document.getElementById('kpiPending').textContent = pending.length;
+      document.getElementById('kpiVerified').textContent = verified.length;
+      document.getElementById('kpiBlueCount').textContent = blues.length;
+      document.getElementById('kpiNonBlueCount').textContent = nonBlues.length;
+      document.getElementById('kpiProgressPct').textContent = `${pct}%`;
+    }
+
+    function setGlobalViewMode(mode) {
+      globalMode = mode;
+      document.getElementById('btnGlobalPhoto').classList.toggle('active', mode === 'photo');
+      document.getElementById('btnGlobalHeatmap').classList.toggle('active', mode === 'heatmap');
+      document.getElementById('btnGlobalMask').classList.toggle('active', mode === 'mask');
+
+      document.querySelectorAll('.verify-card').forEach(card => {
+        const id = card.dataset.id;
+        setCardViewMode(id, mode);
+      });
+    }
+
+    function setCardViewMode(id, mode) {
+      const card = document.getElementById(`card-${id}`);
+      if (!card) return;
+
+      const img = card.querySelector('.verify-img');
+      const canvas = card.querySelector('.verify-canvas');
+
+      card.querySelectorAll('.btn-media-toggle').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+
+      if (mode === 'photo') {
+        canvas.style.display = 'none';
+        img.style.display = 'block';
+      } else {
+        canvas.style.display = 'block';
+        img.style.display = 'block'; // Never hide the base photo!
+        if (window.cvHeatmapEngine) {
+          window.cvHeatmapEngine.renderCvOnCanvas(img, canvas, { mode });
+        }
+      }
+    }
+
+    async function verify(id, isBlue, tag = null) {
       const el = document.getElementById(`card-${id}`);
       if (el) el.style.opacity = '0.5';
 
@@ -132,21 +411,80 @@
         await fetch('/api/verify-blue', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id, isBlue })
+          body: JSON.stringify({ id, isBlue, tag: tag || null })
         });
         
-        // Update local state and re-render
         const item = listings.find(l => l.id === id);
         if (item) {
           item.iconic_blue = isBlue ? 1 : 0;
           item.iconic_blue_verified = 1;
+          item.iconic_blue_tag = tag || null;
         }
+
+        updateKpis();
         renderCards();
+
+        // Dispatch sync event
+        window.dispatchEvent(new CustomEvent('hitl-verified', {
+          detail: { id, isBlue, tag: tag || null, verified: 1 }
+        }));
       } catch (e) {
         alert('Failed to verify: ' + e.message);
         if (el) el.style.opacity = '1';
       }
     }
+
+    function openModalForCard(id) {
+      const item = listings.find(l => l.id === id);
+      if (item && window.cvHeatmapEngine) {
+        window.cvHeatmapEngine.openModal(item);
+      }
+    }
+
+    async function rejectListingFromVerify(id, btnEl) {
+      if (!id) return;
+      const card = document.getElementById(`card-${id}`);
+      const title = card ? (card.querySelector('.verify-title')?.textContent?.trim() || id) : id;
+
+      if (!confirm(`Czy na pewno chcesz odrzucić to ogłoszenie i dodać do czarnej listy?\n\n"${title}"\n\nOgłoszenie zostanie bezpowrotnie usunięte z bazy, a scraper NIGDY więcej go nie pobierze.`)) {
+        return;
+      }
+
+      if (btnEl) {
+        btnEl.disabled = true;
+        btnEl.textContent = 'Usuwanie...';
+      }
+
+      try {
+        const res = await fetch('/api/reject-listing', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, reason: 'Odrzucone z ekranu weryfikacji HITL' })
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        // Remove from memory
+        listings = listings.filter(l => l.id !== id);
+        updateKpis();
+
+        if (card) {
+          card.style.transition = 'all 0.35s ease';
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.85)';
+          setTimeout(() => {
+            card.remove();
+            renderCards();
+          }, 350);
+        }
+      } catch (err) {
+        alert('Błąd podczas odrzucania ogłoszenia: ' + err.message);
+        if (btnEl) {
+          btnEl.disabled = false;
+          btnEl.textContent = '✕ Odrzuć';
+        }
+      }
+    }
+    window.rejectListingFromVerify = rejectListingFromVerify;
 
     function renderCards() {
       const showAll = document.getElementById('showAll').checked;
@@ -156,7 +494,6 @@
         if (!showAll && l.iconic_blue_verified === 1) return false;
         if (!showNonBlue && l.iconic_blue !== 1) return false;
         if (showNonBlue && l.iconic_blue === 1 && !showAll && l.iconic_blue_verified === 1) return false;
-        // Don't show items that were never checked by the model
         if (l.iconic_blue === null || l.iconic_blue === undefined) return false;
         return true;
       });
@@ -165,40 +502,162 @@
 
       const grid = document.getElementById('grid');
       if (filtered.length === 0) {
-        grid.innerHTML = '<div class="empty-state"><h3>All caught up!</h3><p>No listings match these filters.</p></div>';
+        grid.innerHTML = `
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+            <h3>Wszystko zweryfikowane!</h3>
+            <p>Brak oczekujących ogłoszeń dla wybranych filtrów.</p>
+          </div>`;
         return;
       }
 
-      grid.innerHTML = filtered.map(l => {
+      grid.innerHTML = filtered.map((l, idx) => {
         let parts = [];
-        try { parts = JSON.parse(l.iconic_blue_parts || '[]'); } catch (_) {}
-        const partsText = parts.length ? parts.join(', ') : 'none';
-        
-        let verifiedBadge = '';
+        try {
+          parts = Array.isArray(l.iconic_blue_parts) ? l.iconic_blue_parts : JSON.parse(l.iconic_blue_parts || '[]');
+        } catch (_) {}
+
+        const partsHtml = parts.length
+          ? parts.map(p => `<span class="cv-part-tag">${p}</span>`).join('')
+          : '<span style="font-size:11px;color:var(--text-muted)">Brak części</span>';
+
+        let hitlBadge = '';
         if (l.iconic_blue_verified === 1) {
-          verifiedBadge = l.iconic_blue === 1 
-            ? `<div class="verified-badge badge-verified-yes">VERIFIED BLUE</div>` 
-            : `<div class="verified-badge badge-verified-no">VERIFIED NOT BLUE</div>`;
+          hitlBadge = l.iconic_blue === 1
+            ? `<span class="hitl-status-badge verified">Ground Truth: Iconic Blue</span>`
+            : `<span class="hitl-status-badge verified" style="color:#94a3b8;border-color:#64748b;background:rgba(100,116,139,0.15)">Odrzucone: Inny kolor</span>`;
+        } else {
+          hitlBadge = `<span class="hitl-status-badge pending">Oczekuje na HITL</span>`;
         }
 
+        const modelPredictionBadge = l.iconic_blue === 1
+          ? `<span class="badge-cv-hitl verified" style="font-size:10px;">AI: Iconic Blue</span>`
+          : `<span class="badge-cv-hitl pending" style="font-size:10px;">AI: Nie-blue</span>`;
+
         return `
-          <div class="verify-card" id="card-${l.id}">
-            <a href="${l.url}" target="_blank">
-              <img src="${l.image || ''}" class="verify-img" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMzMzMiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiLz48L3N2Zz4='">
-            </a>
-            <div class="verify-body">
-              <a href="${l.url}" target="_blank" class="verify-title" style="color: inherit; text-decoration: none;">${l.title} 🔗</a>
-              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Model says: ${l.iconic_blue ? '🔵 YES' : '⚪ NO'} (${partsText})</div>
-              ${verifiedBadge}
+          <div class="verify-card" id="card-${l.id}" data-id="${l.id}">
+            <div class="verify-media-box">
+              <img src="${l.image || ''}" class="verify-img" crossOrigin="anonymous" onload="onCardImgLoaded('${l.id}')" onerror="handleCardImgError(this, '${l.image || ''}')">
+              <canvas class="verify-canvas" id="canvas-${l.id}"></canvas>
+
+              <div class="verify-media-tools">
+                <button class="btn-media-toggle active" data-mode="photo" onclick="setCardViewMode('${l.id}', 'photo')">Foto</button>
+                <button class="btn-media-toggle" data-mode="heatmap" onclick="setCardViewMode('${l.id}', 'heatmap')">Heatmap</button>
+                <button class="btn-media-toggle" data-mode="mask" onclick="setCardViewMode('${l.id}', 'mask')">Maska</button>
+              </div>
             </div>
+
+            <div class="verify-body">
+              <div class="verify-title-row">
+                <a href="${l.url}" target="_blank" rel="noopener" class="verify-title" title="${l.title}">
+                  ${l.title} ↗
+                </a>
+              </div>
+
+              <div class="verify-meta-tags">
+                ${l.cc ? `<span class="listing-source" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd;">${l.cc} cc</span>` : ''}
+                ${modelPredictionBadge}
+                ${hitlBadge}
+                ${l.iconic_blue_tag ? `<span class="hitl-tag-chip" style="font-size:10px;">${l.iconic_blue_tag}</span>` : ''}
+              </div>
+
+              <div style="font-size:11px;color:var(--text-secondary);display:flex;align-items:center;gap:6px;">
+                <span>Elementy CV:</span>
+                ${partsHtml}
+              </div>
+            </div>
+
             <div class="verify-actions">
-              <button class="btn-action btn-yes" onclick="verify('${l.id}', true)">It IS blue</button>
-              <button class="btn-action btn-no" onclick="verify('${l.id}', false)">Not blue</button>
+              <button class="btn-action btn-yes" onclick="verify('${l.id}', true)" title="Zatwierdź jako Yamaha Iconic Blue (Y)">
+                To jest Blue
+              </button>
+              <button class="btn-action btn-no" onclick="verify('${l.id}', false)" title="Oznacz jako inny kolor (N)">
+                Inny kolor
+              </button>
+              <button class="btn-inspect-mini" onclick="openModalForCard('${l.id}')" title="Głęboka analiza w oknie modalnym">
+                Inspect
+              </button>
+              <button class="btn-reject-listing" onclick="rejectListingFromVerify('${l.id}', this)" title="Odrzuć całe ogłoszenie z bazy (dodaj do czarnej listy)">
+                ✕ Odrzuć
+              </button>
             </div>
           </div>
         `;
       }).join('');
+
+      // Initialize view mode for already completed/cached images
+      setTimeout(() => {
+        filtered.forEach(l => {
+          const card = document.getElementById(`card-${l.id}`);
+          if (!card) return;
+          const img = card.querySelector('.verify-img');
+          if (img && img.complete && img.naturalWidth > 0 && globalMode !== 'photo') {
+            setCardViewMode(l.id, globalMode);
+          }
+        });
+      }, 50);
     }
+
+    function handleCardImgError(img, origUrl) {
+      if (!img.dataset.hasProxyFallback && origUrl) {
+        img.dataset.hasProxyFallback = 'true';
+        img.crossOrigin = 'anonymous';
+        img.src = '/api/proxy-image?url=' + encodeURIComponent(origUrl);
+      } else {
+        img.removeAttribute('crossOrigin');
+        img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="260" viewBox="0 0 400 260"><rect width="100%" height="100%" fill="%230a1738"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%2360a5fa" font-family="sans-serif" font-size="13">Brak podgl\u0105du zdj\u0119cia</text></svg>';
+      }
+    }
+
+    function onCardImgLoaded(id) {
+      if (globalMode !== 'photo') {
+        setCardViewMode(id, globalMode);
+      }
+    }
+
+    // Keyboard shortcuts for lightning-fast HITL reviews:
+    // Y = confirm Iconic Blue, N = reject / mark not blue, H = toggle heatmap mode
+    document.addEventListener('keydown', (e) => {
+      // Ignore if user is typing in an input
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+      const cards = document.querySelectorAll('.verify-card');
+      if (!cards.length) return;
+
+      const firstCardId = cards[0]?.dataset.id;
+      if (!firstCardId) return;
+
+      if (e.key === 'y' || e.key === 'Y') {
+        verify(firstCardId, true);
+      } else if (e.key === 'n' || e.key === 'N') {
+        verify(firstCardId, false);
+      } else if (e.key === 'h' || e.key === 'H') {
+        const nextMode = globalMode === 'photo' ? 'heatmap' : (globalMode === 'heatmap' ? 'mask' : 'photo');
+        setGlobalViewMode(nextMode);
+      }
+    });
+
+    // Listen for modal verification sync
+    window.addEventListener('hitl-verified', (e) => {
+      const { id, isBlue } = e.detail;
+      const item = listings.find(l => l.id === id);
+      if (item) {
+        item.iconic_blue = isBlue ? 1 : 0;
+        item.iconic_blue_verified = 1;
+        updateKpis();
+        renderCards();
+      }
+    });
+
+    // Listen for listing-rejected event (from modal)
+    window.addEventListener('listing-rejected', (e) => {
+      const { id } = e.detail;
+      listings = listings.filter(l => l.id !== id);
+      updateKpis();
+      renderCards();
+    });
 
     document.addEventListener('DOMContentLoaded', loadData);
   </script>

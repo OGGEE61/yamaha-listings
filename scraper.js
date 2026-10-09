@@ -426,10 +426,26 @@ async function scrapeAll() {
     return true;
   });
 
-  console.log(`[Scraper] Found ${unique.length} unique candidates. Verifying descriptions...`);
+  // Load blacklisted / rejected IDs and URLs so we never fetch details or keep them
+  let rejectedIds = new Set();
+  let rejectedUrls = new Set();
+  try {
+    const db = require('./db');
+    const rej = db.getRejectedIds();
+    rejectedIds = rej.ids;
+    rejectedUrls = rej.urls;
+  } catch (_) {}
+
+  console.log(`[Scraper] Found ${unique.length} unique candidates (${rejectedUrls.size} permanently blacklisted). Verifying descriptions...`);
   const verifiedListings = [];
   
   for (const listing of unique) {
+    const id = listing.id || listing.url.split('/').filter(Boolean).pop();
+    if (rejectedIds.has(id) || rejectedUrls.has(listing.url)) {
+      console.log(`[Scraper] ⏭️ Skipping permanently blacklisted listing: ${listing.url}`);
+      continue;
+    }
+
     console.log(`[Scraper] Checking details for: ${listing.title.substring(0, 40)}...`);
     const details = await fetchDetails(listing.url);
     if (details.image) {
