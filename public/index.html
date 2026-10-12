@@ -187,6 +187,124 @@
     <span>· Auto-refreshes every 30 minutes · Tracking YZ, WR, Tenere 700 & Vintage (DT, XT, TT, IT)</span>
   </footer>
 
+  <!-- Listing Detail & Bielik AI Modal -->
+  <dialog id="listingModal" class="listing-modal" aria-labelledby="modalListingTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-info">
+          <div class="modal-badge-row">
+            <span class="modal-badge-model" id="modalListingModel">Yamaha YZ 250</span>
+            <span class="modal-badge-engine" id="modalListingEngine">2-Stroke</span>
+            <span class="modal-badge-verdict" id="modalListingVerdict" style="display:none">Warto obejrzeć</span>
+          </div>
+          <h2 class="modal-title" id="modalListingTitle">Tytuł ogłoszenia</h2>
+        </div>
+        <button type="button" class="modal-btn-close" id="modalCloseBtn" aria-label="Zamknij" onclick="closeListingModal()">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-grid">
+          <!-- Left Column: Photo, Quick Facts & Price History -->
+          <div class="modal-col-left">
+            <div class="modal-media-wrapper">
+              <img id="modalListingImg" class="modal-media-img" src="" alt="Motocykl" />
+              <div id="modalListingPrice" class="modal-price-pill">— PLN</div>
+            </div>
+
+            <div class="modal-specs-card">
+              <h3 class="modal-section-heading">Parametry ogłoszenia</h3>
+              <div class="modal-specs-list" id="modalSpecsList">
+                <!-- Dynamically filled -->
+              </div>
+            </div>
+
+            <div class="modal-price-history-card" id="modalPriceHistoryCard">
+              <h3 class="modal-section-heading">Historia cen</h3>
+              <div class="modal-price-history-list" id="modalPriceHistoryList">
+                <span class="text-muted">Brak wcześniejszych zmian cen.</span>
+              </div>
+            </div>
+
+            <div class="modal-actions-row">
+              <a id="modalExternalLink" href="#" target="_blank" rel="noopener" class="btn-modal-primary">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+                Otwórz ogłoszenie w portalu
+              </a>
+              <button type="button" id="modalInspectCvBtn" class="btn-modal-secondary">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                Heatmapa Iconic Blue (CV)
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Column: Bielik AI Analysis & Description -->
+          <div class="modal-col-right">
+            <!-- Bielik AI Panel -->
+            <div class="bielik-panel">
+              <div class="bielik-panel-header">
+                <div class="bielik-title-group">
+                  <div class="bielik-logo-icon">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>
+                  </div>
+                  <div>
+                    <h3 class="bielik-title">Bielik AI — Druga Warstwa Weryfikacji & Ekspert</h3>
+                    <span class="bielik-subtitle" id="bielikModelSubtitle">Lokalny model SpeakLeash Bielik 11B (Ollama)</span>
+                  </div>
+                </div>
+                <button type="button" class="btn-bielik-action" id="btnRunBielik" onclick="triggerBielikAnalysis()">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  <span id="btnRunBielikText">Przeanalizuj Bielikiem</span>
+                </button>
+              </div>
+
+              <!-- Loading spinner -->
+              <div class="bielik-loading" id="bielikLoading" style="display:none">
+                <div class="bielik-spinner"></div>
+                <div class="bielik-loading-text">Bielik 11B weryfikuje treść, rocznik, zawieszenie SSS oraz stan silnika…</div>
+              </div>
+
+              <!-- Bielik Content -->
+              <div class="bielik-content" id="bielikContent">
+                <!-- Badges of key features -->
+                <div class="bielik-badges-grid" id="bielikBadgesGrid">
+                  <!-- filled dynamically: Kayaba SSS, Rama alu, itp. -->
+                </div>
+
+                <!-- Highlights -->
+                <div class="bielik-highlights-box" id="bielikHighlightsBox">
+                  <div class="bielik-box-label">Kluczowe cechy i stan techniczny:</div>
+                  <ul class="bielik-highlights-list" id="bielikHighlightsList"></ul>
+                </div>
+
+                <!-- Buyer Checkpoints (Model Knowledge) -->
+                <div class="bielik-checkpoints-box" id="bielikCheckpointsBox" style="display:none">
+                  <div class="bielik-box-label">Punkty kontrolne przy oględzinach (Baza Wiedzy):</div>
+                  <ul class="bielik-checkpoints-list" id="bielikCheckpointsList"></ul>
+                </div>
+
+                <!-- Summary Quote -->
+                <div class="bielik-summary-card" id="bielikSummaryCard">
+                  <div class="bielik-box-label">Podsumowanie eksperta dla kupującego:</div>
+                  <p class="bielik-summary-text" id="bielikSummaryText">Kliknij "Przeanalizuj Bielikiem", aby wygenerować wnikliwą analizę silnika, zawieszenia i stanu technicznego.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Description Card -->
+            <div class="modal-desc-card">
+              <h3 class="modal-section-heading">Treść ogłoszenia</h3>
+              <div class="modal-desc-body" id="modalDescBody">
+                <span class="text-muted">Ładowanie opisu…</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="cv-heatmap.js"></script>
   <script src="app.js"></script>

@@ -418,7 +418,7 @@
 
               <div class="cv-direct-link-row">
                 <a id="cvListingLink" href="#" target="_blank" rel="noopener" class="cv-external-link">
-                  Otwórz oryginalne ogłoszenie ↗
+                  Otwórz oryginalne ogłoszenie
                 </a>
                 <button type="button" class="btn-modal-reject" onclick="window.cvHeatmapEngine.rejectCurrentListing()" title="Trwale odrzuć ogłoszenie z bazy">
                   ✕ Odrzuć to ogłoszenie

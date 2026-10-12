@@ -1,0 +1,139 @@
+{
+  "id": "yz_250_2t",
+  "name": "Yamaha YZ 250 2T",
+  "category": "Motocross / Cross-Country 2T",
+  "engine_type": "2T",
+  "displacement_cc": 249,
+  "meter_unit": "MTH",
+  "street_legal_default": false,
+  "description": "Dwusuwowy motocykl crossowy produkowany bez przerwy od 1974 roku. Kluczowe punkty zwrotne to zmiana ramy na aluminiową w 2005 r. oraz zawieszenia na Kayaba SSS w 2006 r.",
+  "aliases": ["YZ 250", "YZ250", "YZ 250 2T", "YZ250 2T", "YZ 250X", "YZ250X"],
+  "generations": [
+    {
+      "period": "1999-2001",
+      "name": "Stalowa rama, silnik z nowo zaprojektowanym zaworem YPVS",
+      "min_year": 1999,
+      "max_year": 2001,
+      "frame": "Pojedyncza kołyskowa ze stali wysokowytrzymałej (malowana na niebiesko)",
+      "suspension": "Kayaba 46 mm (klasyczny cartridge)",
+      "carburetor": "Keihin PWK38",
+      "factory_features": [
+        "Debiut nowo zaprojektowanego silnika 249cc i zaworu YPVS (baza silnika używana do dziś)",
+        "Stalowa rama rurowa",
+        "Wąskie plastiki starszego typu",
+        "Zbiornik paliwa 8.0 L"
+      ],
+      "buyer_checklist": [
+        "Sprawdź geometrię i korozję ramy stalowej wokół główki i mocowań silnika",
+        "Prawidłowe otwieranie i brak zacięć zaworu YPVS",
+        "Luz łożysk kiwaka i główki ramy"
+      ]
+    },
+    {
+      "period": "2002-2004",
+      "name": "Ostatnia ewolucja ramy stalowej, gaźnik z TPS, golenie 48 mm",
+      "min_year": 2002,
+      "max_year": 2004,
+      "frame": "Udoskonalona, bardziej zwarta rama stalowa (nowa geometria i kąt główki)",
+      "suspension": "Kayaba 46 mm (2002-2003) / Kayaba 48 mm (od 2004 r., jeszcze bez SSS)",
+      "carburetor": "Keihin PWK38S z czujnikiem położenia przepustnicy (TPS)",
+      "factory_features": [
+        "Nowy kształt plastików, airboxa i zbiornika paliwa w 2002 r.",
+        "Gaźnik Keihin PWK38S z elektronicznym czujnikiem TPS dla lepszej mapy zapłonu CDI",
+        "Od 2004 r. grubsze rury widelca 48 mm (ale tradycyjny kartridż)"
+      ],
+      "buyer_checklist": [
+        "Bardzo często sprzedawcy mylą te roczniki lub celowo podają jako '2006+' po zmianie plastików",
+        "Sprawdź pęknięcia ramy przy mocowaniach podnóżków",
+        "Oryginalność gaźnika z czujnikiem TPS"
+      ]
+    },
+    {
+      "period": "2005",
+      "name": "Debiut ramy aluminiowej i zawieszenie AOSS (rok przejściowy)",
+      "min_year": 2005,
+      "max_year": 2005,
+      "frame": "Rama aluminiowa pół-podwójna kołyskowa (odlewy + profile wytłaczane) – spadek masy o ~2.5 kg",
+      "suspension": "Kayaba AOSS 48 mm (Air-Oil Separate System – UWAGA: to jeszcze NIE jest SSS!)",
+      "carburetor": "Keihin PWK38S z TPS",
+      "factory_features": [
+        "Pierwszy rocznik z ramą aluminiową w historii YZ 250",
+        "Zawieszenie AOSS montowane tylko w roczniku 2005",
+        "Nowy, sztywniejszy wahacz i nowa tylna oś",
+        "Masa motocykla zredukowana do ok. 96 kg (sucha)"
+      ],
+      "buyer_checklist": [
+        "Sprzedawcy często błędnie twierdzą, że rocznik 2005 ma zawieszenie SSS – fabrycznie to AOSS!",
+        "Sprawdź spawy ramy aluminiowej w okolicach główki i mocowania wahacza",
+        "Stan panewek w widelcu AOSS"
+      ]
+    },
+    {
+      "period": "2006-2014",
+      "name": "Złota era: Wprowadzenie legendarnego zawieszenia Kayaba SSS",
+      "min_year": 2006,
+      "max_year": 2014,
+      "frame": "Rama aluminiowa",
+      "suspension": "Kayaba SSS 48 mm (Speed Sensitive System) – uważane za najlepsze seryjne zawieszenie crossowe",
+      "carburetor": "Keihin PWK38S z TPS",
+      "factory_features": [
+        "Wprowadzenie widelca Kayaba SSS 48 mm (tłumienie czułe na prędkość ruchu tłoczyska zamiast pozycji)",
+        "Tytanowa sprężyna tylnego amortyzatora (w latach 2006-2012, od 2013 powrót do stali wysokowytrzymałej)",
+        "Kierownica Renthal Pro Taper / Fatbar 28.6 mm w standardzie",
+        "Tłumik wydłużony o 75 mm w 2011 r. (normy hałasu FIM)"
+      ],
+      "buyer_checklist": [
+        "Stan powłoki na lagach Kayaba SSS (brak przetarć anodowania)",
+        "Uważaj na 'przebieranki' – roczniki 2002-2004 ubrane w zestaw plastików Restyle udające 2015+",
+        "Dokumentacja remontu: rachunki za tłok (selekcja A/B), korbowód i ewentualną regenerację nikasilu cylindra"
+      ]
+    },
+    {
+      "period": "2015-2021",
+      "name": "Agresywny restyling plastików i powiększona tarcza przednia",
+      "min_year": 2015,
+      "max_year": 2021,
+      "frame": "Rama aluminiowa",
+      "suspension": "Kayaba SSS 48 mm (zaktualizowane zaworowanie i sprężyny)",
+      "carburetor": "Keihin PWK38S z TPS",
+      "factory_features": [
+        "Całkowicie nowe ostre plastiki (przedni błotnik, tablica numerowa, boczki, osłony chłodnic zapożyczone z 4T)",
+        "Nowy airbox i prowadzenie strugi powietrza",
+        "Szybka regulacja luzu klamki sprzęgła w locie",
+        "Od 2017 r. powiększona przednia tarcza hamulcowa z 250 mm do 270 mm"
+      ],
+      "buyer_checklist": [
+        "Weryfikuj rocznik po 10. znaku numeru VIN wybitym na główce ramy, a NIE po wyglądzie plastików",
+        "Luz kosza sprzęgłowego i stan pompy cieczy chłodzącej",
+        "W wersji YZ 250X (cross-country) sprawdź: inne zaworowanie SSS, 18-calowe koło tył, stopkę boczną i inną iglicę gaźnika"
+      ]
+    },
+    {
+      "period": "2022+",
+      "name": "Nowa generacja: Węższe nadwozie, prostoliniowy dolot i zmodernizowany układ hamulcowy",
+      "min_year": 2022,
+      "max_year": 2026,
+      "frame": "Rama aluminiowa najnowszej ewolucji",
+      "suspension": "Kayaba SSS 48 mm z nowym zaworowaniem na niskich prędkościach",
+      "carburetor": "Keihin PWK38S z nowym zoptymalizowanym dolotem powietrza",
+      "factory_features": [
+        "Znacznie węższe nadwozie (o 36 mm węższe w rejonie chłodnic)",
+        "Bardziej płaska kanapa i węższy profil zbiornika paliwa",
+        "Prostoliniowy kanał dolotowy pod siedzeniem zapewniający szybszą reakcję na odkręcenie manetki",
+        "Nowy, sztywniejszy przedni zacisk hamulcowy z większymi tłoczkami i nową tarczą 270 mm",
+        "Edycja Monster Energy Edition oraz 50th Anniversary Edition (2024 retro biało-fioletowa)"
+      ],
+      "buyer_checklist": [
+        "Weryfikacja faktycznych motogodzin (fabryczny lub akcesoryjny licznik indukcyjny)",
+        "Sprawdź czy motocykl nie był używany w profesjonalnych zawodach (stan chłodnic, felg, łożysk kół)",
+        "Oryginalność układu wydechowego lub zestrojenie z wydechem akcesoryjnym (DEP, FMF, Pro Circuit)"
+      ]
+    }
+  ],
+  "common_traps": [
+    "Kupowanie motocykla na ramie stalowej (sprzed 2005) w nowo dokupionych plastikach Restyle za cenę nowszej generacji",
+    "Przypisanie zawieszenia Kayaba SSS do rocznika 2005 (w 2005 było AOSS, SSS jest od 2006 wzwyż)",
+    "Mylenie przebiegu całkowitego z motogodzinami od remontu silnika (np. 72 MTH łącznie, a 6 MTH od remontu)",
+    "Niewłaściwy luz na tłoku lub zużyty nikasil w cylindrze po tanim remoncie bez pomiaru średnicówką"
+  ]
+}

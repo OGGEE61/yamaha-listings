@@ -9,6 +9,7 @@ const path = require('path');
 const { scrapeAll } = require('./scraper');
 const { runColorCheck } = require('./vision');
 const { checkListingActive } = require('./active_checker');
+const { checkOllamaStatus, analyzeListingWithBielik } = require('./bielik');
 const db = require('./db');
 
 const app = express();
@@ -93,6 +94,34 @@ app.post('/api/check-listing-active', (req, res) => {
     const result = checkListingActive(url);
     const updated = db.updateListingActiveStatus(id, result.isActive);
     res.json({ success: true, ...result, ...updated });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/bielik/status — check Ollama connection and Bielik model availability
+app.get('/api/bielik/status', async (req, res) => {
+  const status = await checkOllamaStatus();
+  res.json(status);
+});
+
+// GET /api/listing/:id — fetch single listing with price history and saved Bielik analysis
+app.get('/api/listing/:id', (req, res) => {
+  const listing = db.getListingById(req.params.id);
+  if (!listing) return res.status(404).json({ error: 'Listing not found' });
+  const priceHistory = db.getPriceHistory(req.params.id);
+  res.json({ listing, priceHistory });
+});
+
+// POST /api/bielik/analyze/:id — run Bielik AI analysis on a listing
+app.post('/api/bielik/analyze/:id', async (req, res) => {
+  const listing = db.getListingById(req.params.id);
+  if (!listing) return res.status(404).json({ error: 'Listing not found' });
+  const force = req.body?.force === true;
+  try {
+    const analysis = await analyzeListingWithBielik(listing, { force });
+    const updated = db.getListingById(req.params.id);
+    res.json({ success: true, analysis, listing: updated });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

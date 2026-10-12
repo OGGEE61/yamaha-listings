@@ -1,0 +1,137 @@
+{
+  "id": "wr_450f",
+  "name": "Yamaha WR 450F",
+  "category": "Hard Enduro / Cross-Country 450",
+  "engine_type": "4T (1-cylindrowy chłodzony cieczą DOHC)",
+  "displacement_cc": 449,
+  "meter_unit": "MTH",
+  "street_legal_default": true,
+  "description": "Potężny wyczynowy motocykl klasy open enduro. Łączy moc silnika 450 z szeroko zestopniowaną skrzynią biegów, oświetleniem i elektrycznym rozrusznikiem.",
+  "aliases": ["WR 450F", "WR450F", "WR 450 F", "WR450 F", "WR 450"],
+  "generations": [
+    {
+      "period": "2003-2006",
+      "name": "Stalowa rama, debiut silnika 450 i rozrusznika elektrycznego",
+      "min_year": 2003,
+      "max_year": 2006,
+      "frame": "Stalowa rama kołyskowa (stal wysokowytrzymała)",
+      "fuel_system": "Gaźnik Keihin FCR-MX 39 z pompką przyspieszacza",
+      "cylinder_head": "5-zaworowa głowica DOHC Genesis (zawory tytanowe)",
+      "starter": "Elektryczny rozrusznik + kickstarter",
+      "factory_features": [
+        "Następca modelu WR 426F – powiększony do 449 cm³ z nowym skokiem i średnicą tłoka",
+        "Fabryczny rozrusznik elektryczny",
+        "W 2004 r. poprawiony wał korbowy i sprzęgło rozrusznika (w roczniku 2003 potrafił ścinać klin na kole zamachowym)"
+      ],
+      "buyer_checklist": [
+        "W roczniku 2003 bezwzględnie sprawdź modyfikację koła zamachowego / rozrusznika (akcja serwisowa)",
+        "Stan łożysk wału i łańcuszka rozrządu (duża kompresja i moc powoduje szybsze zużycie)",
+        "Sprawdź czy motocykl odpala bez problemu z rozrusznika na gorącym silniku"
+      ]
+    },
+    {
+      "period": "2007-2011",
+      "name": "Rama aluminiowa i zawieszenie Kayaba SSS",
+      "min_year": 2007,
+      "max_year": 2011,
+      "frame": "Rama aluminiowa pół-podwójna kołyskowa (wprowadzona w 2007 r.)",
+      "fuel_system": "Gaźnik Keihin FCR-MX 39 z TPS",
+      "suspension": "Od 2008 r. fabryczne zawieszenie Kayaba SSS 48 mm",
+      "factory_features": [
+        "Znaczący spadek masy i wyższa sztywność dzięki ramie aluminiowej",
+        "Olej silnikowy w ramie / misce suchej",
+        "Zawieszenie Kayaba SSS od 2008 r. zapewniające doskonałe prowadzenie na szybkich odcinkach",
+        "Bardzo trwały i legendarnie niezawodny silnik 5-zaworowy"
+      ],
+      "buyer_checklist": [
+        "Stan gaźnika FCR 39 (zużycie korpusu i przepustnicy)",
+        "Szczelność układu chłodzenia (chłodnice podatne na zgięcia w terenie)",
+        "Dokumenty rejestracyjne (dowód rejestracyjny i tablica)"
+      ]
+    },
+    {
+      "period": "2012-2015",
+      "name": "Wprowadzenie wtrysku paliwa EFI i zwartej ramy z klasy 250",
+      "min_year": 2012,
+      "max_year": 2015,
+      "frame": "Zwarta aluminiowa rama dwubelgowa oparta na geometrii YZ 250F",
+      "fuel_system": "Elektroniczny wtrysk paliwa Keihin EFI (korpus 42 mm) z 12-otworowym wtryskiwaczem",
+      "cylinder_head": "Ostatnia ewolucja pancernej głowicy 5-zaworowej",
+      "factory_features": [
+        "Pierwszy rocznik z wtryskiem paliwa w historii WR 450F!",
+        "Kompaktowe wymiary motocykla zbliżone do klasy 250",
+        "Zawieszenie KYB SSS z nowym zaworowaniem enduro",
+        "Zbiornik paliwa 7.2 L"
+      ],
+      "buyer_checklist": [
+        "Stan pompy paliwa w zbiorniku i filtra paliwa",
+        "Diagnostyka układu ładowania (wtrysk wymaga w pełni sprawnej instalacji elektrycznej)",
+        "Stan zaworów i luzów zaworowych"
+      ]
+    },
+    {
+      "period": "2016-2018",
+      "name": "Odwrócona głowica cylindra 4-zaworowa",
+      "min_year": 2016,
+      "max_year": 2018,
+      "frame": "Nowa aluminiowa rama z optymalną sztywnością pod silnik z odwróconym cylindrem",
+      "fuel_system": "Wtrysk paliwa Keihin EFI 44 mm",
+      "cylinder_head": "Nowoczesna 4-zaworowa głowica z odwróconym przepływem (dolot z przodu, wydech z tyłu)",
+      "starter": "Elektryczny rozrusznik (od 2018 r. bez kickstartera)",
+      "factory_features": [
+        "Cylinder pochylony do tyłu dla centralizacji masy",
+        "Filtr powietrza umieszczony z przodu nad bakiem",
+        "Masa skupiona wokół środka ciężkości, co znacząco ułatwia manewrowanie maszyną 450"
+      ],
+      "buyer_checklist": [
+        "Kondycja akumulatora litowego",
+        "Sprawdź czy komputer nie wykazuje błędów czujników TPS/temperatury/ciśnienia",
+        "Stan klocków, tarcz i łożysk kół"
+      ]
+    },
+    {
+      "period": "2019-2023",
+      "name": "Generacja z modułem Wi-Fi Power Tuner i przełącznikiem map",
+      "min_year": 2019,
+      "max_year": 2023,
+      "frame": "Nowa, węższa aluminiowa rama dwubelgowa z YZ450F",
+      "fuel_system": "Wtrysk paliwa Mikuni / Keihin ze sterowaniem ze smartfona przez Wi-Fi",
+      "factory_features": [
+        "Zintegrowany moduł Wi-Fi CCU – darmowa aplikacja Yamaha Power Tuner pozwala zmieniać mapy zapłonu i paliwa telefonem",
+        "Niebieski przycisk zmiany mapy w locie na kierownicy",
+        "Większy zbiornik 7.9 L z czujnikiem rezerwy",
+        "Lżejszy i mocniejszy rozrusznik elektryczny"
+      ],
+      "buyer_checklist": [
+        "Połączenie z aplikacją Power Tuner i odczyt faktycznych motogodzin z ECU",
+        "Brak wycieków z lag i amortyzatora tylnego",
+        "Stan układu wydechowego i homologacji drogowej"
+      ]
+    },
+    {
+      "period": "2024+",
+      "name": "Najnowsza generacja: Zupełnie nowa platforma (-4 kg) i kontrola trakcji",
+      "min_year": 2024,
+      "max_year": 2026,
+      "frame": "Nowa super-zwarta rama aluminiowa oparta na mistrzowskiej YZ450F",
+      "fuel_system": "Wtrysk paliwa z kontrolą trakcji i wspomaganiem startu",
+      "factory_features": [
+        "Redukcja masy o ponad 4 kg w stosunku do poprzednika",
+        "Nowy, znacznie niższy i węższy profil kanapy i chłodnic",
+        "Nowy system kontroli trakcji z 2 poziomami ingerencji",
+        "Zawieszenie KYB SSS z beznarzędziową ręczną regulacją dobicia na widelcu"
+      ],
+      "buyer_checklist": [
+        "Prawidłowe działanie elektronicznej kontroli trakcji",
+        "Stan wizualny pod kątem uderzeń w kamienie w trudnym terenie",
+        "Dokumentacja zakupu u autoryzowanego dealera Yamahy"
+      ]
+    }
+  ],
+  "common_traps": [
+    "Kupno motocykla wyczynowego bez możliwości rejestracji (sprowadzonego z USA/Anglii bez homologacji COC)",
+    "Rocznik 2003 z uszkodzonym lub niewymienionym sprzęgiełkiem rozrusznika",
+    "Motocykle po amatorskim 'tuningowaniu' map, co prowadzi do przegrzewania silnika",
+    "Mylenie roczników gaźnikowych (do 2011) z modelami na wtrysku (od 2012 wzwyż)"
+  ]
+}

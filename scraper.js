@@ -349,14 +349,19 @@ async function fetchDetails(url) {
   if (!html) return { desc: '', image: null };
   const $ = cheerio.load(html);
   
-  let desc = '';
-  // Try JSON-LD first
+  let image = null;
+
+  // Try JSON-LD for description and image
   const jsonLdRegex = /<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi;
   let match;
   while ((match = jsonLdRegex.exec(html)) !== null) {
     try {
       const data = JSON.parse(match[1]);
       if (data.description) desc = data.description;
+      if (!image && data.image) {
+        if (Array.isArray(data.image) && data.image.length > 0) image = data.image[0];
+        else if (typeof data.image === 'string') image = data.image;
+      }
     } catch(e) {}
   }
   
@@ -370,7 +375,19 @@ async function fetchDetails(url) {
     desc = $('div[data-cy="ad_description"] > div').text().trim();
   }
   
-  const image = $('meta[property="og:image"]').attr('content') || null;
+  // Fallback to og:image if JSON-LD had no image
+  if (!image) {
+    const ogImg = $('meta[property="og:image"]').attr('content');
+    if (ogImg && !ogImg.includes('fb-image') && !ogImg.includes('placeholder')) {
+      image = ogImg;
+    }
+  }
+
+  // Fallback to gallery / photo HTML
+  if (!image) {
+    const galleryImg = $('img[src*="apollo.olxcdn.com"]').first().attr('src');
+    if (galleryImg) image = galleryImg;
+  }
   
   return { desc, image };
 }
@@ -450,6 +467,9 @@ async function scrapeAll() {
     const details = await fetchDetails(listing.url);
     if (details.image) {
       listing.image = details.image;
+    }
+    if (details.desc) {
+      listing.description = details.desc;
     }
     const finalModel = determineYamahaModel(listing.title, details.desc);
     if (finalModel) {

@@ -418,8 +418,13 @@ function renderListings(listings) {
       tagChip = `<span class="hitl-tag-chip" style="font-size:10px;cursor:pointer;" onclick="inspectCvListing('${escHtml(l.id)}')" title="Tag HITL: ${escHtml(l.iconic_blue_tag)}">${escHtml(l.iconic_blue_tag)}</span>`;
     }
 
+    let bielikChip = '';
+    if (l.bielik_verdict) {
+      bielikChip = `<span class="modal-badge-verdict ${getVerdictClass(l.bielik_verdict)}" style="font-size:10px;cursor:pointer;" onclick="event.stopPropagation(); openListingDetailModal('${escHtml(l.id)}')" title="Weryfikacja Bielik AI: ${escHtml(l.bielik_summary || l.bielik_verdict)}">${escHtml(l.bielik_verdict)}</span>`;
+    }
+
     return `
-      <article class="${cardClass}" id="card-${escHtml(l.id)}" data-id="${escHtml(l.id)}" style="${cardStyle}">
+      <article class="${cardClass}" id="card-${escHtml(l.id)}" data-id="${escHtml(l.id)}" style="${cardStyle}" onclick="handleCardClick(event, '${escHtml(l.id)}')">
         ${imgHtml}
         <div class="listing-body">
           <div class="listing-title">${escHtml(l.title)}</div>
@@ -431,12 +436,16 @@ function renderListings(listings) {
             ${cvBadge}
             ${tagChip}
             ${partsChips}
+            ${bielikChip}
             <span class="listing-source" style="background:var(--gray-200);color:var(--gray-800);border-color:var(--gray-300);">${escHtml(l.model || 'Unknown')}</span>
             <span class="listing-source">${escHtml(l.source || 'OLX.pl')}</span>
             ${inactiveBadge}
           </div>
         </div>
         <div class="listing-footer">
+          <button class="btn-bielik-card" onclick="event.stopPropagation(); openListingDetailModal('${escHtml(l.id)}')" title="Otwórz szczegóły, parametry i analizę Bielik AI">
+            Szczegóły & AI
+          </button>
           <button class="btn-cv-inspect" onclick="inspectCvListing('${escHtml(l.id)}')" title="Otwórz analizę Computer Vision i Heatmapę">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
             Heatmap CV
@@ -620,4 +629,411 @@ window.addEventListener('listing-rejected', (e) => {
     setTimeout(() => card.remove(), 320);
   }
 });
+
+// ──────────────────────────────────────────────
+// BIELIK AI & LISTING DETAIL MODAL CONTROLLER
+// ──────────────────────────────────────────────
+
+let currentModalListing = null;
+
+function getVerdictClass(verdict) {
+  if (!verdict) return 'verdict-positive';
+  const v = verdict.toLowerCase();
+  if (v.includes('warto') || v.includes('kupuj') || v.includes('dobr')) return 'verdict-positive';
+  if (v.includes('ostrożnie') || v.includes('dopytaj') || v.includes('uwaga')) return 'verdict-warning';
+  if (v.includes('błędny') || v.includes('odrzuć') || v.includes('nie')) return 'verdict-danger';
+  return 'verdict-positive';
+}
+
+function handleCardClick(event, id) {
+  if (event.target.closest('button, a, .badge-cv-hitl, .hitl-tag-chip')) {
+    return;
+  }
+  openListingDetailModal(id);
+}
+
+async function openListingDetailModal(id) {
+  const modal = document.getElementById('listingModal');
+  if (!modal) return;
+
+  let listing = currentRenderedListings.find(l => l.id === id) ||
+                (cachedFallbackListings && cachedFallbackListings.find(l => l.id === id));
+
+  let priceHistory = [];
+  try {
+    const res = await fetch(`/api/listing/${encodeURIComponent(id)}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.listing) listing = { ...listing, ...data.listing };
+      priceHistory = data.priceHistory || [];
+    }
+  } catch (_) {}
+
+  if (!listing) return;
+  currentModalListing = listing;
+
+  renderListingModalData(listing, priceHistory);
+  modal.showModal();
+}
+
+function closeListingModal() {
+  const modal = document.getElementById('listingModal');
+  if (modal) modal.close();
+}
+
+function renderListingModalData(l, priceHistory = []) {
+  // Title & Model badges
+  setText('modalListingTitle', l.title || 'Yamaha Listing');
+  setText('modalListingModel', l.model || 'Unknown Model');
+
+  const is2T = (l.model && (l.model.includes('2T') || l.model.includes('YZ 250') || l.model.includes('DT') || l.model.includes('IT')));
+  setText('modalListingEngine', is2T ? 'Dwusuw (2T)' : 'Czterosuw (4T)');
+
+  // Verdict badge
+  const verdictEl = document.getElementById('modalListingVerdict');
+  if (l.bielik_verdict) {
+    verdictEl.style.display = 'inline-block';
+    verdictEl.textContent = l.bielik_verdict;
+    verdictEl.className = `modal-badge-verdict ${getVerdictClass(l.bielik_verdict)}`;
+  } else {
+    verdictEl.style.display = 'none';
+  }
+
+  // Image & Price
+  const imgEl = document.getElementById('modalListingImg');
+  if (l.image) {
+    imgEl.src = l.image;
+    imgEl.style.display = 'block';
+  } else {
+    imgEl.src = 'favicon.png';
+  }
+
+  const priceText = l.price ? `${formatPrice(l.price)} ${l.currency || 'PLN'}` : 'Cena do uzgodnienia';
+  setText('modalListingPrice', priceText);
+
+  // Specs
+  const specsList = document.getElementById('modalSpecsList');
+  specsList.innerHTML = `
+    <div class="modal-spec-item">
+      <span class="modal-spec-label">Model katalogowy:</span>
+      <span class="modal-spec-value">${escHtml(l.model || 'Unknown')}</span>
+    </div>
+    <div class="modal-spec-item">
+      <span class="modal-spec-label">Pojemność silnika:</span>
+      <span class="modal-spec-value">${l.cc ? l.cc + ' cm³' : 'Nie podano'}</span>
+    </div>
+    <div class="modal-spec-item">
+      <span class="modal-spec-label">Lokalizacja:</span>
+      <span class="modal-spec-value">${escHtml(l.location || 'Polska')}</span>
+    </div>
+    <div class="modal-spec-item">
+      <span class="modal-spec-label">Źródło / Portal:</span>
+      <span class="modal-spec-value">${escHtml(l.source || 'OLX.pl')}</span>
+    </div>
+    <div class="modal-spec-item">
+      <span class="modal-spec-label">Pierwszy raz widziane:</span>
+      <span class="modal-spec-value">${l.first_seen ? timeAgo(l.first_seen) + ' (' + l.first_seen.slice(0, 10) + ')' : '—'}</span>
+    </div>
+    <div class="modal-spec-item">
+      <span class="modal-spec-label">Status ogłoszenia:</span>
+      <span class="modal-spec-value" id="modalActiveStatusValue" style="color:${l.is_active ? '#34d399' : '#f87171'}">
+        ${l.is_active ? 'Aktywne na portalu' : 'Archiwalne / Wygasłe'}
+        <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(l.id)}', '${escHtml(l.url)}')" style="margin-left:8px;font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid #3b82f6;background:rgba(59,130,246,0.2);color:#93c5fd;cursor:pointer;">Weryfikuj na żywo</button>
+      </span>
+    </div>
+    <div class="modal-spec-item">
+      <span class="modal-spec-label">Iconic Blue (Vision AI):</span>
+      <span class="modal-spec-value" style="color:${l.iconic_blue === 1 ? '#60a5fa' : '#94a3b8'}">${l.iconic_blue === 1 ? 'Wykryto fabryczny błękit' : 'Brak / Niebieski nieobecny'}</span>
+    </div>
+  `;
+
+  // Price history
+  const historyList = document.getElementById('modalPriceHistoryList');
+  if (priceHistory && priceHistory.length > 1) {
+    historyList.innerHTML = priceHistory.map((ph, idx) => {
+      const prev = priceHistory[idx + 1];
+      let diffHtml = '';
+      if (prev) {
+        const diff = ph.price - prev.price;
+        if (diff < 0) diffHtml = ` <span style="color:#34d399;font-weight:700;">(${diff} PLN)</span>`;
+        if (diff > 0) diffHtml = ` <span style="color:#f87171;font-weight:700;">(+${diff} PLN)</span>`;
+      }
+      return `
+        <div style="display:flex;justify-content:space-between;padding:3px 0;">
+          <span style="color:#94a3b8;">${new Date(ph.recorded_at).toLocaleDateString('pl-PL')}:</span>
+          <span style="color:#fff;font-weight:600;">${formatPrice(ph.price)} PLN${diffHtml}</span>
+        </div>`;
+    }).join('');
+  } else {
+    historyList.innerHTML = `<span style="color:#94a3b8;font-size:12px;">Cena nie zmieniała się od momentu dodania (${priceText}).</span>`;
+  }
+
+  // Links & actions
+  const linkEl = document.getElementById('modalExternalLink');
+  linkEl.href = l.url || '#';
+
+  const cvBtn = document.getElementById('modalInspectCvBtn');
+  cvBtn.onclick = () => {
+    closeListingModal();
+    if (window.inspectCvListing) inspectCvListing(l.id);
+  };
+
+  // Description
+  const descEl = document.getElementById('modalDescBody');
+  if (l.description && l.description.trim()) {
+    descEl.textContent = l.description.trim();
+  } else {
+    descEl.innerHTML = `<span style="color:#94a3b8;font-style:italic;">Pełny opis ogłoszenia nie został jeszcze zbuforowany. Kliknij "Przeanalizuj Bielikiem", aby automatycznie pobrać opis i przeanalizować maszynę.</span>`;
+  }
+
+  // Bielik Panel Content
+  let analysis = null;
+  if (l.bielik_analysis) {
+    try { analysis = JSON.parse(l.bielik_analysis); } catch (_) {}
+  }
+  renderListingModalBielik(analysis);
+}
+
+function renderListingModalBielik(analysis) {
+  const btnText = document.getElementById('btnRunBielikText');
+  const badgesGrid = document.getElementById('bielikBadgesGrid');
+  const highlightsBox = document.getElementById('bielikHighlightsBox');
+  const highlightsList = document.getElementById('bielikHighlightsList');
+  const checkpointsBox = document.getElementById('bielikCheckpointsBox');
+  const checkpointsList = document.getElementById('bielikCheckpointsList');
+  const summaryText = document.getElementById('bielikSummaryText');
+  const subtitleEl = document.getElementById('bielikModelSubtitle');
+
+  if (!analysis) {
+    btnText.textContent = 'Przeanalizuj Bielikiem';
+    badgesGrid.innerHTML = `
+      <span class="bielik-pill-feature feature-neutral">Czeka na analizę</span>
+      <span class="bielik-pill-feature feature-neutral">Baza Wiedzy Yamaha</span>
+      <span class="bielik-pill-feature feature-neutral">Weryfikacja generacji i stanu</span>
+    `;
+    highlightsBox.style.display = 'none';
+    if (checkpointsBox) checkpointsBox.style.display = 'none';
+    summaryText.textContent = 'Kliknij przycisk powyżej, aby uruchomić lokalny model Bielik 11B (Ollama) zasilony dedykowaną Bazą Wiedzy fabrycznych generacji Yamahy.';
+    subtitleEl.textContent = 'Lokalny model SpeakLeash Bielik 11B (Ollama)';
+    return;
+  }
+
+  btnText.textContent = 'Ponowna analiza (Ollama)';
+  if (analysis.model_used) {
+    const fam = analysis.model_family ? `${analysis.model_family} · ` : '';
+    subtitleEl.textContent = `${fam}Model: ${analysis.model_used} · Wygenerowano: ${analysis.analyzed_at ? new Date(analysis.analyzed_at).toLocaleTimeString('pl-PL') : 'teraz'}`;
+  }
+
+  // Badges
+  const badges = [];
+
+  // Model & Generation from Knowledge Base
+  if (analysis.generation_name) {
+    badges.push(`<span class="bielik-pill-feature feature-positive" title="Generacja z Bazy Wiedzy Yamahy">${escHtml(analysis.generation_name)}</span>`);
+  }
+
+  // Factory consistency
+  if (analysis.factory_consistency) {
+    const isWarning = analysis.factory_consistency.toLowerCase().includes('niezgodn') || analysis.factory_consistency.toLowerCase().includes('anomali');
+    badges.push(`<span class="bielik-pill-feature ${isWarning ? 'feature-warning' : 'feature-neutral'}" title="Weryfikacja spójności ze specyfikacją fabryczną">${escHtml(analysis.factory_consistency)}</span>`);
+  }
+
+  // Model-specific Kayaba SSS (only if applicable to this model family)
+  if (analysis.has_kayaba_sss === true) {
+    badges.push(`<span class="bielik-pill-feature feature-positive" title="Zawieszenie Kayaba Speed Sensitive System (fabryczne dla tego rocznika)">Zawieszenie Kayaba SSS</span>`);
+  } else if (analysis.has_kayaba_sss === false) {
+    badges.push(`<span class="bielik-pill-feature feature-warning" title="Starszy rocznik lub brak zawieszenia Kayaba SSS">Brak Kayaba SSS</span>`);
+  }
+
+  // Model-specific Aluminum Frame (only if applicable to this model family)
+  if (analysis.has_aluminum_frame === true) {
+    badges.push(`<span class="bielik-pill-feature feature-positive" title="Fabryczna rama aluminiowa">Rama aluminiowa</span>`);
+  } else if (analysis.has_aluminum_frame === false) {
+    badges.push(`<span class="bielik-pill-feature feature-neutral" title="Rama stalowa">Rama stalowa</span>`);
+  }
+
+  // Engine type
+  if (analysis.engine_type) {
+    badges.push(`<span class="bielik-pill-feature feature-neutral">Silnik ${escHtml(analysis.engine_type)}</span>`);
+  }
+
+  // Year
+  if (analysis.year) {
+    badges.push(`<span class="bielik-pill-feature feature-neutral">Rocznik ${escHtml(analysis.year)}</span>`);
+  }
+
+  // Mileage (MTH vs km)
+  const mileageVal = analysis.mileage_total || analysis.total_hours;
+  if (mileageVal) {
+    const label = (analysis.meter_unit === 'km' || String(mileageVal).toLowerCase().includes('km')) ? 'Przebieg' : 'Przebieg całkowity';
+    badges.push(`<span class="bielik-pill-feature feature-neutral">${label}: ${escHtml(mileageVal)}</span>`);
+  }
+
+  const rebuildVal = analysis.mileage_since_rebuild || analysis.hours_since_rebuild;
+  if (rebuildVal) {
+    badges.push(`<span class="bielik-pill-feature feature-positive">Od remontu: ${escHtml(rebuildVal)}</span>`);
+  }
+
+  if (analysis.engine_status && (!mileageVal || !analysis.engine_status.includes(mileageVal))) {
+    badges.push(`<span class="bielik-pill-feature feature-positive">Stan: ${escHtml(analysis.engine_status)}</span>`);
+  }
+
+  // Registration
+  if (analysis.is_registered === true) {
+    badges.push(`<span class="bielik-pill-feature feature-positive">Zarejestrowany / Homologacja</span>`);
+  } else if (analysis.is_registered === false) {
+    badges.push(`<span class="bielik-pill-feature feature-neutral">Brak homologacji</span>`);
+  }
+
+  badgesGrid.innerHTML = badges.join('');
+
+  // Highlights
+  if (analysis.highlights && analysis.highlights.length) {
+    highlightsBox.style.display = 'block';
+    highlightsList.innerHTML = analysis.highlights.map(h => `<li>${escHtml(h)}</li>`).join('');
+  } else {
+    highlightsBox.style.display = 'none';
+  }
+
+  // Buyer Checkpoints
+  if (checkpointsBox && checkpointsList) {
+    const checkpoints = analysis.buyer_checkpoints || [];
+    if (checkpoints.length) {
+      checkpointsBox.style.display = 'block';
+      checkpointsList.innerHTML = checkpoints.map(c => `<li>${escHtml(c)}</li>`).join('');
+    } else {
+      checkpointsBox.style.display = 'none';
+    }
+  }
+
+  // Summary
+  summaryText.textContent = analysis.summary || 'Brak podsumowania.';
+
+  // Verdict badge in header
+  const verdictEl = document.getElementById('modalListingVerdict');
+  if (analysis.verdict) {
+    verdictEl.style.display = 'inline-block';
+    verdictEl.textContent = analysis.verdict;
+    verdictEl.className = `modal-badge-verdict ${getVerdictClass(analysis.verdict)}`;
+  }
+}
+
+async function triggerBielikAnalysis() {
+  if (!currentModalListing) return;
+  const btn = document.getElementById('btnRunBielik');
+  const btnText = document.getElementById('btnRunBielikText');
+  const loading = document.getElementById('bielikLoading');
+  const content = document.getElementById('bielikContent');
+
+  btn.disabled = true;
+  btnText.textContent = 'Analizowanie…';
+  loading.style.display = 'flex';
+  content.style.opacity = '0.35';
+
+  try {
+    const res = await fetch(`/api/bielik/analyze/${encodeURIComponent(currentModalListing.id)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ force: true })
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+      throw new Error(errData.error || `HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (data.listing) {
+      currentModalListing = { ...currentModalListing, ...data.listing };
+      const idx = currentRenderedListings.findIndex(l => l.id === currentModalListing.id);
+      if (idx !== -1) {
+        currentRenderedListings[idx] = currentModalListing;
+        renderListings(currentRenderedListings);
+      }
+    }
+
+    renderListingModalBielik(data.analysis);
+    if (currentModalListing.description) {
+      document.getElementById('modalDescBody').textContent = currentModalListing.description;
+    }
+  } catch (err) {
+    alert(`Błąd Bielik AI: ${err.message}\nUpewnij się, że Ollama działa na http://localhost:11434.`);
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = 'Ponowna analiza';
+    loading.style.display = 'none';
+    content.style.opacity = '1';
+  }
+}
+
+// Light dismiss click outside modal
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('listingModal');
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      const rect = modal.getBoundingClientRect();
+      if (
+        e.clientX < rect.left ||
+        e.clientX > rect.right ||
+        e.clientY < rect.top ||
+        e.clientY > rect.bottom
+      ) {
+        modal.close();
+      }
+    });
+  }
+});
+
+async function verifyListingActiveLive(id, url) {
+  const statusEl = document.getElementById('modalActiveStatusValue');
+  if (!id || !url || !statusEl) return;
+
+  statusEl.innerHTML = `<span style="color:#f59e0b;animation:pulse 1.5s infinite">Sprawdzanie na portalu OLX…</span>`;
+
+  try {
+    const res = await fetch('/api/check-listing-active', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, url })
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    const isActive = data.isActive === true;
+    statusEl.innerHTML = `
+      <span style="color:${isActive ? '#34d399' : '#f87171'}">
+        ${isActive ? 'Aktywne na portalu' : 'Archiwalne / Wygasłe (' + (data.reason || 'Zakończone') + ')'}
+      </span>
+      <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(id)}', '${escHtml(url)}')" style="margin-left:8px;font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid #3b82f6;background:rgba(59,130,246,0.2);color:#93c5fd;cursor:pointer;">Sprawdź ponownie</button>
+    `;
+
+    // If fresh image was discovered during verification, update modal image
+    if (data.freshImage && (!currentModalListing.image || currentModalListing.image.includes('placeholder'))) {
+      currentModalListing.image = data.freshImage;
+      const imgEl = document.getElementById('modalListingImg');
+      if (imgEl) imgEl.src = data.freshImage;
+    }
+
+    if (currentModalListing && currentModalListing.id === id) {
+      currentModalListing.is_active = isActive ? 1 : 0;
+    }
+    const idx = currentRenderedListings.findIndex(l => l.id === id);
+    if (idx !== -1) {
+      currentRenderedListings[idx].is_active = isActive ? 1 : 0;
+      renderListings(currentRenderedListings);
+    }
+  } catch (err) {
+    statusEl.innerHTML = `
+      <span style="color:#f87171">Błąd sprawdzania: ${escHtml(err.message)}</span>
+      <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(id)}', '${escHtml(url)}')" style="margin-left:8px;font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid #3b82f6;background:rgba(59,130,246,0.2);color:#93c5fd;cursor:pointer;">Ponów</button>
+    `;
+  }
+}
+
+window.openListingDetailModal = openListingDetailModal;
+window.closeListingModal = closeListingModal;
+window.handleCardClick = handleCardClick;
+window.triggerBielikAnalysis = triggerBielikAnalysis;
+window.verifyListingActiveLive = verifyListingActiveLive;
+
 

@@ -3,5 +3,7 @@ node_modules/
 .env
 .wrangler/
 listings.db*
+*.db
+data.db
 listings.json
 public/listings.json

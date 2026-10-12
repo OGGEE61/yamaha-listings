@@ -92,6 +92,11 @@ db.exec(`
     iconic_blue_title:      'TEXT',
     search_url:             'TEXT',
     iconic_blue_tag:        'TEXT',
+    description:            'TEXT',
+    bielik_summary:         'TEXT',
+    bielik_analysis:        'TEXT',
+    bielik_checked_at:      'TEXT',
+    bielik_verdict:         'TEXT',
   };
   for (const [name, type] of Object.entries(newCols)) {
     if (!existingCols.has(name)) db.exec(`ALTER TABLE listings ADD COLUMN ${name} ${type} DEFAULT ${(type === 'INTEGER' ? '0' : 'NULL')}`);
@@ -125,9 +130,9 @@ function exportPublicJson() {
 const stmtGet    = db.prepare('SELECT * FROM listings WHERE id = ?');
 const stmtInsert = db.prepare(`
   INSERT INTO listings
-    (id, title, model, price, currency, location, url, image, cc, source, first_seen, last_seen, valid_until, is_active, search_url)
+    (id, title, model, price, currency, location, url, image, cc, source, first_seen, last_seen, valid_until, is_active, search_url, description)
   VALUES
-    (@id, @title, @model, @price, @currency, @location, @url, @image, @cc, @source, @first_seen, @last_seen, @valid_until, 1, @search_url)
+    (@id, @title, @model, @price, @currency, @location, @url, @image, @cc, @source, @first_seen, @last_seen, @valid_until, 1, @search_url, @description)
 `);
 const stmtUpdate = db.prepare(`
   UPDATE listings SET
@@ -139,6 +144,7 @@ const stmtUpdate = db.prepare(`
     cc          = @cc,
     last_seen   = @last_seen,
     valid_until = @valid_until,
+    description = COALESCE(@description, description),
     is_active   = 1
   WHERE id = @id
 `);
@@ -188,6 +194,7 @@ function upsertListings(newItems) {
           cc:          item.cc !== undefined ? item.cc : existing.cc,
           last_seen:   now,
           valid_until: item.validUntil || null,
+          description: item.description || null,
         });
 
         if (priceChanged) {
@@ -211,6 +218,7 @@ function upsertListings(newItems) {
           last_seen:   now,
           valid_until: item.validUntil || null,
           search_url:  item.searchUrl || null,
+          description: item.description || null,
         });
 
         if (item.price !== null && item.price !== undefined) {
@@ -457,6 +465,23 @@ function rejectListing(id, reason = 'Odrzucone manualnie') {
   return { success: true, id, url, title, reason, rejected_at: now };
 }
 
+function getListingById(id) {
+  return db.prepare('SELECT * FROM listings WHERE id = ?').get(id);
+}
+
+function saveBielikAnalysis(id, { summary, verdict, analysisJson, description }) {
+  db.prepare(`
+    UPDATE listings SET
+      bielik_summary = ?,
+      bielik_verdict = ?,
+      bielik_analysis = ?,
+      bielik_checked_at = ?,
+      description = COALESCE(?, description)
+    WHERE id = ?
+  `).run(summary, verdict, analysisJson, new Date().toISOString(), description || null, id);
+  exportPublicJson();
+}
+
 module.exports = {
   upsertListings,
   markInactiveIfNotSeen,
@@ -465,6 +490,8 @@ module.exports = {
   getRejectedIds,
   getRejectedListings,
   getListings,
+  getListingById,
+  saveBielikAnalysis,
   getStats,
   recordScrapeRun,
   finishScrapeRun,

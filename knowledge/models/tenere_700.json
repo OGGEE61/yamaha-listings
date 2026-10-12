@@ -1,0 +1,105 @@
+{
+  "id": "tenere_700",
+  "name": "Yamaha Ténéré 700 (T7)",
+  "category": "Adventure / Dual-Sport",
+  "engine_type": "4T (2-cylindrowy rzędowy Crossplane CP2)",
+  "displacement_cc": 689,
+  "meter_unit": "km",
+  "street_legal_default": true,
+  "description": "Lekki motocykl wyprawowo-turystyczny z silnikiem CP2 (270° crossplane). Wyróżnia się prostotą, brakiem zbędnej elektroniki i świetnymi właściwościami terenowymi na kołach 21/18 cali.",
+  "aliases": ["Tenere 700", "Tenere", "T7", "T700", "XTZ 700", "XTZ700", "XTZ690"],
+  "generations": [
+    {
+      "period": "2019-2020",
+      "name": "Generacja Euro 4: Debiut T7, pionowy wyświetlacz LCD",
+      "min_year": 2019,
+      "max_year": 2020,
+      "emission_standard": "Euro 4",
+      "display": "Pionowy monochromatyczny ekran LCD w rajdowym stylu",
+      "abs_system": "Bosch 9.1 MP – 2 tryby: włączony (domyślny) lub całkowicie wyłączony przyciskiem na kokpicie",
+      "suspension": "Przód: odwrócony widelec KYB 43 mm z regulacją odbicia i dobicia (skok 210 mm); Tył: centralny amortyzator KYB z hydraulicznym pokrętłem napięcia wstępnego (skok 200 mm)",
+      "factory_features": [
+        "Silnik CP2 o mocy 73.4 KM i momencie 68 Nm",
+        "Rama podwójna kołyskowa ze stali wysokowytrzymałej z odkręcaną dolną kołyską",
+        "Szprychowe koła 21 cali przód i 18 cali tył (opony dętkowe Pirelli Scorpion Rally STR)",
+        "Zbiornik paliwa 16 litrów (zasięg ok. 350 km)",
+        "Reflektor przedni 4-soczewkowy LED",
+        "Masa z płynami: 204 kg"
+      ],
+      "buyer_checklist": [
+        "Sprawdź korozję szprych kół – pierwsze serie miały akcję serwisową lub problem z rdzewieniem nypli/szprych",
+        "Luz łożyska główki ramy i stan łożysk kiwaka zawieszenia (fabrycznie mało smaru)",
+        "Sprawdź czy rama pomocnicza pod tłumikiem nie jest skrzywiona po upadku w terenie (oryginalne mocowanie tłumika łatwo ulegało zgięciu)",
+        "Stan dolnej płyty ochronnej silnika i stan rur wydechowych"
+      ]
+    },
+    {
+      "period": "2021-2022",
+      "name": "Generacja Euro 5: Zmodyfikowany układ wydechowy i debiut wersji Rally",
+      "min_year": 2021,
+      "max_year": 2022,
+      "emission_standard": "Euro 5",
+      "display": "Pionowy monochromatyczny ekran LCD",
+      "abs_system": "Bosch – włączony lub wyłączony przyciskiem na kokpicie",
+      "suspension": "KYB 43 mm (skok 210 mm przód / 200 mm tył)",
+      "factory_features": [
+        "Silnik dostosowany do normy Euro 5 (nowy katalizator, zmienione mapy zapłonu, moc 73.4 KM zachowana)",
+        "Nowy design osłony termicznej wydechu",
+        "Debiut wersji Rally Edition: barwy Heritage Blue z żółtymi akcentami, tytanowy tłumik Akrapovič, płyta silnika 4 mm, wysoka kanapa (+20 mm), kierunkowskazy LED",
+        "W 2022 r. premiera wersji World Raid (dwukomorowy zbiornik 23 L, amortyzator Öhlins)"
+      ],
+      "buyer_checklist": [
+        "Weryfikacja czy wersja 'Rally' to faktyczny model fabryczny z dowodu (kod producenta), czy tylko oklejony model standardowy",
+        "Stan łańcucha i prowadnicy łańcucha (fabryczna prowadnica jest delikatna)",
+        "Sprawdź działanie wentylatora chłodnicy i brak wycieków z pompy wody"
+      ]
+    },
+    {
+      "period": "2023+",
+      "name": "Generacja z kolorowym ekranem TFT 5 cali i 3 trybami ABS",
+      "min_year": 2023,
+      "max_year": 2026,
+      "emission_standard": "Euro 5",
+      "display": "Kolorowy 5-calowy wyświetlacz TFT (2 motywy graficzne: Explorer oraz Street) z łącznością Bluetooth Yamaha MyRide",
+      "abs_system": "3-trybowy układ ABS sterowany z menu kierownicy: Tryb 1 (oba koła aktywne), Tryb 2 (tył wyłączony, przód aktywny – idealny na szuter), Tryb 3 (oba koła wyłączone)",
+      "suspension": "KYB 43 mm (210 mm) w standardzie; w wersjach Extreme/World Raid wydłużony skok do 230 mm",
+      "factory_features": [
+        "Nowy panel przełączników na kierownicy z rolką do nawigacji po menu TFT",
+        "Fabryczne przygotowanie okablowania pod opcjonalny Quickshifter (QSS)",
+        "Nowe kierunkowskazy LED w standardzie",
+        "Nowa klamka przedniego hamulca z regulacją odległości",
+        "Rozszerzenie gamy o wersje: World Raid (23L zbiornik), Extreme (zawieszenie KYB 230 mm, wysoki błotnik) i Explore (obniżona o 15 mm, turystyczna)"
+      ],
+      "buyer_checklist": [
+        "Działanie i parowanie ekranu TFT z aplikacją MyRide",
+        "Stan powłoki lakierniczej pod torbami wyprawowymi (szczególnie na ramie i tylnych plastikach)",
+        "Sprawdź czy opcjonalny quickshifter działa płynnie (jeśli zainstalowany)",
+        "Dokumentacja przeglądów gwarancyjnych w ASO Yamahy"
+      ]
+    }
+  ],
+  "special_editions": [
+    {
+      "name": "World Raid (2022+)",
+      "specs": "Podwójny boczny zbiornik paliwa o łącznej pojemności 23 L (dwa osobne wlewy), zawieszenie KYB o skoku 230 mm przód / 220 mm tył, regulowany amortyzator skrętu Öhlins, kanapa dwuczęściowa 890 mm"
+    },
+    {
+      "name": "Rally Edition (2020+)",
+      "specs": "Niebiesko-żółte malowanie retro Sonauto/Gaston Rahier, tłumik Akrapovič Slip-on, gruba płyta 4 mm pod silnik, wysoka rajdowa kanapa jednoczęściowa, osłona chłodnicy i łańcucha"
+    },
+    {
+      "name": "Extreme Edition (2024+)",
+      "specs": "Skok zawieszenia 230 mm przód i 220 mm tył (kartridż z powłoką Kashima), wysoki błotnik enduro, tytanowe podnóżki o 35% większej powierzchni"
+    },
+    {
+      "name": "Explore Edition (2024+)",
+      "specs": "Obniżone zawieszenie (skok 190 mm przód / 180 mm tył), kanapa na wysokości 860 mm, wyższa o 50% szyba turystyczna, seryjne stelaże pod kufry"
+    }
+  ],
+  "common_traps": [
+    "Próba sprzedaży motocykla bazowego oklejonego naklejkami 'Rally' w zawyżonej cenie (brak wydechu Akrapovič, brak płyty 4 mm)",
+    "Pogięte mocowanie tłumika na ramie po szlifie – w T7 wspornik jest zintegrowany ze stalową ramą!",
+    "Ukryte uszkodzenia szprych lub zgięte ranty przedniej felgi 21 cali po uderzeniu w kamień na niskim ciśnieniu",
+    "Motocykle po wypożyczalniach lub szkołach jazdy offroad z dużym stopniem zużycia sprzęgła i łożysk"
+  ]
+}

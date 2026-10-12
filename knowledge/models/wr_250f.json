@@ -1,0 +1,121 @@
+{
+  "id": "wr_250f",
+  "name": "Yamaha WR 250F",
+  "category": "Hard Enduro / Cross-Country 4T",
+  "engine_type": "4T (1-cylindrowy chłodzony cieczą DOHC)",
+  "displacement_cc": 250,
+  "meter_unit": "MTH",
+  "street_legal_default": true,
+  "description": "Wyczynowy motocykl enduro o pojemności 250 cm³. Wyposażony w oświetlenie, rozrusznik elektryczny, 6-biegową skrzynię i łagodniejszą charakterystykę zapłonu niż crossowa YZ 250F.",
+  "aliases": ["WR 250F", "WR250F", "WR 250 F", "WR250 F", "WR 250"],
+  "generations": [
+    {
+      "period": "2001-2002",
+      "name": "Stalowa rama, kickstarter (brak rozrusznika)",
+      "min_year": 2001,
+      "max_year": 2002,
+      "frame": "Stalowa rama kołyskowa",
+      "fuel_system": "Gaźnik Keihin FCR-MX 37 z pompką przyspieszacza",
+      "starter": "Tylko kickstarter (rozrusznik nożny z manualnym dekompresatorem na kierownicy w 2001-2002)",
+      "cylinder_head": "5-zaworowa głowica DOHC Genesis (3 zawory dolotowe tytanowe, 2 wydechowe)",
+      "factory_features": [
+        "Debiut motocykla WR 250F jako lżejszego brata WR 400F/426F",
+        "Wąska stalowa rama",
+        "Oświetlenie enduro zasilane z prądnicy",
+        "Brak elektrycznego rozrusznika"
+      ],
+      "buyer_checklist": [
+        "Ciężkie odpalanie na zimno/ciepło – manualny dekompresator wymaga wprawy",
+        "Luzy zaworowe na 5 zaworach tytanowych",
+        "Pęknięcia ramy i stan łożysk kiwaka"
+      ]
+    },
+    {
+      "period": "2003-2006",
+      "name": "Wprowadzenie rozrusznika elektrycznego (e-start) i automatycznego dekompresatora",
+      "min_year": 2003,
+      "max_year": 2006,
+      "frame": "Stalowa rama kołyskowa",
+      "fuel_system": "Gaźnik Keihin FCR-MX 37 z TPS",
+      "starter": "Elektryczny rozrusznik (e-start) + kickstarter awaryjny, automatyczny dekompresator na wałku",
+      "cylinder_head": "5-zaworowa tytanowa",
+      "factory_features": [
+        "Wprowadzenie elektrycznego rozrusznika w 2003 r. (kluczowy punkt w historii modelu!)",
+        "Nowy wałek wydechowy z automatycznym dekompresatorem",
+        "Nowy kształt plastików i zbiornika paliwa w 2003 r."
+      ],
+      "buyer_checklist": [
+        "Działanie rozrusznika elektrycznego na zimnym i gorącym silniku (stan sprzęgła jednokierunkowego / bendixa)",
+        "Zużycie zaworów tytanowych (gdy 'siadają', silnik przestaje odpalać z rozrusznika – konieczna wymiana, nie wolno docierać pastą!)",
+        "Stan gaźnika FCR (zużycie przepustnicy i uszczelki korpusu)"
+      ]
+    },
+    {
+      "period": "2007-2014",
+      "name": "Debiut ramy aluminiowej i zawieszenia Kayaba SSS",
+      "min_year": 2007,
+      "max_year": 2014,
+      "frame": "Rama aluminiowa pół-podwójna kołyskowa wprowadzona w 2007 r.",
+      "fuel_system": "Gaźnik Keihin FCR-MX 37 z TPS (niezwykle dopracowany w tych rocznikach)",
+      "starter": "Elektryczny rozrusznik + kickstarter",
+      "suspension": "Od 2008 r. fabryczne zawieszenie Kayaba SSS z nastawami pod enduro",
+      "factory_features": [
+        "Nowoczesna, sztywna rama aluminiowa od 2007 r.",
+        "Zawieszenie Kayaba SSS 48 mm od 2008 r. (legendarna płynność wybierania korzeni i kamieni)",
+        "Ostatnia generacja z gaźnikiem Keihin FCR (prosta w naprawach i regulacjach)"
+      ],
+      "buyer_checklist": [
+        "Weryfikacja czy motocykl ma dokumenty do rejestracji (homologacja drogowa)",
+        "Stan łańcuszka rozrządu i zużycie kosza sprzęgłowego",
+        "Luz na łożysku dolnym amortyzatora PDS/kiwaka"
+      ]
+    },
+    {
+      "period": "2015-2019",
+      "name": "Rewolucja: Odwrócona głowica cylindra i wtrysk paliwa EFI",
+      "min_year": 2015,
+      "max_year": 2019,
+      "frame": "Nowa aluminiowa rama dwubelgowa (oparta na crossowej YZ 250F)",
+      "fuel_system": "Elektroniczny wtrysk paliwa Keihin EFI (korpus 44 mm)",
+      "cylinder_head": "4-zaworowa głowica odwrócona (dolot z przodu, wydech z tyłu pod kanapą)",
+      "starter": "Elektryczny rozrusznik (od 2017 r. całkowity brak kickstartera dla redukcji masy)",
+      "factory_features": [
+        "Całkowicie nowa konstrukcja silnika zapożyczona z YZ 250F z pochylonym do tyłu cylindrem",
+        "Airbox z filtrem powietrza umieszczony z przodu nad silnikiem (czystsze powietrze, mniej kurzu)",
+        "6-biegowa skrzynia o szerokim zestopniowaniu (wide-ratio)",
+        "Zbiornik paliwa 7.5 L schowany centralnie pod siedzeniem"
+      ],
+      "buyer_checklist": [
+        "Diagnostyka wtrysku paliwa i stan pompy paliwa w zbiorniku",
+        "Stan akumulatora litowo-jonowego (brak kickstartera oznacza zależność od baterii)",
+        "Weryfikacja czasu pracy silnika z komputera ECU"
+      ]
+    },
+    {
+      "period": "2020+",
+      "name": "Najnowsza generacja: Kompaktowa rama z YZ250F i aplikacja Power Tuner",
+      "min_year": 2020,
+      "max_year": 2026,
+      "frame": "Aluminiowa rama dwubelgowa najnowszej generacji zoptymalizowana pod enduro",
+      "fuel_system": "Wtrysk paliwa Mikuni / Keihin z podwójną mapą przełączaną z kierownicy",
+      "starter": "Lekki rozrusznik elektryczny najnowszej generacji",
+      "factory_features": [
+        "Zintegrowany moduł Wi-Fi (Communication Control Unit) – mapowanie zapłonu i wtrysku z telefonu przez aplikację Yamaha Power Tuner",
+        "Przełącznik dwóch map zapłonu na kierownicy (mapa agresywna / mapa na błoto)",
+        "Zawieszenie KYB SSS z nowym zaworowaniem enduro",
+        "Większy zbiornik paliwa 7.9 L z czujnikiem rezerwy"
+      ],
+      "buyer_checklist": [
+        "Prawidłowe działanie połączenia Wi-Fi z aplikacją Power Tuner",
+        "Rzeczywisty przebieg z ECU (motogodziny rejestrowane bezpośrednio w sterowniku silnika)",
+        "Stan prowadnicy łańcucha, osłon ramy i chłodnic"
+      ]
+    }
+  ],
+  "common_traps": [
+    "Kupowanie motocykla sprowadzonego zza granicy bez dokumentów – w Polsce bez kompletu dokumentów NIE zarejestrujesz go jako enduro!",
+    "Mylenie WR 250F (wyczynowe hard enduro z częstymi wymianami oleju co 10-15 MTH) z cywilną WR 250R (dual-sport z serwisem co 5000 km)",
+    "Zajechane zawory tytanowe w modelach gaźnikowych 2003-2014 po tanich remontach",
+    "Uszkodzone sprzęgiełko rozrusznika elektrycznego w starych rocznikach (charakterystyczne metaliczne zgrzytanie przy rozruchu)"
+  ]
+}

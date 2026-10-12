@@ -1,0 +1,92 @@
+{
+  "id": "yamaha_vintage",
+  "name": "Yamaha Vintage (Klasyki Enduro / Trail: DT, XT, TT, IT)",
+  "category": "Classic Enduro / Trail / Vintage 2T & 4T",
+  "engine_type": "2T (DT, IT) / 4T (XT, TT)",
+  "displacement_cc": 125,
+  "meter_unit": "km",
+  "street_legal_default": true,
+  "description": "Kolekcja kultowych klasyków enduro i trail Yamahy z lat 70., 80. i 90. Obejmuje dwusuwowe DT i IT oraz pancerne czterosuwowe XT i TT.",
+  "aliases": ["Yamaha Vintage", "DT", "DT 125", "DT125", "DT 125R", "DT 125X", "XT", "XT 600", "XT600", "XT 500", "TT", "TT 600", "TT 350", "IT", "IT 175", "IT 250", "IT 490"],
+  "submodels": [
+    {
+      "model": "Yamaha DT 125 (LC / R / X / RE)",
+      "engine": "2T 124 cm³ chłodzony cieczą z zaworem wydechowym YPVS",
+      "periods": [
+        {
+          "period": "1988-2003 (DT 125 R)",
+          "features": "Legendarny, podatny na odblokowanie silnik Minarelli/Yamaha (z 15 KM do ~25 KM), gaźnik Mikuni TM28SS, tylko kickstarter, koła 21/18 cali, stalowa rama kołyskowa"
+        },
+        {
+          "period": "2004-2007 (DT 125 RE / DT 125 X)",
+          "features": "Wprowadzenie elektrycznego rozrusznika (e-start), katalizator w wydechu, wersja supermoto DT 125 X na kołach 17 cali z większą tarczą 298 mm"
+        }
+      ],
+      "buyer_checklist": [
+        "Sprawdź działanie serwomotoru i zaworu YPVS (charakterystyczne bzyczenie po przekręceniu stacyjki 'bzz-bzz')",
+        "Oryginalność cylindra (oznaczenie 3MB) – unikaj tanich chińskich zamienników bez powłoki",
+        "Stan dozownika oleju Autolube (wielu użytkowników go odłącza i leje mieszankę do baku)",
+        "Kompletność dokumentów do rejestracji na kategorię A1 / B"
+      ]
+    },
+    {
+      "model": "Yamaha XT 600 / XT 500",
+      "engine": "4T 1-cylindrowy chłodzony powietrzem i olejem, 4-zaworowy (XT 600) / 2-zaworowy (XT 500)",
+      "periods": [
+        {
+          "period": "1976-1989 (XT 500)",
+          "features": "Legenda pierwszych rajdów Paryż-Dakar, 2 zawory, kickstarter z manualnym dekompresatorem i szkiełkiem kontrolnym położenia tłoka na głowicy"
+        },
+        {
+          "period": "1984-1989 (XT 600 43F / 2KF)",
+          "features": "Klasyczne surowe enduro: gaźnik podwójny YDIS (1 komorowy mechaniczny + 1 podciśnieniowy), tarcza przód, kickstarter, sucha miska w ramie"
+        },
+        {
+          "period": "1990-2003 (XT 600 E / 3TB)",
+          "features": "Wersja wyprawowa z rozrusznikiem elektrycznym (E), niżej zawieszona, stalowy zbiornik paliwa, kultowa niezawodność"
+        }
+      ],
+      "buyer_checklist": [
+        "Stan gaźnika YDIS (sparciałe membrany podciśnieniowe drugiej komory powodują dławienie przy wyższych obrotach)",
+        "Korozja zbiornika paliwa od wewnątrz (częsty problem po wieloletnim postoju)",
+        "Dymienie na zimno (zużyte uszczelniacze zaworowe i pierścienie tłokowe)",
+        "Szczelność chłodnicy oleju i przewodów magistrali olejowej"
+      ]
+    },
+    {
+      "model": "Yamaha TT 350 / TT 600",
+      "engine": "4T 1-cylindrowy chłodzony powietrzem – lżejszy i bardziej wyczynowy wariant XT",
+      "features": [
+        "Dłuższy skok zawieszenia (270-280 mm) niż w turystycznych modelach XT",
+        "Plastikowy zbiornik paliwa odporny na wgniecenia",
+        "Brak akumulatora w starszych wersjach (uproszczona lekka instalacja)",
+        "Aluminiowy wahacz i lżejsza rama"
+      ],
+      "buyer_checklist": [
+        "Dostępność rzadkich części (specyficzne dla TT plastiki, filtr powietrza i kanapa są trudno dostępne)",
+        "Luz łożysk zawieszenia Monocross i stan tylnego amortyzatora",
+        "Weryfikacja czy motocykl posiada dokumenty do rejestracji (wiele TT było sprzedawanych bez homologacji)"
+      ]
+    },
+    {
+      "model": "Yamaha IT 175 / IT 250 / IT 490 (1976-1986)",
+      "engine": "2T chłodzony powietrzem z zaworem membranowym Reed Valve",
+      "features": [
+        "Seria 'International Trials' – profesjonalne dwusuwowe maszyny enduro w charakterystycznym błękitnym kolorze (Chappy Blue)",
+        "Duży zbiornik paliwa z torbą na narzędzia",
+        "Silniki oparte na crossowych YZ, ale z cięższym kołem zamachowym dla lepszej trakcji"
+      ],
+      "buyer_checklist": [
+        "Unikat kolekcjonerski – weryfikacja oryginalności numerów ramy i silnika (matching numbers)",
+        "Stan żeberek chłodzących na cylindrze i głowicy (często połamane po upadkach)",
+        "Oryginalność gaźnika Mikuni i układu zapłonowego CDI"
+      ]
+    }
+  ],
+  "common_traps": [
+    "Kupno klasyka po chałupniczych 'remontach' instalacji elektrycznej (pocięte wiązki, brak regulatora napięcia)",
+    "Brak dokumentacji rejestracyjnej (zagubiony dowód rejestracyjny sprzed lat) – trudna lub niemożliwa ponowna rejestracja w Polsce",
+    "Nieoryginalne chińskie gaźniki i plastiki montowane w miejsce drogich oryginalnych części",
+    "Zatarte mechanizmy YPVS lub zablokowane na stałe w pozycji otwartej w modelach DT 125"
+  ]
+}

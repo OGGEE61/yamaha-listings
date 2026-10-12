@@ -1,0 +1,68 @@
+{
+  "id": "xj6",
+  "name": "Yamaha XJ6 Naked",
+  "category": "Road / Naked 600",
+  "engine_type": "4T (4-cylindrowy rzędowy DOHC 16V chłodzony cieczą)",
+  "displacement_cc": 600,
+  "meter_unit": "km",
+  "street_legal_default": true,
+  "description": "Przyjazny szosowy motocykl typu naked z elastycznym 4-cylindrowym silnikiem 600 cm³ o mocy 78 KM. Ceniony za bezawaryjność, niskie koszty eksploatacji i łatwość prowadzenia.",
+  "aliases": ["XJ6", "XJ 6", "XJ6N", "XJ6-N", "XJ6 Naked"],
+  "generations": [
+    {
+      "period": "2009-2012",
+      "name": "Pierwsza seria XJ6-N Naked",
+      "min_year": 2009,
+      "max_year": 2012,
+      "frame": "Stalowa rama rurowa typu Diamond o małym przekroju",
+      "fuel_system": "Elektroniczny wtrysk paliwa z podwójnymi przepustnicami",
+      "engine_specs": "Moc 78 KM (57 kW) przy 10 000 obr./min, moment 59.7 Nm przy 8 500 obr./min",
+      "factory_features": [
+        "Kompaktowy układ wydechowy 4-w-1 umieszczony centralnie pod silnikiem",
+        "Pojedynczy reflektor przedni o charakterystycznym kształcie z małą blendą zegarów",
+        "Jednoczęściowy stalowy uchwyt dla pasażera z tyłu",
+        "Dostępna wersja z układem ABS (XJ6-NA) lub bez ABS",
+        "Wysokość kanapy 785 mm (bardzo przystępna dla niższych kierowców)"
+      ],
+      "buyer_checklist": [
+        "Sprawdź czy to fabryczny model XJ6 Naked (kod XJ6-N), a NIE powypadkowa wersja Diversion (S lub F) z usuniętą rozbitą czaszą i zamontowaną tanią lampą uniwersalną!",
+        "Obecność układu ABS: sprawdź pompę ABS pod bakiem i tarcze z koronkami impulsowymi na obu kołach",
+        "Korozja puszki tłumika pod silnikiem (bardzo nisko zawieszona, podatna na korozję od soli i obicia od krawężników)",
+        "Sprawdź wpis w dowodzie rejestracyjnym: czy motocykl jest zarejestrowany na kategorię A2 (moc do 35 kW / 48 KM) czy na pełną moc"
+      ]
+    },
+    {
+      "period": "2013-2016",
+      "name": "Facelift XJ6-N: Dzielone uchwyty pasażera i odświeżony detal",
+      "min_year": 2013,
+      "max_year": 2016,
+      "frame": "Stalowa rama rurowa Diamond",
+      "fuel_system": "Wtrysk paliwa",
+      "factory_features": [
+        "Nowe, aluminiowe dzielone uchwyty dla pasażera po obu stronach zadupka",
+        "Przezroczyste (białe) klosze kierunkowskazów w standardzie",
+        "Odświeżone boczne osłony chłodnicy i nowa grafika",
+        "Nowe, białe podświetlenie wskaźników LED w kokpicie",
+        "Nowe poszycie kanapy z materiału o lepszej przyczepności"
+      ],
+      "buyer_checklist": [
+        "Stan napędu (łańcuch i zębatki) oraz łożysk główki ramy",
+        "Szczelność uszczelniaczy przedniego widelca (klasyczny widelec 41 mm)",
+        "Równomierna praca 4 cylindrów na biegu jałowym (synchronizacja przepustnic)"
+      ]
+    }
+  ],
+  "body_variants_warning": {
+    "target": "XJ6-N (Naked) – tylko modele bez fabrycznych owiewek turystycznych",
+    "reject": [
+      "XJ6 Diversion (wersja z półowiewką)",
+      "XJ6 Diversion F (wersja z pełną owiewką turystyczno-sportową)"
+    ]
+  },
+  "common_traps": [
+    "Przeróbki powypadkowe: motocykle XJ6 Diversion z rozbitym przodem przerobione chałupniczo na wersję 'Naked'",
+    "Sprzedaż egzemplarza bez ABS w cenie wersji z ABS (brak koronek sensorycznych na kołach)",
+    "Niezgodność mocy w dokumentach – motocykl fizycznie odblokowany na 78 KM, a w papierach widnieje 35 kW na A2 (lub odwrotnie)",
+    "Pęknięcia ogranicznika skrętu na półce kierownicy świadczące o mocnym uderzeniu przodem"
+  ]
+}

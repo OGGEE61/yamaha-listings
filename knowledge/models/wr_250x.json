@@ -1,0 +1,45 @@
+{
+  "id": "wr_250x",
+  "name": "Yamaha WR 250X / WR 250R",
+  "category": "Supermoto (X) / Dual-Sport (R)",
+  "engine_type": "4T (1-cylindrowy chłodzony cieczą DOHC 4V z wtryskiem paliwa)",
+  "displacement_cc": 250,
+  "meter_unit": "km",
+  "street_legal_default": true,
+  "description": "Cywilny, bezobsługowy motocykl supermoto (WR 250X) oraz dual-sport (WR 250R). Posiada zupełnie inny, niezwykle trwały silnik niż wyczynowa WR 250F – interwały wymiany oleju wynoszą 5000 km, a kontrola zaworów co 40 000 km.",
+  "aliases": ["WR 250X", "WR250X", "WR 250 X", "WR250 X", "WR 250R", "WR250R", "WR 250 R"],
+  "generations": [
+    {
+      "period": "2008-2014",
+      "name": "Generacja fabryczna Supermoto (WR 250X) i Dual-Sport (WR 250R)",
+      "min_year": 2008,
+      "max_year": 2014,
+      "frame": "Trzyczęściowa rama: odlewany aluminiowy trzon główny, kute ramiona i stalowa odkręcana rama pomocnicza",
+      "fuel_system": "Wtrysk paliwa Mikuni (gardziel 38 mm) z zaworem EXUP w wydechu",
+      "engine_specs": "Moc 30.7 KM przy 10 000 obr./min, tytanowe zawory dolotowe, kuty tłok, cylinder pokryty kompozytem ceramicznym",
+      "factory_features": [
+        "Koła 17 cali z szerokimi oponami szosowymi w wersji WR 250X (110/70-17 przód, 140/70-17 tył)",
+        "Pływająca przednia tarcza hamulcowa o dużej średnicy 298 mm z 2-tłoczkowym zaciskiem w WR 250X",
+        "W pełni regulowane zawieszenie KYB (widelec odwrócony 46 mm ze skokiem 270 mm)",
+        "Mocny alternator 350 W pozwalający na montaż akcesoriów turystycznych i mocnego oświetlenia",
+        "Cyfrowy licznik z prędkościomierzem, zegarem i dwoma licznikami trip"
+      ],
+      "buyer_checklist": [
+        "Wada fabryczna pompy paliwa (roczniki 2008-2010): Sprawdź czy pompa paliwa była wymieniona na wersję z poprawionym wirnikiem (stare pompy zacinały się po rozgrzaniu silnika na postoju)",
+        "Wycieranie wahacza przez łańcuch: Sprawdź dolną krawędź aluminiowego wahacza pod ślizgiem łańcucha – przy złym naciągu łańcuch potrafi przetrzeć ślizg i uszkodzić strukturę wahacza!",
+        "Sprawdź czy motocykl to fabryczny model WR 250X (kod 32D / DG20), a nie przerobiona na koła SM wersja WR 250R lub wyczynowa WR 250F",
+        "Stan zaworu wydechowego EXUP (często usuwany lub zacinający się od brudu)"
+      ]
+    }
+  ],
+  "differences_x_vs_r": {
+    "wr_250x": "Koła 17/17 cali supermoto, tarcza przednia 298 mm, twardsze sprężyny zawieszenia, czarna rama i wahacz, przełożenie wtórne 13/42",
+    "wr_250r": "Koła 21/18 cali enduro, tarcza przednia 250 mm, miększe zestrojenie pod teren, srebrna rama, przełożenie wtórne 13/43"
+  },
+  "common_traps": [
+    "Mylenie WR 250X/R z wyczynowym hard enduro WR 250F – to dwa całkowicie różne motocykle o różnej architekturze i interwałach!",
+    "Ukryte przetarcie aluminiowego wahacza od spodu przez łańcuch napędowy",
+    "Przegrzewająca się pompa paliwa w modelach z lat 2008-2009 bez wykonanej akcji serwisowej",
+    "Oferty sprzedaży pospolitych motocykli 125 przerobionych wizualnie na WR 250X"
+  ]
+}

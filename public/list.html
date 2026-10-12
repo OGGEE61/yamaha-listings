@@ -813,11 +813,14 @@
             <td>${iconicCell}</td>
             <td>
               <div class="table-actions-cell">
+                <button class="btn-table-cv" style="background:rgba(16,185,129,0.22);color:#6ee7b7;border-color:rgba(52,211,153,0.45);font-weight:700;" onclick="openListingDetailModal('${item.id}')" title="Otwórz szczegóły i analizę Bielik AI">
+                  Szczegóły & AI
+                </button>
                 <button class="btn-table-cv" onclick="openCvModalFromTable('${item.id}')" title="Otwórz analizę Heatmap CV">
                   Heatmap
                 </button>
                 <a href="${item.url}" target="_blank" rel="noopener" class="btn-table-open" title="Otwórz w nowej karcie">
-                  OLX ↗
+                  OLX
                 </a>
                 <button class="btn-table-reject" onclick="rejectListingItem('${item.id}', this)" title="Odrzuć ogłoszenie (usuń z bazy i trwale zablokuj przed ponownym zaciąganiem)">
                   ✕ Odrzuć
@@ -1126,5 +1129,346 @@
       </div>
     </div>
   </dialog>
+
+  <!-- Listing Detail & Bielik AI Modal -->
+  <dialog id="listingModal" class="listing-modal" aria-labelledby="modalListingTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-info">
+          <div class="modal-badge-row">
+            <span class="modal-badge-model" id="modalListingModel">Yamaha YZ 250</span>
+            <span class="modal-badge-engine" id="modalListingEngine">2-Stroke</span>
+            <span class="modal-badge-verdict" id="modalListingVerdict" style="display:none">Warto obejrzeć</span>
+          </div>
+          <h2 class="modal-title" id="modalListingTitle">Tytuł ogłoszenia</h2>
+        </div>
+        <button type="button" class="modal-btn-close" id="modalCloseBtn" aria-label="Zamknij" onclick="closeListingModal()">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-grid">
+          <!-- Left Column: Photo, Quick Facts & Price History -->
+          <div class="modal-col-left">
+            <div class="modal-media-wrapper">
+              <img id="modalListingImg" class="modal-media-img" src="" alt="Motocykl" />
+              <div id="modalListingPrice" class="modal-price-pill">— PLN</div>
+            </div>
+
+            <div class="modal-specs-card">
+              <h3 class="modal-section-heading">Parametry ogłoszenia</h3>
+              <div class="modal-specs-list" id="modalSpecsList"></div>
+            </div>
+
+            <div class="modal-price-history-card" id="modalPriceHistoryCard">
+              <h3 class="modal-section-heading">Historia cen</h3>
+              <div class="modal-price-history-list" id="modalPriceHistoryList">
+                <span class="text-muted">Brak wcześniejszych zmian cen.</span>
+              </div>
+            </div>
+
+            <div class="modal-actions-row">
+              <a id="modalExternalLink" href="#" target="_blank" rel="noopener" class="btn-modal-primary">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+                Otwórz ogłoszenie w portalu
+              </a>
+              <button type="button" id="modalInspectCvBtn" class="btn-modal-secondary">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                Heatmapa Iconic Blue (CV)
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Column: Bielik AI Analysis & Description -->
+          <div class="modal-col-right">
+            <!-- Bielik AI Panel -->
+            <div class="bielik-panel">
+              <div class="bielik-panel-header">
+                <div class="bielik-title-group">
+                  <div class="bielik-logo-icon">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>
+                  </div>
+                  <div>
+                    <h3 class="bielik-title">Bielik AI — Druga Warstwa Weryfikacji & Ekspert</h3>
+                    <span class="bielik-subtitle" id="bielikModelSubtitle">Lokalny model SpeakLeash Bielik 11B (Ollama)</span>
+                  </div>
+                </div>
+                <button type="button" class="btn-bielik-action" id="btnRunBielik" onclick="triggerBielikAnalysis()">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  <span id="btnRunBielikText">Przeanalizuj Bielikiem</span>
+                </button>
+              </div>
+
+              <!-- Loading spinner -->
+              <div class="bielik-loading" id="bielikLoading" style="display:none">
+                <div class="bielik-spinner"></div>
+                <div class="bielik-loading-text">Bielik 11B weryfikuje treść, rocznik, zawieszenie SSS oraz stan silnika…</div>
+              </div>
+
+              <!-- Bielik Content -->
+              <div class="bielik-content" id="bielikContent">
+                <div class="bielik-badges-grid" id="bielikBadgesGrid"></div>
+
+                <div class="bielik-highlights-box" id="bielikHighlightsBox">
+                  <div class="bielik-box-label">Kluczowe cechy i stan techniczny:</div>
+                  <ul class="bielik-highlights-list" id="bielikHighlightsList"></ul>
+                </div>
+
+                <!-- Buyer Checkpoints (Model Knowledge) -->
+                <div class="bielik-checkpoints-box" id="bielikCheckpointsBox" style="display:none">
+                  <div class="bielik-box-label">Punkty kontrolne przy oględzinach (Baza Wiedzy):</div>
+                  <ul class="bielik-checkpoints-list" id="bielikCheckpointsList"></ul>
+                </div>
+
+                <div class="bielik-summary-card" id="bielikSummaryCard">
+                  <div class="bielik-box-label">Podsumowanie eksperta dla kupującego:</div>
+                  <p class="bielik-summary-text" id="bielikSummaryText">Kliknij "Przeanalizuj Bielikiem", aby wygenerować wnikliwą analizę silnika, zawieszenia i stanu technicznego.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Description Card -->
+            <div class="modal-desc-card">
+              <h3 class="modal-section-heading">Treść ogłoszenia</h3>
+              <div class="modal-desc-body" id="modalDescBody">
+                <span class="text-muted">Ładowanie opisu…</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    let currentModalListing = null;
+
+    function getVerdictClass(verdict) {
+      if (!verdict) return 'verdict-positive';
+      const v = verdict.toLowerCase();
+      if (v.includes('warto') || v.includes('kupuj') || v.includes('dobr')) return 'verdict-positive';
+      if (v.includes('ostrożnie') || v.includes('dopytaj') || v.includes('uwaga')) return 'verdict-warning';
+      if (v.includes('błędny') || v.includes('odrzuć') || v.includes('nie')) return 'verdict-danger';
+      return 'verdict-positive';
+    }
+
+    async function openListingDetailModal(id) {
+      const modal = document.getElementById('listingModal');
+      if (!modal) return;
+      let listing = currentTableItems.find(l => l.id === id) || (allTableData && allTableData.find(l => l.id === id));
+      let priceHistory = [];
+      try {
+        const res = await fetch(`/api/listing/${encodeURIComponent(id)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.listing) listing = { ...listing, ...data.listing };
+          priceHistory = data.priceHistory || [];
+        }
+      } catch (_) {}
+
+      if (!listing) return;
+      currentModalListing = listing;
+      renderListingModalData(listing, priceHistory);
+      modal.showModal();
+    }
+
+    function closeListingModal() {
+      const modal = document.getElementById('listingModal');
+      if (modal) modal.close();
+    }
+
+    function renderListingModalData(l, priceHistory = []) {
+      const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+      setText('modalListingTitle', l.title || 'Yamaha Listing');
+      setText('modalListingModel', l.model || 'Unknown Model');
+
+      const is2T = (l.model && (l.model.includes('2T') || l.model.includes('YZ 250') || l.model.includes('DT') || l.model.includes('IT')));
+      setText('modalListingEngine', is2T ? 'Dwusuw (2T)' : 'Czterosuw (4T)');
+
+      const verdictEl = document.getElementById('modalListingVerdict');
+      if (l.bielik_verdict) {
+        verdictEl.style.display = 'inline-block';
+        verdictEl.textContent = l.bielik_verdict;
+        verdictEl.className = `modal-badge-verdict ${getVerdictClass(l.bielik_verdict)}`;
+      } else {
+        verdictEl.style.display = 'none';
+      }
+
+      const imgEl = document.getElementById('modalListingImg');
+      if (l.image) {
+        imgEl.src = l.image;
+        imgEl.style.display = 'block';
+      } else {
+        imgEl.src = 'favicon.png';
+      }
+
+      const priceText = l.price ? `${l.price.toLocaleString('pl-PL')} ${l.currency || 'PLN'}` : 'Cena do uzgodnienia';
+      setText('modalListingPrice', priceText);
+
+      const specsList = document.getElementById('modalSpecsList');
+      specsList.innerHTML = `
+        <div class="modal-spec-item"><span class="modal-spec-label">Model:</span><span class="modal-spec-value">${l.model || 'Unknown'}</span></div>
+        <div class="modal-spec-item"><span class="modal-spec-label">Pojemność:</span><span class="modal-spec-value">${l.cc ? l.cc + ' cm³' : 'Nie podano'}</span></div>
+        <div class="modal-spec-item"><span class="modal-spec-label">Lokalizacja:</span><span class="modal-spec-value">${l.location || 'Polska'}</span></div>
+        <div class="modal-spec-item"><span class="modal-spec-label">Źródło:</span><span class="modal-spec-value">${l.source || 'OLX.pl'}</span></div>
+        <div class="modal-spec-item"><span class="modal-spec-label">Widziane:</span><span class="modal-spec-value">${l.first_seen ? l.first_seen.slice(0, 10) : '—'}</span></div>
+        <div class="modal-spec-item"><span class="modal-spec-label">Status:</span><span class="modal-spec-value" style="color:${l.is_active ? '#34d399' : '#f87171'}">${l.is_active ? 'Aktywne' : 'Archiwalne'}</span></div>
+        <div class="modal-spec-item"><span class="modal-spec-label">Iconic Blue:</span><span class="modal-spec-value" style="color:${l.iconic_blue === 1 ? '#60a5fa' : '#94a3b8'}">${l.iconic_blue === 1 ? 'Wykryto błękit' : 'Brak'}</span></div>
+      `;
+
+      const historyList = document.getElementById('modalPriceHistoryList');
+      if (priceHistory && priceHistory.length > 1) {
+        historyList.innerHTML = priceHistory.map((ph, idx) => {
+          const prev = priceHistory[idx + 1];
+          let diffHtml = '';
+          if (prev) {
+            const diff = ph.price - prev.price;
+            if (diff < 0) diffHtml = ` <span style="color:#34d399;font-weight:700;">(${diff} PLN)</span>`;
+            if (diff > 0) diffHtml = ` <span style="color:#f87171;font-weight:700;">(+${diff} PLN)</span>`;
+          }
+          return `<div style="display:flex;justify-content:space-between;padding:3px 0;"><span style="color:#94a3b8;">${new Date(ph.recorded_at).toLocaleDateString('pl-PL')}:</span><span style="color:#fff;font-weight:600;">${ph.price.toLocaleString('pl-PL')} PLN${diffHtml}</span></div>`;
+        }).join('');
+      } else {
+        historyList.innerHTML = `<span style="color:#94a3b8;font-size:12px;">Brak wcześniejszych zmian cen.</span>`;
+      }
+
+      document.getElementById('modalExternalLink').href = l.url || '#';
+      document.getElementById('modalInspectCvBtn').onclick = () => {
+        closeListingModal();
+        if (typeof openCvModalFromTable === 'function') openCvModalFromTable(l.id);
+      };
+
+      const descEl = document.getElementById('modalDescBody');
+      if (l.description && l.description.trim()) {
+        descEl.textContent = l.description.trim();
+      } else {
+        descEl.innerHTML = `<span style="color:#94a3b8;font-style:italic;">Opis zostanie pobrany przy analizie Bielikiem.</span>`;
+      }
+
+      let analysis = null;
+      if (l.bielik_analysis) {
+        try { analysis = JSON.parse(l.bielik_analysis); } catch (_) {}
+      }
+      renderListingModalBielik(analysis);
+    }
+
+    function renderListingModalBielik(analysis) {
+      const btnText = document.getElementById('btnRunBielikText');
+      const badgesGrid = document.getElementById('bielikBadgesGrid');
+      const highlightsBox = document.getElementById('bielikHighlightsBox');
+      const highlightsList = document.getElementById('bielikHighlightsList');
+      const summaryText = document.getElementById('bielikSummaryText');
+      const subtitleEl = document.getElementById('bielikModelSubtitle');
+
+      if (!analysis) {
+        btnText.textContent = 'Przeanalizuj Bielikiem';
+        badgesGrid.innerHTML = `
+          <span class="bielik-pill-feature feature-neutral">Czeka na analizę</span>
+          <span class="bielik-pill-feature feature-neutral">Sprawdzenie Kayaba SSS (2006+)</span>
+          <span class="bielik-pill-feature feature-neutral">Weryfikacja ramy i silnika</span>
+        `;
+        highlightsBox.style.display = 'none';
+        summaryText.textContent = 'Kliknij przycisk powyżej, aby uruchomić lokalny model Bielik 11B (Ollama).';
+        subtitleEl.textContent = 'Lokalny model SpeakLeash Bielik 11B (Ollama)';
+        return;
+      }
+
+      btnText.textContent = 'Ponowna analiza (Ollama)';
+      if (analysis.model_used) {
+        subtitleEl.textContent = `Model: ${analysis.model_used} · Wygenerowano: ${analysis.analyzed_at ? new Date(analysis.analyzed_at).toLocaleTimeString('pl-PL') : 'teraz'}`;
+      }
+
+      const badges = [];
+      if (analysis.has_kayaba_sss === true) badges.push(`<span class="bielik-pill-feature feature-positive">Zawieszenie Kayaba SSS (2006+)</span>`);
+      else if (analysis.has_kayaba_sss === false) badges.push(`<span class="bielik-pill-feature feature-warning">Starsze zawieszenie (&lt;2006)</span>`);
+
+      if (analysis.has_aluminum_frame === true) badges.push(`<span class="bielik-pill-feature feature-positive">Rama aluminiowa</span>`);
+      else if (analysis.has_aluminum_frame === false) badges.push(`<span class="bielik-pill-feature feature-neutral">Rama stalowa</span>`);
+
+      if (analysis.engine_type) badges.push(`<span class="bielik-pill-feature feature-neutral">Silnik ${analysis.engine_type}</span>`);
+      if (analysis.year) badges.push(`<span class="bielik-pill-feature feature-neutral">Rocznik ${analysis.year}</span>`);
+      if (analysis.engine_status) badges.push(`<span class="bielik-pill-feature feature-positive">Stan: ${analysis.engine_status}</span>`);
+
+      badgesGrid.innerHTML = badges.join('');
+
+      if (analysis.highlights && analysis.highlights.length) {
+        highlightsBox.style.display = 'block';
+        highlightsList.innerHTML = analysis.highlights.map(h => `<li>${h}</li>`).join('');
+      } else {
+        highlightsBox.style.display = 'none';
+      }
+
+      summaryText.textContent = analysis.summary || 'Brak podsumowania.';
+
+      const verdictEl = document.getElementById('modalListingVerdict');
+      if (analysis.verdict) {
+        verdictEl.style.display = 'inline-block';
+        verdictEl.textContent = analysis.verdict;
+        verdictEl.className = `modal-badge-verdict ${getVerdictClass(analysis.verdict)}`;
+      }
+    }
+
+    async function triggerBielikAnalysis() {
+      if (!currentModalListing) return;
+      const btn = document.getElementById('btnRunBielik');
+      const btnText = document.getElementById('btnRunBielikText');
+      const loading = document.getElementById('bielikLoading');
+      const content = document.getElementById('bielikContent');
+
+      btn.disabled = true;
+      btnText.textContent = 'Analizowanie…';
+      loading.style.display = 'flex';
+      content.style.opacity = '0.35';
+
+      try {
+        const res = await fetch(`/api/bielik/analyze/${encodeURIComponent(currentModalListing.id)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ force: true })
+        });
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+          throw new Error(errData.error || `HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        if (data.listing) {
+          currentModalListing = { ...currentModalListing, ...data.listing };
+          const idx = currentTableItems.findIndex(l => l.id === currentModalListing.id);
+          if (idx !== -1) {
+            currentTableItems[idx] = currentModalListing;
+            renderTable(currentTableItems);
+          }
+        }
+        renderListingModalBielik(data.analysis);
+        if (currentModalListing.description) {
+          document.getElementById('modalDescBody').textContent = currentModalListing.description;
+        }
+      } catch (err) {
+        alert(`Błąd Bielik AI: ${err.message}\nUpewnij się, że Ollama działa na http://localhost:11434.`);
+      } finally {
+        btn.disabled = false;
+        btnText.textContent = 'Ponowna analiza';
+        loading.style.display = 'none';
+        content.style.opacity = '1';
+      }
+    }
+
+    window.openListingDetailModal = openListingDetailModal;
+    window.closeListingModal = closeListingModal;
+    window.triggerBielikAnalysis = triggerBielikAnalysis;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('listingModal');
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          const rect = modal.getBoundingClientRect();
+          if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
+            modal.close();
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>
