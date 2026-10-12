@@ -174,6 +174,35 @@ export default {
       }
 
       // ──────────────────────────────────────────────
+      // API: /api/listing/:id (Fetch single listing with price history)
+      // ──────────────────────────────────────────────
+      if (pathname.startsWith('/api/listing/')) {
+        const id = decodeURIComponent(pathname.replace('/api/listing/', ''));
+        const [listing, priceHistoryRes] = await Promise.all([
+          env.DB.prepare('SELECT * FROM listings WHERE id = ?').bind(id).first(),
+          env.DB.prepare('SELECT * FROM price_history WHERE listing_id = ? ORDER BY recorded_at ASC').bind(id).all()
+        ]);
+
+        if (!listing) {
+          return new Response(JSON.stringify({ error: 'Listing not found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders }
+          });
+        }
+
+        return new Response(JSON.stringify({
+          listing,
+          priceHistory: priceHistoryRes ? (priceHistoryRes.results || []) : []
+        }), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, max-age=30, s-maxage=60',
+            ...corsHeaders
+          }
+        });
+      }
+
+      // ──────────────────────────────────────────────
       // API: /api/price-history/:id
       // ──────────────────────────────────────────────
       if (pathname.startsWith('/api/price-history/')) {
