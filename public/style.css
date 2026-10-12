@@ -560,6 +560,7 @@ body {
   flex-direction: column;
   position: relative;
   box-shadow: var(--shadow);
+  cursor: pointer;
 }
 
 .listing-card:hover {

@@ -583,7 +583,7 @@
             <span class="toggle-label">Include Inactive</span>
           </label>
           <label class="toggle-container" title="Only bikes with plastics/rims in Yamaha Icon Blue (CV)">
-            <input type="checkbox" id="filterIconicBlue" onchange="fetchTableListings(0)">
+            <input type="checkbox" id="filterIconicBlue" checked onchange="fetchTableListings(0)">
             <span class="toggle-slider"></span>
             <span class="toggle-label">Iconic Blue Only</span>
           </label>
@@ -1254,28 +1254,53 @@
     }
 
     async function openListingDetailModal(id) {
+      if (!id) return;
       const modal = document.getElementById('listingModal');
       if (!modal) return;
-      let listing = currentTableItems.find(l => l.id === id) || (allTableData && allTableData.find(l => l.id === id));
-      let priceHistory = [];
+      let listing = (currentTableItems && currentTableItems.find(l => String(l.id) === String(id))) || 
+                    (allTableData && allTableData.find(l => String(l.id) === String(id)));
+
+      if (!listing) {
+        listing = { id, title: 'Ładowanie szczegółów...', model: '', price: null };
+      }
+      currentModalListing = listing;
+
+      try {
+        renderListingModalData(listing, []);
+        if (!modal.open) {
+          if (typeof modal.showModal === 'function') {
+            modal.showModal();
+          } else {
+            modal.setAttribute('open', '');
+          }
+        }
+      } catch (err) {
+        console.error('[Modal] Error opening modal in list.html:', err);
+      }
+
       try {
         const res = await fetch(`/api/listing/${encodeURIComponent(id)}`);
         if (res.ok) {
           const data = await res.json();
-          if (data.listing) listing = { ...listing, ...data.listing };
-          priceHistory = data.priceHistory || [];
+          if (data.listing) {
+            currentModalListing = { ...currentModalListing, ...data.listing };
+            renderListingModalData(currentModalListing, data.priceHistory || []);
+          }
         }
       } catch (_) {}
-
-      if (!listing) return;
-      currentModalListing = listing;
-      renderListingModalData(listing, priceHistory);
-      modal.showModal();
     }
 
     function closeListingModal() {
       const modal = document.getElementById('listingModal');
-      if (modal) modal.close();
+      if (modal) {
+        try {
+          if (typeof modal.close === 'function') {
+            modal.close();
+          } else {
+            modal.removeAttribute('open');
+          }
+        } catch (_) {}
+      }
     }
 
     function renderListingModalData(l, priceHistory = []) {
@@ -1462,9 +1487,8 @@
       const modal = document.getElementById('listingModal');
       if (modal) {
         modal.addEventListener('click', (e) => {
-          const rect = modal.getBoundingClientRect();
-          if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
-            modal.close();
+          if (e.target === modal) {
+            closeListingModal();
           }
         });
       }

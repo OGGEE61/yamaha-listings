@@ -30,7 +30,7 @@ async function loadListings(page = 0) {
   const source        = document.getElementById('filterSource').value;
   const excludeTenere = document.getElementById('excludeTenere').checked;
   const showInactive  = document.getElementById('showInactive') ? document.getElementById('showInactive').checked : false;
-  const iconicBlue    = document.getElementById('filterIconicBlue') ? document.getElementById('filterIconicBlue').checked : false;
+  const iconicBlue    = document.getElementById('filterIconicBlue') ? document.getElementById('filterIconicBlue').checked : true;
   const hitlOnly      = document.getElementById('filterHitl') ? document.getElementById('filterHitl').checked : false;
 
   const params = new URLSearchParams();
@@ -97,7 +97,7 @@ async function fallbackFetchAll(page = 0) {
     const source        = document.getElementById('filterSource').value;
     const excludeTenere = document.getElementById('excludeTenere').checked;
     const showInactive  = document.getElementById('showInactive')?.checked || false;
-    const iconicBlue    = document.getElementById('filterIconicBlue')?.checked || false;
+    const iconicBlue    = document.getElementById('filterIconicBlue') ? document.getElementById('filterIconicBlue').checked : true;
     const hitlOnly      = document.getElementById('filterHitl')?.checked || false;
 
     const filtered = cachedFallbackListings.filter(l => {
@@ -592,7 +592,8 @@ function escHtml(str) {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function setText(id, val) {
@@ -646,39 +647,72 @@ function getVerdictClass(verdict) {
 }
 
 function handleCardClick(event, id) {
-  if (event.target.closest('button, a, .badge-cv-hitl, .hitl-tag-chip')) {
+  // Ignore clicks on external link or secondary CV/reject action buttons
+  if (event.target.closest('a.listing-link, .btn-card-reject, .badge-cv-hitl, .btn-cv-inspect, .hitl-tag-chip')) {
     return;
   }
   openListingDetailModal(id);
 }
 
 async function openListingDetailModal(id) {
+  if (!id) return;
   const modal = document.getElementById('listingModal');
-  if (!modal) return;
+  if (!modal) {
+    console.error('[Modal] listingModal not found in DOM');
+    return;
+  }
 
-  let listing = currentRenderedListings.find(l => l.id === id) ||
-                (cachedFallbackListings && cachedFallbackListings.find(l => l.id === id));
+  // 1. Immediately find listing from current in-memory listings
+  let listing = (currentRenderedListings && currentRenderedListings.find(l => String(l.id) === String(id))) ||
+                (allListings && allListings.find(l => String(l.id) === String(id))) ||
+                (cachedFallbackListings && cachedFallbackListings.find(l => String(l.id) === String(id)));
 
-  let priceHistory = [];
+  // If not yet in cache, create placeholder so modal opens instantly
+  if (!listing) {
+    listing = { id, title: 'Ładowanie szczegółów...', model: '', price: null };
+  }
+  currentModalListing = listing;
+
+  // 2. Render initial data and open modal INSTANTLY (0ms latency for user)
+  try {
+    renderListingModalData(listing, []);
+    if (!modal.open) {
+      if (typeof modal.showModal === 'function') {
+        modal.showModal();
+      } else {
+        modal.setAttribute('open', '');
+      }
+    }
+  } catch (err) {
+    console.error('[Modal] Error rendering initial modal data:', err);
+  }
+
+  // 3. Asynchronously fetch full price history, cached description, and fresh Bielik data
   try {
     const res = await fetch(`/api/listing/${encodeURIComponent(id)}`);
     if (res.ok) {
       const data = await res.json();
-      if (data.listing) listing = { ...listing, ...data.listing };
-      priceHistory = data.priceHistory || [];
+      if (data.listing) {
+        currentModalListing = { ...currentModalListing, ...data.listing };
+        renderListingModalData(currentModalListing, data.priceHistory || []);
+      }
     }
-  } catch (_) {}
-
-  if (!listing) return;
-  currentModalListing = listing;
-
-  renderListingModalData(listing, priceHistory);
-  modal.showModal();
+  } catch (err) {
+    console.warn('[Modal] Background fetch of extra listing details failed:', err);
+  }
 }
 
 function closeListingModal() {
   const modal = document.getElementById('listingModal');
-  if (modal) modal.close();
+  if (modal) {
+    try {
+      if (typeof modal.close === 'function') {
+        modal.close();
+      } else {
+        modal.removeAttribute('open');
+      }
+    } catch (_) {}
+  }
 }
 
 function renderListingModalData(l, priceHistory = []) {
@@ -966,19 +1000,27 @@ async function triggerBielikAnalysis() {
   }
 }
 
-// Light dismiss click outside modal
+// Grid card click delegation & Light dismiss for modal
 document.addEventListener('DOMContentLoaded', () => {
+  const grid = document.getElementById('listingsGrid');
+  if (grid) {
+    grid.addEventListener('click', (e) => {
+      // Don't intercept clicks on external links, delete/reject buttons, or CV badge inspection
+      if (e.target.closest('a.listing-link, .btn-card-reject, .badge-cv-hitl, .btn-cv-inspect, .hitl-tag-chip')) {
+        return;
+      }
+      const card = e.target.closest('.listing-card');
+      if (card && card.dataset.id) {
+        openListingDetailModal(card.dataset.id);
+      }
+    });
+  }
+
   const modal = document.getElementById('listingModal');
   if (modal) {
     modal.addEventListener('click', (e) => {
-      const rect = modal.getBoundingClientRect();
-      if (
-        e.clientX < rect.left ||
-        e.clientX > rect.right ||
-        e.clientY < rect.top ||
-        e.clientY > rect.bottom
-      ) {
-        modal.close();
+      if (e.target === modal) {
+        closeListingModal();
       }
     });
   }
