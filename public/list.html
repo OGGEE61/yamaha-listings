@@ -1349,7 +1349,7 @@
             if (diff < 0) diffHtml = ` <span style="color:#34d399;font-weight:700;">(${diff} PLN)</span>`;
             if (diff > 0) diffHtml = ` <span style="color:#f87171;font-weight:700;">(+${diff} PLN)</span>`;
           }
-          return `<div style="display:flex;justify-content:space-between;padding:3px 0;"><span style="color:#94a3b8;">${new Date(ph.recorded_at).toLocaleDateString('pl-PL')}:</span><span style="color:#fff;font-weight:600;">${ph.price.toLocaleString('pl-PL')} PLN${diffHtml}</span></div>`;
+          return `<div class="modal-price-history-row"><span class="modal-price-history-date">${new Date(ph.recorded_at).toLocaleDateString('pl-PL')}:</span><span class="modal-price-history-val">${ph.price.toLocaleString('pl-PL')} PLN${diffHtml}</span></div>`;
         }).join('');
       } else {
         historyList.innerHTML = `<span style="color:#94a3b8;font-size:12px;">Brak wcześniejszych zmian cen.</span>`;

@@ -783,11 +783,11 @@ function renderListingModalData(l, priceHistory = []) {
       <span class="modal-spec-label">Status ogłoszenia:</span>
       <span class="modal-spec-value" id="modalActiveStatusValue" style="color:${l.is_active ? '#34d399' : '#f87171'}">
         ${l.is_active ? 'Aktywne na portalu' : 'Archiwalne / Wygasłe'}
-        <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(l.id)}', '${escHtml(l.url)}')" style="margin-left:8px;font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid #3b82f6;background:rgba(59,130,246,0.2);color:#93c5fd;cursor:pointer;">Weryfikuj na żywo</button>
+        <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(l.id)}', '${escHtml(l.url)}')">Weryfikuj na żywo</button>
       </span>
     </div>
     <div class="modal-spec-item">
-      <span class="modal-spec-label">Iconic Blue (Vision AI):</span>
+      <span class="modal-spec-label">Iconic Blue:</span>
       <span class="modal-spec-value" style="color:${l.iconic_blue === 1 ? '#60a5fa' : '#94a3b8'}">${l.iconic_blue === 1 ? 'Wykryto fabryczny błękit' : 'Brak / Niebieski nieobecny'}</span>
     </div>
   `;
@@ -804,9 +804,9 @@ function renderListingModalData(l, priceHistory = []) {
         if (diff > 0) diffHtml = ` <span style="color:#f87171;font-weight:700;">(+${diff} PLN)</span>`;
       }
       return `
-        <div style="display:flex;justify-content:space-between;padding:3px 0;">
-          <span style="color:#94a3b8;">${new Date(ph.recorded_at).toLocaleDateString('pl-PL')}:</span>
-          <span style="color:#fff;font-weight:600;">${formatPrice(ph.price)} PLN${diffHtml}</span>
+        <div class="modal-price-history-row">
+          <span class="modal-price-history-date">${new Date(ph.recorded_at).toLocaleDateString('pl-PL')}:</span>
+          <span class="modal-price-history-val">${formatPrice(ph.price)} PLN${diffHtml}</span>
         </div>`;
     }).join('');
   } else {
@@ -1058,7 +1058,7 @@ async function verifyListingActiveLive(id, url) {
       <span style="color:${isActive ? '#34d399' : '#f87171'}">
         ${isActive ? 'Aktywne na portalu' : 'Archiwalne / Wygasłe (' + (data.reason || 'Zakończone') + ')'}
       </span>
-      <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(id)}', '${escHtml(url)}')" style="margin-left:8px;font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid #3b82f6;background:rgba(59,130,246,0.2);color:#93c5fd;cursor:pointer;">Sprawdź ponownie</button>
+      <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(id)}', '${escHtml(url)}')">Sprawdź ponownie</button>
     `;
 
     // If fresh image was discovered during verification, update modal image
@@ -1079,7 +1079,7 @@ async function verifyListingActiveLive(id, url) {
   } catch (err) {
     statusEl.innerHTML = `
       <span style="color:#f87171">Błąd sprawdzania: ${escHtml(err.message)}</span>
-      <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(id)}', '${escHtml(url)}')" style="margin-left:8px;font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid #3b82f6;background:rgba(59,130,246,0.2);color:#93c5fd;cursor:pointer;">Ponów</button>
+      <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(id)}', '${escHtml(url)}')">Ponów</button>
     `;
   }
 }
