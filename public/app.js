@@ -792,21 +792,23 @@ function renderListingModalData(l, priceHistory = []) {
     </div>
   `;
 
-  // Price history
+  // Price history (newest on top, diff compared to chronologically previous price)
   const historyList = document.getElementById('modalPriceHistoryList');
   if (priceHistory && priceHistory.length > 1) {
-    historyList.innerHTML = priceHistory.map((ph, idx) => {
-      const prev = priceHistory[idx + 1];
+    const sorted = [...priceHistory].sort((a, b) => new Date(b.recorded_at) - new Date(a.recorded_at));
+    const curr = l.currency || 'PLN';
+    historyList.innerHTML = sorted.map((ph, idx) => {
+      const earlier = sorted[idx + 1];
       let diffHtml = '';
-      if (prev) {
-        const diff = ph.price - prev.price;
-        if (diff < 0) diffHtml = ` <span style="color:#34d399;font-weight:700;">(${diff} PLN)</span>`;
-        if (diff > 0) diffHtml = ` <span style="color:#f87171;font-weight:700;">(+${diff} PLN)</span>`;
+      if (earlier) {
+        const diff = ph.price - earlier.price;
+        if (diff < 0) diffHtml = ` <span style="color:#34d399;font-weight:700;">(${diff.toLocaleString('pl-PL')} ${curr})</span>`;
+        if (diff > 0) diffHtml = ` <span style="color:#f87171;font-weight:700;">(+${diff.toLocaleString('pl-PL')} ${curr})</span>`;
       }
       return `
         <div class="modal-price-history-row">
           <span class="modal-price-history-date">${new Date(ph.recorded_at).toLocaleDateString('pl-PL')}:</span>
-          <span class="modal-price-history-val">${formatPrice(ph.price)} PLN${diffHtml}</span>
+          <span class="modal-price-history-val">${ph.price ? ph.price.toLocaleString('pl-PL') : '—'} ${curr}${diffHtml}</span>
         </div>`;
     }).join('');
   } else {
