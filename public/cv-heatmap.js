@@ -669,6 +669,11 @@
   function closeModal() {
     const dialog = document.getElementById('cvModal');
     if (dialog && dialog.open) dialog.close();
+    if (window.lastOpenedListingModalId && typeof window.openListingDetailModal === 'function') {
+      const returnId = window.lastOpenedListingModalId;
+      window.lastOpenedListingModalId = null;
+      window.openListingDetailModal(returnId);
+    }
   }
 
   // Export to window

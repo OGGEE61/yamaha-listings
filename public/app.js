@@ -363,11 +363,11 @@ function renderListings(listings) {
       </span>` : '';
 
     const dateChip = l.first_seen ? `
-      <span class="listing-chip">
+      <span class="listing-chip" title="Widziane: ${formatLocalDate(l.first_seen)} (${timeAgo(l.first_seen)})">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
         </svg>
-        ${timeAgo(l.first_seen)}
+        ${formatLocalDate(l.first_seen)}
       </span>` : '';
 
     // Inactive aging calculation
@@ -443,14 +443,11 @@ function renderListings(listings) {
           </div>
         </div>
         <div class="listing-footer">
-          <button class="btn-bielik-card" onclick="event.stopPropagation(); openListingDetailModal('${escHtml(l.id)}')" title="Otwórz szczegóły, parametry i analizę Bielik AI">
-            Szczegóły & AI
+          <button class="btn-card-details" onclick="event.stopPropagation(); openListingDetailModal('${escHtml(l.id)}')" title="Otwórz szczegóły ogłoszenia">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            Szczegóły
           </button>
-          <button class="btn-cv-inspect" onclick="inspectCvListing('${escHtml(l.id)}')" title="Otwórz analizę Computer Vision i Heatmapę">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-            Heatmap CV
-          </button>
-          <a class="listing-link" href="${escHtml(l.url)}" target="_blank" rel="noopener">
+          <a class="listing-link" href="${escHtml(l.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation();">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
             </svg>
@@ -576,14 +573,28 @@ function formatPrice(n) {
   return n.toLocaleString('pl-PL') + ' zł';
 }
 
+function formatLocalDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString('pl-PL');
+}
+
 function timeAgo(iso) {
-  if (!iso) return 'unknown';
-  const secs = Math.floor((Date.now() - new Date(iso)) / 1000);
-  if (secs < 60)     return 'just now';
-  if (secs < 3600)   return `${Math.floor(secs / 60)}m ago`;
-  if (secs < 86400)  return `${Math.floor(secs / 3600)}h ago`;
-  if (secs < 604800) return `${Math.floor(secs / 86400)}d ago`;
-  return new Date(iso).toLocaleDateString('pl-PL');
+  if (!iso) return 'nieznane';
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return 'nieznane';
+  const secs = Math.floor((Date.now() - d.getTime()) / 1000);
+  if (secs < 60)     return 'przed chwilą';
+  if (secs < 3600)   return `${Math.floor(secs / 60)} min temu`;
+  if (secs < 86400)  return `${Math.floor(secs / 3600)} godz. temu`;
+  const days = Math.floor(secs / 86400);
+  if (days === 1)    return 'wczoraj';
+  if (days < 7)      return `${days} dni temu`;
+  const weeks = Math.floor(days / 7);
+  if (weeks < 5)     return weeks === 1 ? '1 tydzień temu' : `${weeks} tyg. temu`;
+  const months = Math.floor(days / 30);
+  return months === 1 ? '1 mies. temu' : `${months} mies. temu`;
 }
 
 function escHtml(str) {
@@ -766,7 +777,7 @@ function renderListingModalData(l, priceHistory = []) {
     </div>
     <div class="modal-spec-item">
       <span class="modal-spec-label">Pierwszy raz widziane:</span>
-      <span class="modal-spec-value">${l.first_seen ? timeAgo(l.first_seen) + ' (' + l.first_seen.slice(0, 10) + ')' : '—'}</span>
+      <span class="modal-spec-value">${l.first_seen ? `${formatLocalDate(l.first_seen)} (${timeAgo(l.first_seen)})` : '—'}</span>
     </div>
     <div class="modal-spec-item">
       <span class="modal-spec-label">Status ogłoszenia:</span>
@@ -808,6 +819,7 @@ function renderListingModalData(l, priceHistory = []) {
 
   const cvBtn = document.getElementById('modalInspectCvBtn');
   cvBtn.onclick = () => {
+    window.lastOpenedListingModalId = l.id;
     closeListingModal();
     if (window.inspectCvListing) inspectCvListing(l.id);
   };

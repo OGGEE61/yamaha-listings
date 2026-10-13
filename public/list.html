@@ -813,11 +813,8 @@
             <td>${iconicCell}</td>
             <td>
               <div class="table-actions-cell">
-                <button class="btn-table-cv" style="background:rgba(16,185,129,0.22);color:#6ee7b7;border-color:rgba(52,211,153,0.45);font-weight:700;" onclick="openListingDetailModal('${item.id}')" title="Otwórz szczegóły i analizę Bielik AI">
-                  Szczegóły & AI
-                </button>
-                <button class="btn-table-cv" onclick="openCvModalFromTable('${item.id}')" title="Otwórz analizę Heatmap CV">
-                  Heatmap
+                <button class="btn-table-cv" style="background:rgba(30,80,200,0.25);color:#93c5fd;border-color:rgba(96,165,250,0.4);font-weight:700;" onclick="openListingDetailModal('${item.id}')" title="Otwórz szczegóły ogłoszenia">
+                  Szczegóły
                 </button>
                 <a href="${item.url}" target="_blank" rel="noopener" class="btn-table-open" title="Otwórz w nowej karcie">
                   OLX
@@ -1337,7 +1334,7 @@
         <div class="modal-spec-item"><span class="modal-spec-label">Pojemność:</span><span class="modal-spec-value">${l.cc ? l.cc + ' cm³' : 'Nie podano'}</span></div>
         <div class="modal-spec-item"><span class="modal-spec-label">Lokalizacja:</span><span class="modal-spec-value">${l.location || 'Polska'}</span></div>
         <div class="modal-spec-item"><span class="modal-spec-label">Źródło:</span><span class="modal-spec-value">${l.source || 'OLX.pl'}</span></div>
-        <div class="modal-spec-item"><span class="modal-spec-label">Widziane:</span><span class="modal-spec-value">${l.first_seen ? l.first_seen.slice(0, 10) : '—'}</span></div>
+        <div class="modal-spec-item"><span class="modal-spec-label">Widziane:</span><span class="modal-spec-value">${l.first_seen ? new Date(l.first_seen).toLocaleDateString('pl-PL') : '—'}</span></div>
         <div class="modal-spec-item"><span class="modal-spec-label">Status:</span><span class="modal-spec-value" style="color:${l.is_active ? '#34d399' : '#f87171'}">${l.is_active ? 'Aktywne' : 'Archiwalne'}</span></div>
         <div class="modal-spec-item"><span class="modal-spec-label">Iconic Blue:</span><span class="modal-spec-value" style="color:${l.iconic_blue === 1 ? '#60a5fa' : '#94a3b8'}">${l.iconic_blue === 1 ? 'Wykryto błękit' : 'Brak'}</span></div>
       `;
@@ -1360,6 +1357,7 @@
 
       document.getElementById('modalExternalLink').href = l.url || '#';
       document.getElementById('modalInspectCvBtn').onclick = () => {
+        window.lastOpenedListingModalId = l.id;
         closeListingModal();
         if (typeof openCvModalFromTable === 'function') openCvModalFromTable(l.id);
       };
