@@ -1,16 +1,16 @@
 {
-  "name": "yz250-tracker",
+  "name": "yamaha-listings",
   "version": "1.0.0",
-  "description": "Yamaha YZ250 2-stroke listing tracker and dashboard",
+  "description": "Yamaha motorcycle listings tracker and dashboard",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
     "scrape": "node scraper.js",
     "color-check": "node vision.js",
-    "deploy": "wrangler deploy",
-    "worker:dev": "wrangler dev",
-    "d1:query": "wrangler d1 execute yamaha-listings-db --remote"
+    "deploy": "npx wrangler deploy",
+    "worker:dev": "npx wrangler dev",
+    "d1:query": "npx wrangler d1 execute yamaha-listings-db --remote"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",
