@@ -7,3 +7,4 @@ listings.db*
 data.db
 listings.json
 public/listings.json
+.DS_Store
