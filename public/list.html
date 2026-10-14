@@ -1205,6 +1205,11 @@
 
               <!-- Bielik Content -->
               <div class="bielik-content" id="bielikContent">
+                <div class="bielik-summary-card" id="bielikSummaryCard">
+                  <div class="bielik-box-label">Podsumowanie eksperta dla kupującego:</div>
+                  <p class="bielik-summary-text" id="bielikSummaryText">Kliknij "Przeanalizuj Bielikiem", aby wygenerować wnikliwą analizę silnika, zawieszenia i stanu technicznego.</p>
+                </div>
+
                 <div class="bielik-badges-grid" id="bielikBadgesGrid"></div>
 
                 <div class="bielik-highlights-box" id="bielikHighlightsBox">
@@ -1218,10 +1223,6 @@
                   <ul class="bielik-checkpoints-list" id="bielikCheckpointsList"></ul>
                 </div>
 
-                <div class="bielik-summary-card" id="bielikSummaryCard">
-                  <div class="bielik-box-label">Podsumowanie eksperta dla kupującego:</div>
-                  <p class="bielik-summary-text" id="bielikSummaryText">Kliknij "Przeanalizuj Bielikiem", aby wygenerować wnikliwą analizę silnika, zawieszenia i stanu technicznego.</p>
-                </div>
               </div>
             </div>
 
@@ -1368,7 +1369,7 @@
       if (l.description && l.description.trim()) {
         descEl.textContent = l.description.trim();
       } else {
-        descEl.innerHTML = `<span style="color:#94a3b8;font-style:italic;">Opis zostanie pobrany przy analizie Bielikiem.</span>`;
+        descEl.innerHTML = `<span style="color:#94a3b8;font-style:italic;">Opis tego ogłoszenia nie został jeszcze pobrany. Pojawi się po najbliższym przebiegu scrapera lub po analizie Bielikiem (lokalnie).</span>`;
       }
 
       let analysis = null;

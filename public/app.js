@@ -831,7 +831,7 @@ function renderListingModalData(l, priceHistory = []) {
   if (l.description && l.description.trim()) {
     descEl.textContent = l.description.trim();
   } else {
-    descEl.innerHTML = `<span style="color:#94a3b8;font-style:italic;">Pełny opis ogłoszenia nie został jeszcze zbuforowany. Kliknij "Przeanalizuj Bielikiem", aby automatycznie pobrać opis i przeanalizować maszynę.</span>`;
+    descEl.innerHTML = `<span style="color:#94a3b8;font-style:italic;">Opis tego ogłoszenia nie został jeszcze pobrany. Pojawi się po najbliższym przebiegu scrapera lub po analizie Bielikiem (lokalnie).</span>`;
   }
 
   // Bielik Panel Content

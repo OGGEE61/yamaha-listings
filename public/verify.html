@@ -304,9 +304,9 @@
           <span class="toggle-label">Pokaż już zweryfikowane</span>
         </label>
         <label class="toggle-container">
-          <input type="checkbox" id="showNonBlue" onchange="renderCards()">
+          <input type="checkbox" id="showConfident" onchange="renderCards()">
           <span class="toggle-slider"></span>
-          <span class="toggle-label">Pokaż wykryte jako NIE-blue</span>
+          <span class="toggle-label">Pokaż też pewne wyniki AI (≥ 85%)</span>
         </label>
       </div>
 
@@ -488,15 +488,19 @@
 
     function renderCards() {
       const showAll = document.getElementById('showAll').checked;
-      const showNonBlue = document.getElementById('showNonBlue').checked;
+      const showConfident = document.getElementById('showConfident').checked;
+      const CONFIDENT = 0.85;
+      const conf = l => (typeof l.iconic_blue_confidence === 'number' ? l.iconic_blue_confidence : 0);
 
+      // Review queue: unverified listings the model is NOT sure about, least confident first.
+      // Legacy rows without a confidence score count as 0 (always need a look).
       const filtered = listings.filter(l => {
-        if (!showAll && l.iconic_blue_verified === 1) return false;
-        if (!showNonBlue && l.iconic_blue !== 1) return false;
-        if (showNonBlue && l.iconic_blue === 1 && !showAll && l.iconic_blue_verified === 1) return false;
         if (l.iconic_blue === null || l.iconic_blue === undefined) return false;
-        return true;
-      });
+        if (l.iconic_blue_verified === 1) return showAll;
+        return showConfident || conf(l) < CONFIDENT;
+      }).sort((a, b) =>
+        (a.iconic_blue_verified === 1) - (b.iconic_blue_verified === 1) || conf(a) - conf(b)
+      );
 
       document.getElementById('count-badge').textContent = filtered.length;
 
@@ -532,14 +536,20 @@
           hitlBadge = `<span class="hitl-status-badge pending">Oczekuje na HITL</span>`;
         }
 
+        const confPct = typeof l.iconic_blue_confidence === 'number'
+          ? ` · ${Math.round(l.iconic_blue_confidence * 100)}%` : '';
         const modelPredictionBadge = l.iconic_blue === 1
-          ? `<span class="badge-cv-hitl verified" style="font-size:10px;">AI: Iconic Blue</span>`
-          : `<span class="badge-cv-hitl pending" style="font-size:10px;">AI: Nie-blue</span>`;
+          ? `<span class="badge-cv-hitl verified" style="font-size:10px;">AI: Iconic Blue${confPct}</span>`
+          : `<span class="badge-cv-hitl pending" style="font-size:10px;">AI: Nie-blue${confPct}</span>`;
+        const reasonHtml = l.iconic_blue_reason
+          ? `<div style="font-size:11px;color:var(--text-secondary);line-height:1.4;">${String(l.iconic_blue_reason).replace(/</g, '&lt;')}</div>`
+          : '';
+        const shownImage = l.iconic_blue_photo || l.image || '';
 
         return `
           <div class="verify-card" id="card-${l.id}" data-id="${l.id}">
             <div class="verify-media-box">
-              <img src="${l.image || ''}" class="verify-img" crossOrigin="anonymous" onload="onCardImgLoaded('${l.id}')" onerror="handleCardImgError(this, '${l.image || ''}')">
+              <img src="${shownImage}" class="verify-img" crossOrigin="anonymous" onload="onCardImgLoaded('${l.id}')" onerror="handleCardImgError(this, '${shownImage}')">
               <canvas class="verify-canvas" id="canvas-${l.id}"></canvas>
 
               <div class="verify-media-tools">
@@ -567,6 +577,7 @@
                 <span>Elementy CV:</span>
                 ${partsHtml}
               </div>
+              ${reasonHtml}
             </div>
 
             <div class="verify-actions">

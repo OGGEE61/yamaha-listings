@@ -346,10 +346,12 @@ async function scrapeAutoplac(pageNum = 1, searchUrl) {
 
 async function fetchDetails(url) {
   const html = fetchWithPuppeteer(url);
-  if (!html) return { desc: '', image: null };
+  if (!html) return { desc: '', image: null, images: [] };
   const $ = cheerio.load(html);
   
+  let desc = '';
   let image = null;
+  let images = [];
 
   // Try JSON-LD for description and image
   const jsonLdRegex = /<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi;
@@ -361,6 +363,10 @@ async function fetchDetails(url) {
       if (!image && data.image) {
         if (Array.isArray(data.image) && data.image.length > 0) image = data.image[0];
         else if (typeof data.image === 'string') image = data.image;
+      }
+      if (!images.length && data.image) {
+        images = (Array.isArray(data.image) ? data.image : [data.image])
+          .filter(u => typeof u === 'string' && u.startsWith('http'));
       }
     } catch(e) {}
   }
@@ -389,7 +395,8 @@ async function fetchDetails(url) {
     if (galleryImg) image = galleryImg;
   }
   
-  return { desc, image };
+  if (!images.length && image) images = [image];
+  return { desc, image, images };
 }
 
 function parsePrice(text) {
@@ -468,6 +475,9 @@ async function scrapeAll() {
     if (details.image) {
       listing.image = details.image;
     }
+    if (details.images && details.images.length) {
+      listing.images = details.images.slice(0, 8);
+    }
     if (details.desc) {
       listing.description = details.desc;
     }
@@ -492,7 +502,8 @@ function delay(ms) {
 
 async function syncListingsToD1(listings, runStats, inactiveUrls = []) {
   const workerUrl = process.env.WORKER_URL || 'https://yamaha-listings.maxgustaw.workers.dev';
-  const secret = process.env.ADMIN_SYNC_SECRET || 'yamaha-listing-tracker-secret-2026';
+  const secret = process.env.ADMIN_SYNC_SECRET;
+  if (!secret) throw new Error('ADMIN_SYNC_SECRET env var is required for D1 sync');
 
   console.log(`[D1 Sync] Syncing ${listings.length} listings to Cloudflare D1 via ${workerUrl}/api/sync-listings...`);
   const nodeFetch = global.fetch || require('node-fetch');

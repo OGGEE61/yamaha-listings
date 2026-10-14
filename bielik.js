@@ -89,6 +89,25 @@ async function ensureListingDescription(listing) {
   }
 }
 
+const WORKER_URL = process.env.WORKER_URL || 'https://yamaha-listings.maxgustaw.workers.dev';
+
+async function persistAnalysis(id, { summary, verdict, analysis, description }) {
+  const secret = process.env.ADMIN_SYNC_SECRET;
+  if (secret) {
+    const res = await fetch(`${WORKER_URL}/api/bielik/save`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-sync-secret': secret },
+      body: JSON.stringify({ id, summary, verdict, analysis, description }),
+      signal: AbortSignal.timeout(30000),
+    });
+    if (!res.ok) throw new Error(`Worker /api/bielik/save HTTP ${res.status}`);
+    return;
+  }
+  require('./db').saveBielikAnalysis(id, {
+    summary, verdict, analysisJson: JSON.stringify(analysis), description,
+  });
+}
+
 /**
  * Analyze a single listing with Bielik AI.
  * 
@@ -97,8 +116,6 @@ async function ensureListingDescription(listing) {
  * @returns {Promise<object>} structured analysis
  */
 async function analyzeListingWithBielik(listing, { force = false } = {}) {
-  const db = require('./db');
-
   // Return cached result if already analyzed and not forced
   if (!force && listing.bielik_analysis) {
     try {
@@ -261,11 +278,11 @@ Zwróć odpowiedź WYŁĄCZNIE jako poprawny format JSON (żadnego tekstu poza J
     analyzed_at: new Date().toISOString()
   };
 
-  // Save to DB
-  db.saveBielikAnalysis(listing.id, {
+  // Save to D1 (source of truth); fall back to the local SQLite file when there's no secret.
+  await persistAnalysis(listing.id, {
     summary: result.summary,
     verdict: result.verdict,
-    analysisJson: JSON.stringify(result),
+    analysis: result,
     description: description || null
   });
 
@@ -280,24 +297,56 @@ module.exports = {
   OLLAMA_HOST
 };
 
+async function fetchListingFromWorker(id) {
+  const res = await fetch(`${WORKER_URL}/api/listing/${encodeURIComponent(id)}`, { signal: AbortSignal.timeout(30000) });
+  if (!res.ok) return null;
+  return (await res.json()).listing || null;
+}
+
 if (require.main === module) {
   (async () => {
-    const db = require('./db');
     const status = await checkOllamaStatus();
     console.log('[Bielik CLI] Status:', status);
+    if (!status.available) process.exit(1);
 
-    const id = process.argv[2];
-    if (id) {
-      const listing = db.getListingById(id);
-      if (!listing) {
-        console.error('Listing not found:', id);
-        process.exit(1);
+    const args = process.argv.slice(2);
+    const li = args.indexOf('--limit');
+    const limit = li !== -1 ? parseInt(args[li + 1], 10) : Infinity;
+    const force = args.includes('--force');
+
+    if (args.includes('--all')) {
+      // Batch: every active listing in D1 that has no analysis yet.
+      const res = await fetch(`${WORKER_URL}/api/listings?limit=500&activeOnly=true`, { signal: AbortSignal.timeout(30000) });
+      const { listings = [] } = await res.json();
+      const todo = listings.filter(l => force || !l.bielik_analysis).slice(0, limit);
+      console.log(`[Bielik CLI] ${todo.length} listing(s) to analyse (of ${listings.length} active)`);
+      let ok = 0, failed = 0;
+      for (const [i, listing] of todo.entries()) {
+        try {
+          const r = await analyzeListingWithBielik(listing, { force: true });
+          ok++;
+          console.log(`[Bielik CLI] ${i + 1}/${todo.length} ✅ ${listing.title.substring(0, 50)} → ${r.verdict}`);
+        } catch (err) {
+          failed++;
+          console.error(`[Bielik CLI] ${i + 1}/${todo.length} ❌ ${listing.title.substring(0, 50)}: ${err.message}`);
+        }
       }
-      const res = await analyzeListingWithBielik(listing, { force: true });
-      console.log('Result:\n', JSON.stringify(res, null, 2));
-    } else {
-      console.log('Usage: node bielik.js <listing_id>');
+      console.log('[Bielik CLI] Done:', { ok, failed });
+      return;
     }
+
+    const id = args.find(a => !a.startsWith('--'));
+    if (!id) {
+      console.log('Usage: node bielik.js <listing_id> | --all [--limit N] [--force]');
+      return;
+    }
+    const listing = await fetchListingFromWorker(id);
+    if (!listing) {
+      console.error('Listing not found:', id);
+      process.exit(1);
+    }
+    const res = await analyzeListingWithBielik(listing, { force: true });
+    console.log('Result:\n', JSON.stringify(res, null, 2));
   })().catch(err => {
     console.error('[Bielik CLI] Fatal error:', err);
     process.exit(1);

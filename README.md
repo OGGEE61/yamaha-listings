@@ -62,9 +62,17 @@ No data files are committed to Git — the Git repository contains purely applic
 
 ## Iconic Blue Detection (Computer Vision / AI)
 
-Each newly scraped listing is evaluated by an AI model (Google Gemini Vision API) to detect the characteristic Yamaha "Iconic Blue" / "Racing Blue" color exclusively on plastics or wheels. 
-- **How it works:** A secondary script (`vision.js`) runs after scraping, analyzing images and tagging listings with the `iconic_blue` flag if the color is found.
-- **Human-in-the-Loop Verification:** Because AI models aren't perfect, there is a built-in verification panel (`/verify.html`) available on the local server. A human can quickly confirm or reject the AI's classification. Verified listings are marked and skipped in future AI checks, significantly saving API token costs.
+Each listing is checked for the characteristic Yamaha "Iconic Blue" / "Racing Blue" colour, counted only on plastics or wheels.
+
+- **Pipeline:** `vision.js` runs after every scrape. It pulls the queue from D1 (`GET /api/cv/queue`), downloads up to 6 photos per listing, ranks them by a cheap HSV blue-pixel share, and sends the best 3 to Gemini in a single request. Gemini returns a verdict, a **confidence**, a one-line **reason** and the **photo that decided it**; results go back via `POST /api/cv/results`.
+- **Source of truth is D1.** Nothing depends on a local database, so it works unchanged inside GitHub Actions.
+- **Human-in-the-Loop (`/verify.html`):** only listings the model is *not* confident about (< 85%) land in the queue, least confident first. Confident results are accepted automatically; a toggle shows them too. Human-verified listings are never re-analysed or overwritten.
+- **Label log:** every human verdict is stored in `cv_labels` next to what the model said (verdict, confidence, model). That's the eval set for prompt changes and, later, training data for a local model.
+- **Why HSV only ranks photos and never skips them:** calibrated on 125 human-verified labels, a hard single-photo HSV gate would have hidden 12–25% of truly blue bikes. `CV_GATE_MIN_SHARE` enables a gate if you re-measure and trust it.
+
+```bash
+node vision.js --dry --limit 10   # analyse, print, don't write
+```
 
 ---
 
@@ -97,11 +105,13 @@ node scraper.js       # run scraper once, generates public/listings.json
 npx serve public/     # preview the static dashboard locally
 ```
 
-Or run the full server (for local scraping on a schedule):
+Or run the local server (the only place Bielik / Ollama analysis works, since Ollama runs on your machine):
 
 ```bash
-node server.js        # http://localhost:3000
+npm start             # http://localhost:3000  (uses the local listings.db)
 ```
+
+Worker runtime preview: `npm run worker:dev`.
 
 ---
 

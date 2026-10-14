@@ -22,6 +22,32 @@ app.use(express.static(path.join(__dirname, 'public')));
 // API ROUTES
 // ──────────────────────────────────────────────
 
+// Everything except Bielik comes straight from the live Worker/D1, so local == production data.
+// (Bielik needs Ollama on this machine; it persists results to D1 via the Worker.)
+const WORKER_URL = process.env.WORKER_URL || 'https://yamaha-listings.maxgustaw.workers.dev';
+
+async function fetchWorkerListing(id) {
+  const r = await fetch(`${WORKER_URL}/api/listing/${encodeURIComponent(id)}`);
+  return r.ok ? (await r.json()).listing : null;
+}
+
+// Proxy every other /api/* call (listings, price history, verification…) to the Worker.
+app.use('/api', async (req, res, next) => {
+  if (['/bielik/', '/proxy-image', '/scrape'].some(p => req.path.startsWith(p))) return next();
+  try {
+    const upstream = await fetch(`${WORKER_URL}/api${req.url}`, {
+      method: req.method,
+      headers: { 'Content-Type': 'application/json' },
+      body: ['GET', 'HEAD'].includes(req.method) ? undefined : JSON.stringify(req.body || {}),
+    });
+    res.status(upstream.status);
+    res.set('Content-Type', upstream.headers.get('content-type') || 'application/json');
+    res.send(Buffer.from(await upstream.arrayBuffer()));
+  } catch (err) {
+    res.status(502).json({ error: `Worker unreachable: ${err.message}` });
+  }
+});
+
 // GET /api/listings
 app.get('/api/listings', (req, res) => {
   const { source, minPrice, maxPrice, search, model, engine, excludeTenere, limit = 5000, offset = 0, activeOnly, iconicBlue, hitlOnly } = req.query;
@@ -105,23 +131,24 @@ app.get('/api/bielik/status', async (req, res) => {
   res.json(status);
 });
 
-// GET /api/listing/:id — fetch single listing with price history and saved Bielik analysis
-app.get('/api/listing/:id', (req, res) => {
-  const listing = db.getListingById(req.params.id);
-  if (!listing) return res.status(404).json({ error: 'Listing not found' });
-  const priceHistory = db.getPriceHistory(req.params.id);
-  res.json({ listing, priceHistory });
-});
-
-// POST /api/bielik/analyze/:id — run Bielik AI analysis on a listing
+// POST /api/bielik/analyze/:id — run Bielik AI analysis on a listing (D1 data in, D1 data out)
 app.post('/api/bielik/analyze/:id', async (req, res) => {
-  const listing = db.getListingById(req.params.id);
+  const listing = await fetchWorkerListing(req.params.id);
   if (!listing) return res.status(404).json({ error: 'Listing not found' });
   const force = req.body?.force === true;
   try {
     const analysis = await analyzeListingWithBielik(listing, { force });
-    const updated = db.getListingById(req.params.id);
-    res.json({ success: true, analysis, listing: updated });
+    res.json({
+      success: true,
+      analysis,
+      listing: {
+        ...listing,
+        bielik_analysis: JSON.stringify(analysis),
+        bielik_summary: analysis.summary,
+        bielik_verdict: analysis.verdict,
+        description: listing.description || undefined,
+      },
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

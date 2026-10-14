@@ -33,4 +33,4 @@ jobs:
           PUPPETEER_SKIP_DOWNLOAD: 'false'
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           WORKER_URL: 'https://yamaha-listings.maxgustaw.workers.dev'
-          ADMIN_SYNC_SECRET: ${{ secrets.ADMIN_SYNC_SECRET || 'yamaha-listing-tracker-secret-2026' }}
+          ADMIN_SYNC_SECRET: ${{ secrets.ADMIN_SYNC_SECRET }}

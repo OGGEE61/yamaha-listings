@@ -4,6 +4,12 @@
  * Static assets served via Cloudflare Assets (env.ASSETS)
  */
 
+function isAuthorized(request, env) {
+  const header = request.headers.get('x-sync-secret') || request.headers.get('authorization');
+  const secret = env.ADMIN_SYNC_SECRET;
+  return Boolean(secret) && (header === secret || header === `Bearer ${secret}`);
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -217,6 +223,96 @@ export default {
       }
 
       // ──────────────────────────────────────────────
+      // API: /api/cv/queue (scraper: listings that still need a colour check)
+      // ──────────────────────────────────────────────
+      if (pathname === '/api/cv/queue' && request.method === 'GET') {
+        if (!isAuthorized(request, env)) {
+          return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+            status: 401, headers: { 'Content-Type': 'application/json', ...corsHeaders }
+          });
+        }
+        const limit = Math.min(parseInt(searchParams.get('limit') || '100', 10), 500);
+        const { results } = await env.DB.prepare(`
+          SELECT id, title, image, images FROM listings
+          WHERE is_active = 1 AND COALESCE(iconic_blue_verified, 0) = 0
+            AND image IS NOT NULL AND image != ''
+            AND (iconic_blue_checked_at IS NULL OR iconic_blue_image IS NULL OR iconic_blue_image != image)
+          ORDER BY first_seen DESC LIMIT ?
+        `).bind(limit).all();
+        return new Response(JSON.stringify({ queue: results || [] }), {
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        });
+      }
+
+      // ──────────────────────────────────────────────
+      // API: /api/cv/results (scraper: store model verdicts; never overwrites human-verified rows)
+      // ──────────────────────────────────────────────
+      if (pathname === '/api/cv/results' && request.method === 'POST') {
+        if (!isAuthorized(request, env)) {
+          return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+            status: 401, headers: { 'Content-Type': 'application/json', ...corsHeaders }
+          });
+        }
+        const { results = [] } = await request.json();
+        const now = new Date().toISOString();
+        const stmt = env.DB.prepare(`
+          UPDATE listings SET
+            iconic_blue = ?, iconic_blue_parts = ?, iconic_blue_image = ?, iconic_blue_checked_at = ?,
+            iconic_blue_confidence = ?, iconic_blue_reason = ?, iconic_blue_model = ?, iconic_blue_photo = ?
+          WHERE id = ? AND COALESCE(iconic_blue_verified, 0) = 0
+        `);
+        const statements = results.map(r => stmt.bind(
+          r.iconic_blue ? 1 : 0,
+          JSON.stringify(r.parts || []),
+          r.image || null,
+          now,
+          typeof r.confidence === 'number' ? r.confidence : null,
+          r.reason || null,
+          r.model || null,
+          r.photo || null,
+          r.id
+        ));
+        for (let i = 0; i < statements.length; i += 50) {
+          await env.DB.batch(statements.slice(i, i + 50));
+        }
+        return new Response(JSON.stringify({ success: true, updated: statements.length }), {
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        });
+      }
+
+      // ──────────────────────────────────────────────
+      // API: /api/bielik/save (local Bielik runner: store description + analysis)
+      // ──────────────────────────────────────────────
+      if (pathname === '/api/bielik/save' && request.method === 'POST') {
+        if (!isAuthorized(request, env)) {
+          return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+            status: 401, headers: { 'Content-Type': 'application/json', ...corsHeaders }
+          });
+        }
+        const { id, summary, verdict, analysis, description } = await request.json();
+        if (!id) {
+          return new Response(JSON.stringify({ error: 'Missing id' }), {
+            status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders }
+          });
+        }
+        await env.DB.prepare(`
+          UPDATE listings SET
+            bielik_summary = ?, bielik_verdict = ?, bielik_analysis = ?, bielik_checked_at = ?,
+            description = COALESCE(?, description)
+          WHERE id = ?
+        `).bind(
+          summary || null, verdict || null,
+          analysis ? (typeof analysis === 'string' ? analysis : JSON.stringify(analysis)) : null,
+          new Date().toISOString(),
+          description ? String(description).slice(0, 20000) : null,
+          id
+        ).run();
+        return new Response(JSON.stringify({ success: true, id }), {
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        });
+      }
+
+      // ──────────────────────────────────────────────
       // API: /api/verify-blue
       // ──────────────────────────────────────────────
       if (pathname === '/api/verify-blue' && request.method === 'POST') {
@@ -229,13 +325,31 @@ export default {
           });
         }
 
-        await env.DB.prepare(`
-          UPDATE listings SET
-            iconic_blue = ?,
-            iconic_blue_verified = 1,
-            iconic_blue_tag = ?
-          WHERE id = ?
-        `).bind(isBlue ? 1 : 0, tag || null, id).run();
+        const prev = await env.DB.prepare(
+          'SELECT image, iconic_blue, iconic_blue_confidence, iconic_blue_model, iconic_blue_checked_at FROM listings WHERE id = ?'
+        ).bind(id).first();
+
+        const writes = [
+          env.DB.prepare(`
+            UPDATE listings SET
+              iconic_blue = ?,
+              iconic_blue_verified = 1,
+              iconic_blue_tag = ?
+            WHERE id = ?
+          `).bind(isBlue ? 1 : 0, tag || null, id),
+        ];
+        // Log what the model said next to the human verdict (only when the model actually produced one).
+        if (prev) {
+          writes.push(env.DB.prepare(`
+            INSERT INTO cv_labels (listing_id, image_url, model_verdict, model_confidence, model, human_verdict, tag, labeled_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          `).bind(
+            id, prev.image, prev.iconic_blue_checked_at ? prev.iconic_blue : null,
+            prev.iconic_blue_confidence ?? null, prev.iconic_blue_model || null,
+            isBlue ? 1 : 0, tag || null, new Date().toISOString()
+          ));
+        }
+        await env.DB.batch(writes);
 
         return new Response(JSON.stringify({ success: true, id, isBlue, tag }), {
           headers: { 'Content-Type': 'application/json', ...corsHeaders }
@@ -318,10 +432,7 @@ export default {
       // API: /api/sync-listings (Admin batch upsert from scraper)
       // ──────────────────────────────────────────────
       if (pathname === '/api/sync-listings' && request.method === 'POST') {
-        const authHeader = request.headers.get('x-sync-secret') || request.headers.get('authorization');
-        const expectedSecret = env.ADMIN_SYNC_SECRET || 'yamaha-listing-tracker-secret-2026';
-        
-        if (authHeader !== expectedSecret && authHeader !== `Bearer ${expectedSecret}`) {
+        if (!isAuthorized(request, env)) {
           return new Response(JSON.stringify({ error: 'Unauthorized' }), {
             status: 401,
             headers: { 'Content-Type': 'application/json', ...corsHeaders }
@@ -358,14 +469,16 @@ export default {
             env.DB.prepare(`
               INSERT INTO listings (
                 id, title, model, price, currency, location, url, image, cc, source, first_seen, last_seen, valid_until, is_active,
-                iconic_blue, iconic_blue_parts, iconic_blue_image, iconic_blue_checked_at, iconic_blue_verified, iconic_blue_title, search_url
-              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?)
+                iconic_blue, iconic_blue_parts, iconic_blue_image, iconic_blue_checked_at, iconic_blue_verified, iconic_blue_title, search_url, images, description
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?)
               ON CONFLICT(id) DO UPDATE SET
                 title = excluded.title,
                 model = CASE WHEN excluded.model != 'Unknown' THEN excluded.model ELSE listings.model END,
                 price = CASE WHEN excluded.price IS NOT NULL THEN excluded.price ELSE listings.price END,
                 location = excluded.location,
                 image = CASE WHEN excluded.image IS NOT NULL THEN excluded.image ELSE listings.image END,
+                images = CASE WHEN excluded.images IS NOT NULL THEN excluded.images ELSE listings.images END,
+                description = CASE WHEN excluded.description IS NOT NULL AND excluded.description != '' THEN excluded.description ELSE listings.description END,
                 cc = CASE WHEN excluded.cc > 0 THEN excluded.cc ELSE listings.cc END,
                 last_seen = excluded.last_seen,
                 valid_until = excluded.valid_until,
@@ -395,7 +508,9 @@ export default {
               item.iconic_blue_checked_at || null,
               item.iconic_blue_verified ? 1 : 0,
               item.iconic_blue_title || null,
-              item.search_url || null
+              item.search_url || null,
+              Array.isArray(item.images) && item.images.length ? JSON.stringify(item.images) : null,
+              item.description ? String(item.description).slice(0, 20000) : null
             )
           );
 
@@ -422,6 +537,17 @@ export default {
               UPDATE listings SET is_active = 0
               WHERE url IN (${placeholders})
             `).bind(...inactiveUrls)
+          );
+        }
+
+        // 4. Anything OLX no longer returned in this (healthy) run is sold/removed. Its photos 404 soon after,
+        //    so mark it inactive. The 30-listing floor protects against a partial/failed scrape.
+        if (run && run.started_at && listings.length >= 30) {
+          statements.push(
+            env.DB.prepare(`
+              UPDATE listings SET is_active = 0
+              WHERE is_active = 1 AND source = 'OLX.pl' AND last_seen < ?
+            `).bind(run.started_at)
           );
         }
 
