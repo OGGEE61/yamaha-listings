@@ -335,7 +335,7 @@
     async function loadData() {
       try {
         // Try D1 API first with inactive included
-        const res = await fetch('/api/listings?limit=500&activeOnly=false');
+        const res = await fetch('/api/listings?limit=500&activeOnly=true');
         if (!res.ok) throw new Error('API unavailable');
         const data = await res.json();
         listings = data.listings || [];
