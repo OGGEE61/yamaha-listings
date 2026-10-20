@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Yamaha motorcycle listings tracker and dashboard",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "scrape": "node scraper.js",
-    "color-check": "node vision.js",
+    "start": "node src/server/server.js",
+    "dev": "node src/server/server.js",
+    "scrape": "node src/scraper/scraper.js",
+    "color-check": "node src/ai/vision.js",
     "deploy": "npx wrangler deploy",
     "worker:dev": "npx wrangler dev",
     "d1:query": "npx wrangler d1 execute yamaha-listings-db --remote"
@@ -23,5 +23,5 @@
     "random-useragent": "^0.5.0",
     "sharp": "^0.35.5"
   },
-  "main": "server.js"
+  "main": "src/server/server.js"
 }

@@ -28,7 +28,7 @@ jobs:
         run: npx puppeteer browsers install chrome
 
       - name: Run scraper & sync to Cloudflare D1
-        run: node scraper.js
+        run: node src/scraper/scraper.js
         env:
           PUPPETEER_SKIP_DOWNLOAD: 'false'
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}

@@ -11,44 +11,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <style>
-    .nav-tabs {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-    }
-    .nav-tab {
-      padding: 8px 18px;
-      border-radius: 20px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 13px;
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
-      background: var(--bg-card);
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .nav-tab:hover {
-      background: var(--bg-card-hover);
-      color: #fff;
-      border-color: var(--border-bright);
-    }
-    .nav-tab.active {
-      background: #ffffff;
-      color: #0032a0;
-      border-color: #ffffff;
-      font-weight: 700;
-    }
-
     .table-container {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       overflow-x: auto;
       margin-top: 20px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+      box-shadow: 0 8px 30px rgba(15, 23, 42, 0.12);
       scrollbar-width: thin;
       scrollbar-color: #3b82f6 rgba(15, 23, 42, 0.6);
     }
@@ -56,7 +25,7 @@
       height: 8px;
     }
     .table-container::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.6);
+      background: #f1f5f9;
       border-radius: 4px;
     }
     .table-container::-webkit-scrollbar-thumb {
@@ -72,10 +41,10 @@
       font-size: 13px;
     }
     .listings-table th {
-      background: rgba(3, 13, 36, 0.95);
+      background: #f1f5f9;
       padding: 14px 16px;
       font-weight: 700;
-      color: #93c5fd;
+      color: #1d4ed8;
       border-bottom: 1px solid var(--border);
       white-space: nowrap;
       user-select: none;
@@ -85,7 +54,7 @@
     }
     .listings-table td {
       padding: 12px 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid rgba(15, 23, 42, 0.12);
       vertical-align: middle;
     }
     .listings-table tr:hover td {
@@ -102,7 +71,7 @@
     }
 
     .table-title-link {
-      color: #ffffff;
+      color: var(--text-primary);
       text-decoration: none;
       font-weight: 600;
       font-size: 13px;
@@ -116,7 +85,7 @@
       transition: color 0.15s;
     }
     .table-title-link:hover {
-      color: #60a5fa;
+      color: #1d4ed8;
       text-decoration: underline;
     }
 
@@ -128,12 +97,12 @@
     }
     .table-model-name {
       font-weight: 700;
-      color: #ffffff;
+      color: var(--text-primary);
       font-size: 13px;
     }
     .table-sub-tag {
       font-size: 11px;
-      color: #93c5fd;
+      color: #1d4ed8;
       background: rgba(59, 130, 246, 0.15);
       border: 1px solid rgba(59, 130, 246, 0.3);
       padding: 1px 6px;
@@ -145,7 +114,7 @@
     .table-price {
       font-weight: 800;
       font-size: 14px;
-      color: #ffffff;
+      color: var(--text-primary);
       white-space: nowrap;
     }
 
@@ -163,12 +132,12 @@
     }
     .status-badge.active {
       background: rgba(59, 130, 246, 0.18);
-      color: #93c5fd;
+      color: #1d4ed8;
       border: 1px solid rgba(59, 130, 246, 0.4);
     }
     .status-badge.inactive {
       background: rgba(100, 116, 139, 0.18);
-      color: #94a3b8;
+      color: #64748b;
       border: 1px solid rgba(100, 116, 139, 0.3);
     }
 
@@ -183,7 +152,7 @@
 
     .badge-iconic {
       background: rgba(59, 130, 246, 0.22);
-      color: #93c5fd;
+      color: #1d4ed8;
       border: 1px solid #3b82f6;
       padding: 3px 8px;
       border-radius: 4px;
@@ -194,19 +163,19 @@
     }
     .badge-iconic.verified {
       background: rgba(37, 99, 235, 0.35);
-      border-color: #60a5fa;
-      color: #ffffff;
+      border-color: #3b6fd8;
+      color: var(--text-primary);
       box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
     }
     .badge-iconic.ai {
       background: rgba(30, 41, 59, 0.7);
       border-color: #475569;
-      color: #94a3b8;
+      color: #64748b;
     }
     .badge-iconic-neutral {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #94a3b8;
+      background: rgba(15, 23, 42, 0.04);
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      color: #64748b;
       padding: 3px 8px;
       border-radius: 4px;
       font-size: 11px;
@@ -216,14 +185,14 @@
     }
     .badge-iconic-neutral.verified {
       border-color: rgba(148, 163, 184, 0.4);
-      color: #cbd5e1;
+      color: #475569;
       background: rgba(71, 85, 105, 0.25);
     }
 
     .btn-edit-qual {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      color: #93c5fd;
+      background: rgba(15, 23, 42, 0.04);
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      color: #1d4ed8;
       padding: 2px 7px;
       border-radius: 4px;
       font-size: 11px;
@@ -238,7 +207,7 @@
     .btn-edit-qual:hover {
       background: rgba(59, 130, 246, 0.25);
       border-color: #3b82f6;
-      color: #ffffff;
+      color: var(--text-primary);
     }
 
     .hitl-tag-chip {
@@ -246,7 +215,7 @@
       font-weight: 600;
       background: rgba(59, 130, 246, 0.15);
       border: 1px solid rgba(59, 130, 246, 0.35);
-      color: #bfdbfe;
+      color: #1d4ed8;
       padding: 2px 7px;
       border-radius: 10px;
       white-space: nowrap;
@@ -258,14 +227,14 @@
 
     /* Modal kwalifikacji HITL */
     .qual-modal {
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(15, 23, 42, 0.12);
       border-radius: 12px;
       background: #0A2D82;
-      color: #ffffff;
+      color: var(--text-primary);
       padding: 0;
       width: 90%;
       max-width: 520px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
       margin: auto;
     }
     .qual-modal::backdrop {
@@ -280,18 +249,18 @@
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      border-bottom: 1px solid rgba(15, 23, 42, 0.12);
       padding-bottom: 12px;
     }
     .qual-modal-title {
       font-size: 16px;
       font-weight: 700;
-      color: #ffffff;
+      color: var(--text-primary);
       margin-bottom: 4px;
     }
     .qual-modal-subtitle {
       font-size: 12px;
-      color: #93c5fd;
+      color: #1d4ed8;
       line-height: 1.4;
       max-width: 420px;
       white-space: nowrap;
@@ -301,14 +270,14 @@
     .qual-modal-close {
       background: none;
       border: none;
-      color: #94a3b8;
+      color: #64748b;
       font-size: 18px;
       cursor: pointer;
       padding: 2px 6px;
       line-height: 1;
     }
     .qual-modal-close:hover {
-      color: #ffffff;
+      color: var(--text-primary);
     }
     .qual-section {
       margin-bottom: 16px;
@@ -318,7 +287,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: #cbd5e1;
+      color: #475569;
       margin-bottom: 8px;
       display: block;
     }
@@ -330,9 +299,9 @@
     .btn-qual-toggle {
       padding: 10px 14px;
       border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background: rgba(255, 255, 255, 0.06);
-      color: #cbd5e1;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      background: rgba(15, 23, 42, 0.04);
+      color: #475569;
       font-weight: 700;
       font-size: 13px;
       cursor: pointer;
@@ -344,14 +313,14 @@
     }
     .btn-qual-toggle.active-blue {
       background: #2563eb;
-      border-color: #60a5fa;
-      color: #ffffff;
+      border-color: #1d4ed8;
+      color: var(--text-on-accent);
       box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
     }
     .btn-qual-toggle.active-not-blue {
-      background: rgba(255, 255, 255, 0.16);
+      background: rgba(15, 23, 42, 0.07);
       border-color: #cbd5e1;
-      color: #ffffff;
+      color: var(--text-primary);
     }
     .qual-tags-pills {
       display: flex;
@@ -362,7 +331,7 @@
     .qual-pill-btn {
       background: rgba(59, 130, 246, 0.12);
       border: 1px solid rgba(59, 130, 246, 0.3);
-      color: #93c5fd;
+      color: #1d4ed8;
       padding: 4px 10px;
       border-radius: 12px;
       font-size: 11px;
@@ -372,21 +341,21 @@
     }
     .qual-pill-btn:hover {
       background: rgba(59, 130, 246, 0.25);
-      color: #ffffff;
+      color: var(--text-primary);
       border-color: #3b82f6;
     }
     .qual-pill-btn.selected {
       background: #2563eb;
-      border-color: #93c5fd;
-      color: #ffffff;
+      border-color: #1d4ed8;
+      color: var(--text-on-accent);
     }
     .qual-input {
       width: 100%;
       background: rgba(5, 20, 60, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(15, 23, 42, 0.12);
       border-radius: 6px;
       padding: 8px 12px;
-      color: #ffffff;
+      color: var(--text-primary);
       font-size: 12px;
       outline: none;
       box-sizing: border-box;
@@ -400,12 +369,12 @@
       gap: 10px;
       margin-top: 20px;
       padding-top: 14px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: 1px solid rgba(15, 23, 42, 0.12);
     }
     .btn-qual-cancel {
       background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #cbd5e1;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      color: #475569;
       padding: 8px 16px;
       border-radius: 6px;
       font-size: 12px;
@@ -415,7 +384,7 @@
     .btn-qual-save {
       background: #2563eb;
       border: 1px solid #60a5fa;
-      color: #ffffff;
+      color: var(--text-on-accent);
       padding: 8px 18px;
       border-radius: 6px;
       font-size: 12px;
@@ -454,32 +423,32 @@
     .btn-table-cv {
       background: rgba(59, 130, 246, 0.16);
       border: 1px solid rgba(59, 130, 246, 0.35);
-      color: #93c5fd;
+      color: #1d4ed8;
     }
     .btn-table-cv:hover {
       background: #2563eb;
-      color: #fff;
+      color: var(--text-on-accent);
     }
     .btn-table-open {
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--text-primary);
+      background: rgba(15, 23, 42, 0.04);
+      border: 1px solid rgba(15, 23, 42, 0.12);
     }
     .btn-table-open:hover {
-      background: rgba(255, 255, 255, 0.18);
-      color: #60a5fa;
-      border-color: #60a5fa;
+      background: rgba(15, 23, 42, 0.07);
+      color: #1d4ed8;
+      border-color: #3b6fd8;
     }
 
     .btn-table-reject {
       background: rgba(239, 68, 68, 0.1);
       border: 1px solid rgba(239, 68, 68, 0.28);
-      color: #fca5a5;
+      color: #b91c1c;
     }
     .btn-table-reject:hover {
       background: #dc2626;
       border-color: #ef4444;
-      color: #ffffff;
+      color: var(--text-primary);
     }
     .btn-table-reject:disabled {
       opacity: 0.5;
@@ -495,7 +464,7 @@
     .table-source-tag {
       font-size: 10px;
       font-weight: 700;
-      color: #93c5fd;
+      color: #1d4ed8;
       background: rgba(59, 130, 246, 0.12);
       padding: 1px 5px;
       border-radius: 3px;
@@ -507,27 +476,6 @@
       white-space: nowrap;
     }
 
-    .btn-batch-active {
-      background: rgba(59, 130, 246, 0.2);
-      border: 1px solid #3b82f6;
-      color: #ffffff;
-      padding: 7px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
-    }
-    .btn-batch-active:hover {
-      background: #2563eb;
-    }
-    .btn-batch-active:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
   </style>
 </head>
 <body>
@@ -670,6 +618,7 @@
     <span>· Real-time SQL queries against Cloudflare D1 · Zero static file dependency</span>
   </footer>
 
+  <script src="admin.js?v=1"></script>
   <script src="cv-heatmap.js"></script>
   <script>
     const PAGE_SIZE = 50;
@@ -813,7 +762,7 @@
             <td>${iconicCell}</td>
             <td>
               <div class="table-actions-cell">
-                <button class="btn-table-cv" style="background:rgba(30,80,200,0.25);color:#93c5fd;border-color:rgba(96,165,250,0.4);font-weight:700;" onclick="openListingDetailModal('${item.id}')" title="Otwórz szczegóły ogłoszenia">
+                <button class="btn-table-cv" style="background:rgba(30,80,200,0.25);color:#1d4ed8;border-color:rgba(96,165,250,0.4);font-weight:700;" onclick="openListingDetailModal('${item.id}')" title="Otwórz szczegóły ogłoszenia">
                   Szczegóły
                 </button>
                 <a href="${item.url}" target="_blank" rel="noopener" class="btn-table-open" title="Otwórz w nowej karcie">
@@ -1336,8 +1285,8 @@
         <div class="modal-spec-item"><span class="modal-spec-label">Lokalizacja:</span><span class="modal-spec-value">${l.location || 'Polska'}</span></div>
         <div class="modal-spec-item"><span class="modal-spec-label">Źródło:</span><span class="modal-spec-value">${l.source || 'OLX.pl'}</span></div>
         <div class="modal-spec-item"><span class="modal-spec-label">Widziane:</span><span class="modal-spec-value">${l.first_seen ? new Date(l.first_seen).toLocaleDateString('pl-PL') : '—'}</span></div>
-        <div class="modal-spec-item"><span class="modal-spec-label">Status:</span><span class="modal-spec-value" style="color:${l.is_active ? '#34d399' : '#f87171'}">${l.is_active ? 'Aktywne' : 'Archiwalne'}</span></div>
-        <div class="modal-spec-item"><span class="modal-spec-label">Iconic Blue:</span><span class="modal-spec-value" style="color:${l.iconic_blue === 1 ? '#60a5fa' : '#94a3b8'}">${l.iconic_blue === 1 ? 'Wykryto błękit' : 'Brak'}</span></div>
+        <div class="modal-spec-item"><span class="modal-spec-label">Status:</span><span class="modal-spec-value" style="color:${l.is_active ? '#059669' : '#dc2626'}">${l.is_active ? 'Aktywne' : 'Archiwalne'}</span></div>
+        <div class="modal-spec-item"><span class="modal-spec-label">Iconic Blue:</span><span class="modal-spec-value" style="color:${l.iconic_blue === 1 ? '#1d4ed8' : '#64748b'}">${l.iconic_blue === 1 ? 'Wykryto błękit' : 'Brak'}</span></div>
       `;
 
       const historyList = document.getElementById('modalPriceHistoryList');
@@ -1349,13 +1298,13 @@
           let diffHtml = '';
           if (earlier) {
             const diff = ph.price - earlier.price;
-            if (diff < 0) diffHtml = ` <span style="color:#34d399;font-weight:700;">(${diff.toLocaleString('pl-PL')} ${curr})</span>`;
-            if (diff > 0) diffHtml = ` <span style="color:#f87171;font-weight:700;">(+${diff.toLocaleString('pl-PL')} ${curr})</span>`;
+            if (diff < 0) diffHtml = ` <span style="color:#059669;font-weight:700;">(${diff.toLocaleString('pl-PL')} ${curr})</span>`;
+            if (diff > 0) diffHtml = ` <span style="color:#dc2626;font-weight:700;">(+${diff.toLocaleString('pl-PL')} ${curr})</span>`;
           }
           return `<div class="modal-price-history-row"><span class="modal-price-history-date">${new Date(ph.recorded_at).toLocaleDateString('pl-PL')}:</span><span class="modal-price-history-val">${ph.price ? ph.price.toLocaleString('pl-PL') : '—'} ${curr}${diffHtml}</span></div>`;
         }).join('');
       } else {
-        historyList.innerHTML = `<span style="color:#94a3b8;font-size:12px;">Brak wcześniejszych zmian cen.</span>`;
+        historyList.innerHTML = `<span style="color:#64748b;font-size:12px;">Brak wcześniejszych zmian cen.</span>`;
       }
 
       document.getElementById('modalExternalLink').href = l.url || '#';
@@ -1369,7 +1318,7 @@
       if (l.description && l.description.trim()) {
         descEl.textContent = l.description.trim();
       } else {
-        descEl.innerHTML = `<span style="color:#94a3b8;font-style:italic;">Opis tego ogłoszenia nie został jeszcze pobrany. Pojawi się po najbliższym przebiegu scrapera lub po analizie Bielikiem (lokalnie).</span>`;
+        descEl.innerHTML = `<span style="color:#64748b;font-style:italic;">Opis tego ogłoszenia nie został jeszcze pobrany. Pojawi się po najbliższym przebiegu scrapera lub po analizie Bielikiem (lokalnie).</span>`;
       }
 
       let analysis = null;

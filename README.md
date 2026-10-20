@@ -41,7 +41,7 @@ Hosted on **Cloudflare Workers** with **Cloudflare D1 SQL Database** — zero ph
 
 ```
 GitHub Actions (runs twice daily: 9:00 + 19:00 CEST)
-  └─ node scraper.js
+  └─ node src/scraper/scraper.js
        ├─ fetches OLX.pl listings via Puppeteer
        ├─ verifies each listing (title + description)
        ├─ classifies the exact Yamaha model
@@ -64,14 +64,14 @@ No data files are committed to Git — the Git repository contains purely applic
 
 Each listing is checked for the characteristic Yamaha "Iconic Blue" / "Racing Blue" colour, counted only on plastics or wheels.
 
-- **Pipeline:** `vision.js` runs after every scrape. It pulls the queue from D1 (`GET /api/cv/queue`), downloads up to 6 photos per listing, ranks them by a cheap HSV blue-pixel share, and sends the best 3 to Gemini in a single request. Gemini returns a verdict, a **confidence**, a one-line **reason** and the **photo that decided it**; results go back via `POST /api/cv/results`.
+- **Pipeline:** `src/ai/vision.js` runs after every scrape. It pulls the queue from D1 (`GET /api/cv/queue`), downloads up to 6 photos per listing, ranks them by a cheap HSV blue-pixel share, and sends the best 3 to Gemini in a single request. Gemini returns a verdict, a **confidence**, a one-line **reason** and the **photo that decided it**; results go back via `POST /api/cv/results`.
 - **Source of truth is D1.** Nothing depends on a local database, so it works unchanged inside GitHub Actions.
 - **Human-in-the-Loop (`/verify.html`):** only listings the model is *not* confident about (< 85%) land in the queue, least confident first. Confident results are accepted automatically; a toggle shows them too. Human-verified listings are never re-analysed or overwritten.
 - **Label log:** every human verdict is stored in `cv_labels` next to what the model said (verdict, confidence, model). That's the eval set for prompt changes and, later, training data for a local model.
 - **Why HSV only ranks photos and never skips them:** calibrated on 125 human-verified labels, a hard single-photo HSV gate would have hidden 12–25% of truly blue bikes. `CV_GATE_MIN_SHARE` enables a gate if you re-measure and trust it.
 
 ```bash
-node vision.js --dry --limit 10   # analyse, print, don't write
+node src/ai/vision.js --dry --limit 10   # analyse, print, don't write
 ```
 
 ---
@@ -97,11 +97,28 @@ When the scraper finishes, it queries the `listings` table and exports everythin
 
 ---
 
+## Project structure
+
+```
+src/
+  worker/    Cloudflare Worker (API + D1)      -> wrangler "main"
+  scraper/   OLX/Autoplac scraper, Puppeteer fetcher, active-listing checker
+  ai/        Gemini vision (Iconic Blue), Bielik analysis, model knowledge base
+  server/    Local Express dev server + local SQLite (listings.db)
+public/      Dashboard (index / list / verify pages, admin.js, styles)
+migrations/  D1 schema migrations
+docs/        Backlog and notes
+```
+
+**Admin key:** destructive actions (verify, reject) need `ADMIN_SYNC_SECRET`. The UI asks for it once and keeps it in your browser only.
+
+---
+
 ## Local development
 
 ```bash
 npm install
-node scraper.js       # run scraper once, generates public/listings.json
+node src/scraper/scraper.js       # run scraper once, generates public/listings.json
 npx serve public/     # preview the static dashboard locally
 ```
 

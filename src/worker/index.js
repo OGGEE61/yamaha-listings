@@ -10,6 +10,9 @@ function isAuthorized(request, env) {
   return Boolean(secret) && (header === secret || header === `Bearer ${secret}`);
 }
 
+// Image proxy only fetches from the marketplaces we scrape (prevents use as an open proxy)
+const ALLOWED_IMAGE_HOSTS = ['olxcdn.com', 'olx.pl', 'autoplac.pl'];
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -316,6 +319,11 @@ export default {
       // API: /api/verify-blue
       // ──────────────────────────────────────────────
       if (pathname === '/api/verify-blue' && request.method === 'POST') {
+        if (!isAuthorized(request, env)) {
+          return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+            status: 401, headers: { 'Content-Type': 'application/json', ...corsHeaders }
+          });
+        }
         const body = await request.json();
         const { id, isBlue, tag } = body;
         if (!id || isBlue === undefined) {
@@ -360,6 +368,11 @@ export default {
       // API: /api/reject-listing (Blacklist & delete from D1)
       // ──────────────────────────────────────────────
       if (pathname === '/api/reject-listing' && request.method === 'POST') {
+        if (!isAuthorized(request, env)) {
+          return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+            status: 401, headers: { 'Content-Type': 'application/json', ...corsHeaders }
+          });
+        }
         const body = await request.json();
         const { id, reason } = body;
         if (!id) {
@@ -404,6 +417,11 @@ export default {
         const imageUrl = searchParams.get('url');
         if (!imageUrl) {
           return new Response('Missing url', { status: 400, headers: corsHeaders });
+        }
+        let parsed;
+        try { parsed = new URL(imageUrl); } catch (_) { parsed = null; }
+        if (!parsed || parsed.protocol !== 'https:' || !ALLOWED_IMAGE_HOSTS.some(h => parsed.hostname === h || parsed.hostname.endsWith('.' + h))) {
+          return new Response('Host not allowed', { status: 403, headers: corsHeaders });
         }
         try {
           const upstream = await fetch(imageUrl, {

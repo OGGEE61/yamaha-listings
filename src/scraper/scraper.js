@@ -156,7 +156,7 @@ const SOURCES = {
 // ──────────────────────────────────────────────
 function fetchWithPuppeteer(url) {
   try {
-    const scriptPath = require('path').join(__dirname, 'scripts', 'puppeteer_fetcher.js');
+    const scriptPath = require('path').join(__dirname, 'puppeteer_fetcher.js');
     
     // Call the puppeteer script
     const html = execSync(`node "${scriptPath}" "${url}"`, { 
@@ -457,7 +457,7 @@ async function scrapeAll() {
   let rejectedIds = new Set();
   let rejectedUrls = new Set();
   try {
-    const db = require('./db');
+    const db = require('../server/db');
     const rej = db.getRejectedIds();
     rejectedIds = rej.ids;
     rejectedUrls = rej.urls;
@@ -563,7 +563,7 @@ if (require.main === module) {
 
       // Optional local SQLite sync if db exists
       try {
-        const db = require('./db');
+        const db = require('../server/db');
         const { newCount, updatedCount } = db.upsertListings(listings);
         if (olxUrls.length > 30) {
           db.markInactiveIfNotSeen(olxUrls, 'OLX.pl');
@@ -577,7 +577,7 @@ if (require.main === module) {
 
       // Post-processing: Iconic Blue detection on listing photos (Gemini vision)
       try {
-        await require('./vision').runColorCheck();
+        await require('../ai/vision').runColorCheck();
       } catch (err) {
         console.error('[CLI] Iconic Blue check failed (scrape results kept):', err.message);
       }

@@ -6,17 +6,17 @@
 const express = require('express');
 const cron = require('node-cron');
 const path = require('path');
-const { scrapeAll } = require('./scraper');
-const { runColorCheck } = require('./vision');
-const { checkListingActive } = require('./active_checker');
-const { checkOllamaStatus, analyzeListingWithBielik } = require('./bielik');
+const { scrapeAll } = require('../scraper/scraper');
+const { runColorCheck } = require('../ai/vision');
+const { checkListingActive } = require('../scraper/active_checker');
+const { checkOllamaStatus, analyzeListingWithBielik } = require('../ai/bielik');
 const db = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '..', '..', 'public')));
 
 // ──────────────────────────────────────────────
 // API ROUTES
@@ -37,7 +37,7 @@ app.use('/api', async (req, res, next) => {
   try {
     const upstream = await fetch(`${WORKER_URL}/api${req.url}`, {
       method: req.method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...(req.get('x-sync-secret') ? { 'x-sync-secret': req.get('x-sync-secret') } : {}) },
       body: ['GET', 'HEAD'].includes(req.method) ? undefined : JSON.stringify(req.body || {}),
     });
     res.status(upstream.status);

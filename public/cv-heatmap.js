@@ -487,11 +487,11 @@
     }
 
     if (listing.iconic_blue === 1) {
-      blueStatusEl.innerHTML = '<span style="color:#60a5fa;font-weight:700;">Wykryto Iconic Blue</span>';
+      blueStatusEl.innerHTML = '<span style="color:#1d4ed8;font-weight:700;">Wykryto Iconic Blue</span>';
     } else if (listing.iconic_blue === 0) {
-      blueStatusEl.innerHTML = '<span style="color:#94a3b8;font-weight:600;">Brak Iconic Blue</span>';
+      blueStatusEl.innerHTML = '<span style="color:#64748b;font-weight:600;">Brak Iconic Blue</span>';
     } else {
-      blueStatusEl.innerHTML = '<span style="color:#93c5fd;font-weight:600;">Nie sprawdzono</span>';
+      blueStatusEl.innerHTML = '<span style="color:#1d4ed8;font-weight:600;">Nie sprawdzono</span>';
     }
 
     updateHitlStatusBadge(listing.iconic_blue_verified, listing.iconic_blue);

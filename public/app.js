@@ -245,10 +245,10 @@ function renderPriceChart(rawPrices) {
     
     // Yamaha Racing Blue gradient
     const gradient = ctx.createLinearGradient(0, 0, 0, 260);
-    gradient.addColorStop(0, 'rgba(59, 130, 246, 0.90)');
-    gradient.addColorStop(1, 'rgba(30, 64, 175, 0.25)');
+    gradient.addColorStop(0, 'rgba(0, 50, 160, 0.90)');
+    gradient.addColorStop(1, 'rgba(0, 50, 160, 0.30)');
 
-    Chart.defaults.color = '#cbd5e1';
+    Chart.defaults.color = '#475569';
     Chart.defaults.font.family = 'Inter, sans-serif';
 
     priceChart = new Chart(ctx, {
@@ -259,11 +259,11 @@ function renderPriceChart(rawPrices) {
           label: 'Listings',
           data: data,
           backgroundColor: gradient,
-          borderColor: 'rgba(147, 197, 253, 0.5)',
+          borderColor: 'rgba(0, 50, 160, 0.6)',
           borderWidth: 1,
           borderRadius: 6,
           borderSkipped: false,
-          hoverBackgroundColor: '#ffffff'
+          hoverBackgroundColor: '#1d4ed8'
         }]
       },
       options: {
@@ -280,9 +280,9 @@ function renderPriceChart(rawPrices) {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: 'rgba(10, 23, 56, 0.95)',
+            backgroundColor: 'rgba(15, 23, 42, 0.96)',
             titleColor: '#ffffff',
-            bodyColor: '#93c5fd',
+            bodyColor: '#bfdbfe',
             titleFont: { size: 13, weight: 'bold' },
             bodyFont: { size: 14 },
             padding: 12,
@@ -302,15 +302,15 @@ function renderPriceChart(rawPrices) {
             ticks: {
               stepSize: 1,
               precision: 0,
-              color: '#94a3b8',
+              color: '#64748b',
               font: { family: 'Inter, sans-serif', size: 12 }
             },
-            grid: { color: 'rgba(255, 255, 255, 0.06)' },
+            grid: { color: 'rgba(15, 23, 42, 0.07)' },
             border: { display: false }
           },
           x: {
             ticks: {
-              color: '#cbd5e1',
+              color: '#475569',
               font: { family: 'Inter, sans-serif', size: 12, weight: '500' },
               maxRotation: 0,
               autoSkip: true
@@ -781,14 +781,14 @@ function renderListingModalData(l, priceHistory = []) {
     </div>
     <div class="modal-spec-item">
       <span class="modal-spec-label">Status ogłoszenia:</span>
-      <span class="modal-spec-value" id="modalActiveStatusValue" style="color:${l.is_active ? '#34d399' : '#f87171'}">
+      <span class="modal-spec-value" id="modalActiveStatusValue" style="color:${l.is_active ? '#059669' : '#dc2626'}">
         ${l.is_active ? 'Aktywne na portalu' : 'Archiwalne / Wygasłe'}
         <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(l.id)}', '${escHtml(l.url)}')">Weryfikuj na żywo</button>
       </span>
     </div>
     <div class="modal-spec-item">
       <span class="modal-spec-label">Iconic Blue:</span>
-      <span class="modal-spec-value" style="color:${l.iconic_blue === 1 ? '#60a5fa' : '#94a3b8'}">${l.iconic_blue === 1 ? 'Wykryto fabryczny błękit' : 'Brak / Niebieski nieobecny'}</span>
+      <span class="modal-spec-value" style="color:${l.iconic_blue === 1 ? '#1d4ed8' : '#64748b'}">${l.iconic_blue === 1 ? 'Wykryto fabryczny błękit' : 'Brak / Niebieski nieobecny'}</span>
     </div>
   `;
 
@@ -802,8 +802,8 @@ function renderListingModalData(l, priceHistory = []) {
       let diffHtml = '';
       if (earlier) {
         const diff = ph.price - earlier.price;
-        if (diff < 0) diffHtml = ` <span style="color:#34d399;font-weight:700;">(${diff.toLocaleString('pl-PL')} ${curr})</span>`;
-        if (diff > 0) diffHtml = ` <span style="color:#f87171;font-weight:700;">(+${diff.toLocaleString('pl-PL')} ${curr})</span>`;
+        if (diff < 0) diffHtml = ` <span style="color:#059669;font-weight:700;">(${diff.toLocaleString('pl-PL')} ${curr})</span>`;
+        if (diff > 0) diffHtml = ` <span style="color:#dc2626;font-weight:700;">(+${diff.toLocaleString('pl-PL')} ${curr})</span>`;
       }
       return `
         <div class="modal-price-history-row">
@@ -812,7 +812,7 @@ function renderListingModalData(l, priceHistory = []) {
         </div>`;
     }).join('');
   } else {
-    historyList.innerHTML = `<span style="color:#94a3b8;font-size:12px;">Cena nie zmieniała się od momentu dodania (${priceText}).</span>`;
+    historyList.innerHTML = `<span style="color:#64748b;font-size:12px;">Cena nie zmieniała się od momentu dodania (${priceText}).</span>`;
   }
 
   // Links & actions
@@ -831,7 +831,7 @@ function renderListingModalData(l, priceHistory = []) {
   if (l.description && l.description.trim()) {
     descEl.textContent = l.description.trim();
   } else {
-    descEl.innerHTML = `<span style="color:#94a3b8;font-style:italic;">Opis tego ogłoszenia nie został jeszcze pobrany. Pojawi się po najbliższym przebiegu scrapera lub po analizie Bielikiem (lokalnie).</span>`;
+    descEl.innerHTML = `<span style="color:#64748b;font-style:italic;">Opis tego ogłoszenia nie został jeszcze pobrany. Pojawi się po najbliższym przebiegu scrapera lub po analizie Bielikiem (lokalnie).</span>`;
   }
 
   // Bielik Panel Content
@@ -1057,7 +1057,7 @@ async function verifyListingActiveLive(id, url) {
 
     const isActive = data.isActive === true;
     statusEl.innerHTML = `
-      <span style="color:${isActive ? '#34d399' : '#f87171'}">
+      <span style="color:${isActive ? '#059669' : '#dc2626'}">
         ${isActive ? 'Aktywne na portalu' : 'Archiwalne / Wygasłe (' + (data.reason || 'Zakończone') + ')'}
       </span>
       <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(id)}', '${escHtml(url)}')">Sprawdź ponownie</button>
@@ -1080,7 +1080,7 @@ async function verifyListingActiveLive(id, url) {
     }
   } catch (err) {
     statusEl.innerHTML = `
-      <span style="color:#f87171">Błąd sprawdzania: ${escHtml(err.message)}</span>
+      <span style="color:#dc2626">Błąd sprawdzania: ${escHtml(err.message)}</span>
       <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(id)}', '${escHtml(url)}')">Ponów</button>
     `;
   }

@@ -28,10 +28,10 @@
     }
     .verify-card:hover {
       border-color: var(--border-bright);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
     }
     .verify-card.focused {
-      border-color: #60a5fa;
+      border-color: #3b6fd8;
       box-shadow: 0 0 0 2px #3b82f6, 0 12px 35px rgba(59, 130, 246, 0.4);
     }
     .verify-media-box {
@@ -70,14 +70,14 @@
       backdrop-filter: blur(8px);
       padding: 4px;
       border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(15, 23, 42, 0.12);
     }
     .btn-media-toggle {
       flex: 1;
       padding: 4px 8px;
       border: none;
       background: transparent;
-      color: #cbd5e1;
+      color: rgba(255, 255, 255, 0.78);
       font-size: 11px;
       font-weight: 700;
       border-radius: 4px;
@@ -85,12 +85,12 @@
       transition: all 0.2s;
     }
     .btn-media-toggle:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.14);
     }
     .btn-media-toggle.active {
       background: #2563eb;
-      color: #fff;
+      color: var(--text-on-accent);
     }
     .verify-body {
       padding: 16px 18px;
@@ -108,7 +108,7 @@
     .verify-title {
       font-weight: 700;
       font-size: 14px;
-      color: #fff;
+      color: var(--text-primary);
       line-height: 1.4;
       text-decoration: none;
       display: -webkit-box;
@@ -117,7 +117,7 @@
       overflow: hidden;
     }
     .verify-title:hover {
-      color: #60a5fa;
+      color: #1d4ed8;
     }
     .verify-meta-tags {
       display: flex;
@@ -158,19 +158,19 @@
       box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
     }
     .btn-no {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(15, 23, 42, 0.04);
       border: 1px solid var(--border);
-      color: #cbd5e1;
+      color: #475569;
     }
     .btn-no:hover {
       background: rgba(239, 68, 68, 0.25);
       border-color: #ef4444;
-      color: #fff;
+      color: var(--text-primary);
     }
     .btn-inspect-mini {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(15, 23, 42, 0.04);
       border: 1px solid var(--border);
-      color: #93c5fd;
+      color: #1d4ed8;
       border-radius: var(--radius-sm);
       padding: 10px 12px;
       cursor: pointer;
@@ -179,12 +179,12 @@
     }
     .btn-inspect-mini:hover {
       background: rgba(59, 130, 246, 0.3);
-      color: #fff;
+      color: var(--text-primary);
     }
     .btn-reject-listing {
       background: rgba(239, 68, 68, 0.12);
       border: 1px solid rgba(239, 68, 68, 0.35);
-      color: #fca5a5;
+      color: #b91c1c;
       border-radius: var(--radius-sm);
       padding: 10px 12px;
       cursor: pointer;
@@ -196,7 +196,7 @@
     .btn-reject-listing:hover {
       background: #dc2626;
       border-color: #ef4444;
-      color: #fff;
+      color: var(--text-primary);
       transform: translateY(-1px);
     }
     .btn-reject-listing:disabled {
@@ -326,6 +326,7 @@
     </div>
   </main>
 
+  <script src="admin.js?v=1"></script>
   <script src="cv-heatmap.js"></script>
   <script>
     let listings = [];
@@ -531,7 +532,7 @@
         if (l.iconic_blue_verified === 1) {
           hitlBadge = l.iconic_blue === 1
             ? `<span class="hitl-status-badge verified">Ground Truth: Iconic Blue</span>`
-            : `<span class="hitl-status-badge verified" style="color:#94a3b8;border-color:#64748b;background:rgba(100,116,139,0.15)">Odrzucone: Inny kolor</span>`;
+            : `<span class="hitl-status-badge verified" style="color:#64748b;border-color:#64748b;background:rgba(100,116,139,0.15)">Odrzucone: Inny kolor</span>`;
         } else {
           hitlBadge = `<span class="hitl-status-badge pending">Oczekuje na HITL</span>`;
         }

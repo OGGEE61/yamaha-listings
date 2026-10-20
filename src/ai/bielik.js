@@ -58,7 +58,7 @@ async function ensureListingDescription(listing) {
     const { execSync } = require('child_process');
     const cheerio = require('cheerio');
     const path = require('path');
-    const scriptPath = path.join(__dirname, 'scripts', 'puppeteer_fetcher.js');
+    const scriptPath = path.join(__dirname, '..', 'scraper', 'puppeteer_fetcher.js');
 
     const html = execSync(`node "${scriptPath}" "${listing.url}"`, {
       encoding: 'utf8',
@@ -103,7 +103,7 @@ async function persistAnalysis(id, { summary, verdict, analysis, description }) 
     if (!res.ok) throw new Error(`Worker /api/bielik/save HTTP ${res.status}`);
     return;
   }
-  require('./db').saveBielikAnalysis(id, {
+  require('../server/db').saveBielikAnalysis(id, {
     summary, verdict, analysisJson: JSON.stringify(analysis), description,
   });
 }

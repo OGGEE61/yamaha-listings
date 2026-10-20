@@ -11,7 +11,7 @@ function checkListingActive(url) {
   if (!url) return { isActive: false, reason: 'Brak URL' };
 
   try {
-    const scriptPath = path.join(__dirname, 'scripts', 'puppeteer_fetcher.js');
+    const scriptPath = path.join(__dirname, 'puppeteer_fetcher.js');
     const html = execSync(`node "${scriptPath}" "${url}"`, {
       encoding: 'utf8',
       maxBuffer: 10 * 1024 * 1024,

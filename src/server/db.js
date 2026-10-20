@@ -13,8 +13,8 @@ const path = require('path');
 const fs = require('fs');
 
 console.log("[DEBUG] db.js initializing DB...");
-const DB_PATH = path.join(__dirname, 'listings.db');
-const PUBLIC_JSON_PATH = path.join(__dirname, 'public', 'listings.json');
+const DB_PATH = path.join(__dirname, '..', '..', 'listings.db');
+const PUBLIC_JSON_PATH = path.join(__dirname, '..', '..', 'public', 'listings.json');
 
 const db = new Database(DB_PATH);
 console.log("[DEBUG] db.js DB initialized!");
@@ -113,7 +113,7 @@ function exportPublicJson() {
     ORDER BY is_active DESC, cc DESC, first_seen DESC
   `).all();
 
-  const publicDir = path.join(__dirname, 'public');
+  const publicDir = path.join(__dirname, '..', '..', 'public');
   if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir, { recursive: true });
 
   fs.writeFileSync(
