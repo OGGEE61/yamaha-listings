@@ -8,7 +8,7 @@
   --bg-card: #0A2D82;
   --brand: #0032a0;
   --brand-hover: #002680;
-  --bg-page: #e4eefc;
+  --bg-page: #8099d0;
   --bg-card-hover: #123B9E;
   
   --border: rgba(255,255,255,0.15);
@@ -2116,7 +2116,7 @@ body {
 .filters-section { display: flex; flex-direction: column; gap: 6px; }
 .filters-caption {
   font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;
-  color: var(--text-muted-dark, #64748b);
+  color: #0f172a;
 }
 .filters-row-inputs #filterModel { width: 200px; }
 .filters-row-inputs #filterEngine { width: 150px; }
@@ -2145,7 +2145,7 @@ body {
 .empty-state,
 .empty-state p,
 .section-header .badge { color: #0f172a; }
-.listing-meta, .footer, .empty-state p { color: #475569; }
+.listing-meta, .footer, .empty-state p { color: #0f172a; }
 .section-title::before { background: var(--brand); }
 
 .filter-group,
