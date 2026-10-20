@@ -16,7 +16,10 @@ const { execSync } = require('child_process');
 
 function determineYamahaModel(title, description = '') {
   if (!title) return null;
-  const t = title.toLowerCase().replace(/\s+/g, ' ').trim();
+  // Sellers append SEO tag spam like "(nie sx sxf tc fc kx ...)"; drop it so it doesn't count as competing brands
+  const t = title.toLowerCase()
+    .replace(/\(\s*nie\b[^)]*(\)|$)/g, ' ')
+    .replace(/\s+/g, ' ').trim();
   const d = description.toLowerCase().replace(/\s+/g, ' ').trim().substring(0, 400); // Only check the first 400 chars of desc
 
   const hasYamaha = /\byamaha\b/.test(t);
