@@ -8,7 +8,7 @@
   --bg-card: #0A2D82;
   --brand: #0032a0;
   --brand-hover: #002680;
-  --bg-page: #8099d0;
+  --bg-page: #4d70bd;
   --bg-card-hover: #123B9E;
   
   --border: rgba(255,255,255,0.15);
@@ -2136,32 +2136,35 @@ body {
 }
 .btn-reset-filters:hover { background: var(--brand); color: #fff; }
 
-/* ── White-page overrides ───────────────────
-   The page is white; cards keep their original Yamaha-blue look.
-   Page-level text and form controls therefore use dark-on-white colours. */
+/* ── Page-level overrides ───────────────────
+   Page background is a mid blue (70% of the header blue); cards keep their original
+   Yamaha-blue look. Page-level text is white; filter controls sit on a lighter 50% blue. */
 .section-title,
 .listing-meta,
 .footer,
 .empty-state,
 .empty-state p,
-.section-header .badge { color: #0f172a; }
-.listing-meta, .footer, .empty-state p { color: #0f172a; }
-.section-title::before { background: var(--brand); }
+.section-header .badge,
+.filters-caption { color: #ffffff; }
+.section-title::before { background: #ffffff; }
 
 .filter-group,
 .toggle-container {
-  background: #ffffff;
-  border: 1px solid var(--border-light, #d5dbe6);
+  background: #8099d0;
+  border: 1px solid rgba(255, 255, 255, 0.45);
 }
-.filter-group:focus-within { border-color: var(--brand); box-shadow: 0 0 0 3px var(--accent-glow, rgba(0, 50, 160, 0.18)); }
+.filter-group:focus-within { border-color: #ffffff; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35); }
 .filters-container input,
 .filters-container select,
-.toggle-label { color: #0f172a; }
-.filters-container input::placeholder { color: #64748b; }
-.filter-icon, .filter-prefix, .filter-separator { color: #64748b; }
-.toggle-container .toggle-slider { background: #cbd5e1; }
-.filters-container select option { color: #0f172a; background: #ffffff; }
+.toggle-label { color: #0b1530; }
+.filters-container input::placeholder { color: #1e2f5c; opacity: 0.85; }
+.filter-icon, .filter-prefix, .filter-separator { color: #1e2f5c; }
+.toggle-container .toggle-slider { background: rgba(255, 255, 255, 0.6); }
+.filters-container select option { color: #0b1530; background: #ffffff; }
 
-.page-btn { background: #ffffff; color: #0f172a; border-color: #d5dbe6; }
+.btn-reset-filters { border-color: #ffffff; color: #ffffff; }
+.btn-reset-filters:hover { background: #ffffff; color: var(--brand); }
+
+.page-btn { background: #ffffff; color: #0f172a; border-color: #ffffff; }
 .page-btn:hover { border-color: var(--brand); color: var(--brand); }
 .page-btn.active { background: var(--brand); border-color: var(--brand); color: #ffffff; }
