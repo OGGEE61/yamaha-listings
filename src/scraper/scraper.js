@@ -8,6 +8,7 @@ console.log("[DEBUG] scraper.js started");
  */
 
 const cheerio = require('cheerio');
+const { checkListingActive } = require('./active_checker');
 const { execSync } = require('child_process');
 
 // ──────────────────────────────────────────────
@@ -120,6 +121,12 @@ function extractCC(title, desc, model) {
   
   return 0;
 }
+
+// Safety cap on pagination per search query
+const MAX_PAGES_PER_QUERY = 8;
+// New listings need a detail-page visit (~8s each). Cap per run so a backlog can't blow the job timeout;
+// anything over the cap is simply picked up by the next run.
+const MAX_NEW_DETAILS_PER_RUN = 60;
 
 const SOURCES = {
   olx: {
@@ -242,13 +249,17 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
 
   $('[data-testid="l-card"]').each((_, el) => {
     const $el = $(el);
-    const title = $el.find('[data-testid="ad-title"]').text().trim();
+    // OLX renamed the title element over time; accept the current and previous markup, then any <h4>
+    const title = ($el.find('[data-testid="ad-card-title"], [data-testid="ad-title"]').first().text()
+      || $el.find('h4').first().text()).trim();
     const modelName = determineYamahaModel(title);
     if (!modelName) return;
 
     let href = $el.find('a[href]').first().attr('href') || '';
     if (href && !href.startsWith('http')) href = SOURCES.olx.baseUrl + href;
     href = href.split('?')[0];
+    // OLX search also surfaces otomoto.pl cross-posts; we only track OLX offers
+    if (!href.includes('olx.pl/d/oferta/')) return;
     if (seen.has(href)) return;
 
     const priceText = $el.find('[data-testid="ad-price"]').text().trim();
@@ -274,9 +285,10 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
     });
   });
 
-  hasMore = $('[data-testid="pagination-forward"]').length > 0 ||
-            $('a[data-cy="pagination-forward"]').length > 0 ||
-            html.includes('"nextPage"');
+  // OLX links the next page as ".../?page=N"; the old pagination-forward element no longer exists.
+  hasMore = $(`a[href*="page=${pageNum + 1}"]`).length > 0 ||
+            $('[data-testid="pagination-forward"]').length > 0 ||
+            $('a[data-cy="pagination-forward"]').length > 0;
 
   // Filter listings based on title alone first, to save requests
   const preliminaryListings = listings.filter(l => determineYamahaModel(l.title, ''));
@@ -430,8 +442,8 @@ async function scrapeAll() {
       console.log(`[Scraper] Using query: ${searchUrl}`);
       let page = 1;
       let hasMore = true;
-      
-      while (hasMore) {
+
+      while (hasMore && page <= MAX_PAGES_PER_QUERY) {
         const { listings, hasMore: more } = await source.scrape(page, searchUrl);
         allListings.push(...listings);
         hasMore = more;
@@ -467,13 +479,28 @@ async function scrapeAll() {
     rejectedUrls = rej.urls;
   } catch (_) {}
 
-  console.log(`[Scraper] Found ${unique.length} unique candidates (${rejectedUrls.size} permanently blacklisted). Verifying descriptions...`);
+  // Listings already in D1 passed verification before; don't reopen their detail pages every run
+  const knownIds = new Set((await fetchActiveListings()).map(l => l.id));
+
+  console.log(`[Scraper] Found ${unique.length} unique candidates (${rejectedUrls.size} permanently blacklisted, ${knownIds.size} already known). Verifying new ones...`);
   const verifiedListings = [];
+  let newDetailCount = 0;
+  let deferred = 0;
   
   for (const listing of unique) {
     const id = listing.id || listing.url.split('/').filter(Boolean).pop();
     if (rejectedIds.has(id) || rejectedUrls.has(listing.url)) {
       console.log(`[Scraper] ⏭️ Skipping permanently blacklisted listing: ${listing.url}`);
+      continue;
+    }
+
+    if (knownIds.has(id)) {
+      verifiedListings.push(listing);
+      continue;
+    }
+
+    if (++newDetailCount > MAX_NEW_DETAILS_PER_RUN) {
+      deferred++;
       continue;
     }
 
@@ -499,8 +526,37 @@ async function scrapeAll() {
     await delay(500); // Politeness delay between fetching items
   }
 
+  if (deferred) console.log(`[Scraper] ${deferred} new listings deferred to the next run (per-run detail cap)`);
   console.log(`[Scraper] Done. Total VERIFIED Yamaha listings: ${verifiedListings.length}`);
   return verifiedListings;
+}
+
+const WORKER_URL = process.env.WORKER_URL || 'https://yamaha-listings.maxgustaw.workers.dev';
+
+// Everything currently marked active in D1 (public read endpoint)
+async function fetchActiveListings() {
+  try {
+    const res = await fetch(`${WORKER_URL}/api/listings?limit=500&source=${encodeURIComponent('OLX.pl')}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return (await res.json()).listings || [];
+  } catch (err) {
+    console.warn('[Scraper] Could not load active listings from D1:', err.message);
+    return [];
+  }
+}
+
+// A listing that is missing from a run is NOT necessarily gone (it may just have slid to a later
+// search page). Only deactivate when the live page itself confirms the offer was removed.
+function confirmGone(urls, cap = 40) {
+  const gone = [];
+  const toCheck = urls.slice(0, cap);
+  for (const url of toCheck) {
+    const r = checkListingActive(url);
+    console.log(`[Scraper] Liveness check (${r.isActive === true ? 'LIVE' : r.isActive === false ? 'GONE' : 'unknown'}): ${url}`);
+    if (r.isActive === false) gone.push(url);
+  }
+  if (urls.length > cap) console.log(`[Scraper] ${urls.length - cap} more missing listings will be checked next run`);
+  return gone;
 }
 
 function delay(ms) {
@@ -537,7 +593,7 @@ async function syncListingsToD1(listings, runStats, inactiveUrls = []) {
   return result;
 }
 
-module.exports = { scrapeAll, determineYamahaModel, extractCC, syncListingsToD1 };
+module.exports = { scrapeAll, determineYamahaModel, extractCC, syncListingsToD1, __test: { scrapeOLX } };
 
 if (require.main === module) {
   (async () => {
@@ -548,7 +604,14 @@ if (require.main === module) {
       const listings = await scrapeAll();
 
       const olxUrls = listings.filter(l => l.source === 'OLX.pl').map(l => l.url);
-      const inactiveUrls = [];
+      let inactiveUrls = [];
+      // Only trust "missing" signals after a healthy run (a blocked/partial scrape finds very little)
+      if (listings.length >= 30) {
+        const seen = new Set(olxUrls);
+        const missing = (await fetchActiveListings()).filter(l => l.url && !seen.has(l.url)).map(l => l.url);
+        console.log(`[CLI] ${missing.length} active listings not seen in this run; confirming on OLX...`);
+        inactiveUrls = confirmGone(missing);
+      }
 
       // Sync directly to Cloudflare D1
       const runStats = {
@@ -569,9 +632,6 @@ if (require.main === module) {
       try {
         const db = require('../server/db');
         const { newCount, updatedCount } = db.upsertListings(listings);
-        if (olxUrls.length > 30) {
-          db.markInactiveIfNotSeen(olxUrls, 'OLX.pl');
-        }
         db.finishScrapeRun(db.recordScrapeRun(startedAt), {
           totalFound: listings.length,
           newListings: newCount,

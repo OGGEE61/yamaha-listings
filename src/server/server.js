@@ -118,6 +118,8 @@ app.post('/api/check-listing-active', (req, res) => {
   if (!id || !url) return res.status(400).json({ error: 'Missing id or url' });
   try {
     const result = checkListingActive(url);
+    // Unknown (blocked / inconclusive) must never flip a listing's status
+    if (result.isActive === null) return res.json({ success: true, ...result });
     const updated = db.updateListingActiveStatus(id, result.isActive);
     res.json({ success: true, ...result, ...updated });
   } catch (err) {

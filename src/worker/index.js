@@ -571,16 +571,8 @@ export default {
           );
         }
 
-        // 4. Anything OLX no longer returned in this (healthy) run is sold/removed. Its photos 404 soon after,
-        //    so mark it inactive. The 30-listing floor protects against a partial/failed scrape.
-        if (run && run.started_at && listings.length >= 30) {
-          statements.push(
-            env.DB.prepare(`
-              UPDATE listings SET is_active = 0
-              WHERE is_active = 1 AND source = 'OLX.pl' AND last_seen < ?
-            `).bind(run.started_at)
-          );
-        }
+        // Deactivation is driven only by inactiveUrls (listings the scraper confirmed gone on OLX).
+        // A listing merely missing from a run may just have slid to a later search page.
 
         // Cloudflare D1 batch execution
         const chunkSize = 80;
