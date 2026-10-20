@@ -44,6 +44,7 @@ export default {
         const activeOnly    = searchParams.get('activeOnly') !== 'false';
         const iconicBlue    = searchParams.get('iconicBlue') === 'true';
         const hitlOnly      = searchParams.get('hitlOnly') === 'true';
+        const sort          = searchParams.get('sort') || 'recommended';
         const limit         = Math.min(parseInt(searchParams.get('limit') || '24', 10), 500);
         const offset        = Math.max(parseInt(searchParams.get('offset') || '0', 10), 0);
 
@@ -92,8 +93,20 @@ export default {
 
         const whereClause = where.length ? 'WHERE ' + where.join(' AND ') : '';
 
+        // Sort order is chosen from a fixed whitelist (never interpolated from user input).
+        // Active listings always come first; listings without a price sort last.
+        const SORTS = {
+          recommended: 'cc DESC, first_seen DESC',
+          newest:      'first_seen DESC',
+          oldest:      'first_seen ASC',
+          price_asc:   'price IS NULL, price ASC',
+          price_desc:  'price IS NULL, price DESC',
+          cc_desc:     'cc DESC, first_seen DESC',
+        };
+        const orderBy = `is_active DESC, ${SORTS[sort] || SORTS.recommended}`;
+
         // Query listings for current page
-        const sqlListings = `SELECT * FROM listings ${whereClause} ORDER BY is_active DESC, cc DESC, first_seen DESC LIMIT ? OFFSET ?`;
+        const sqlListings = `SELECT * FROM listings ${whereClause} ORDER BY ${orderBy} LIMIT ? OFFSET ?`;
         // Query total count
         const sqlTotal = `SELECT COUNT(*) as cnt FROM listings ${whereClause}`;
         // Query price stats for currently filtered set
@@ -390,7 +403,7 @@ export default {
         await env.DB.batch([
           env.DB.prepare(
             'INSERT OR REPLACE INTO rejected_listings (id, url, title, reason, rejected_at) VALUES (?, ?, ?, ?, ?)'
-          ).bind(id, url, title, reason || 'Odrzucone manualnie', now),
+          ).bind(id, url, title, reason || 'Rejected manually', now),
           env.DB.prepare('DELETE FROM price_history WHERE listing_id = ?').bind(id),
           env.DB.prepare('DELETE FROM listings WHERE id = ?').bind(id),
         ]);

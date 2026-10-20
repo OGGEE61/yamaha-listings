@@ -267,7 +267,7 @@
    */
   function getInactiveAging(lastSeen) {
     if (!lastSeen) {
-      return { grayscale: 85, opacity: 0.52, days: 30, label: 'dawno temu' };
+      return { grayscale: 85, opacity: 0.52, days: 30, label: 'long ago' };
     }
     const ms = Date.now() - new Date(lastSeen).getTime();
     const days = Math.max(0, Math.floor(ms / (1000 * 60 * 60 * 24)));
@@ -282,10 +282,10 @@
     const grayscale = Math.round(30 + factor * 70);
     const opacity = +(0.88 - factor * 0.48).toFixed(2);
 
-    let label = `${days} dni temu`;
+    let label = `${days} days ago`;
     if (days === 0) label = 'dzisiaj';
-    else if (days === 1) label = 'wczoraj';
-    else if (days >= 60) label = `ponad 2 mies. temu (${days}d)`;
+    else if (days === 1) label = 'yesterday';
+    else if (days >= 60) label = `over 2 months ago (${days}d)`;
 
     return { grayscale, opacity, days, label };
   }
@@ -332,7 +332,7 @@
               <!-- View mode controls -->
               <div class="cv-mode-bar">
                 <button class="cv-mode-btn" data-mode="original" onclick="window.cvHeatmapEngine.setMode('original')">
-                  Oryginał
+                  Original
                 </button>
                 <button class="cv-mode-btn active" data-mode="heatmap" onclick="window.cvHeatmapEngine.setMode('heatmap')">
                   Thermal Heatmap
@@ -359,14 +359,14 @@
                   <div id="cvPartsContainer" class="cv-parts-tags"></div>
                 </div>
                 <div class="cv-stat-row">
-                  <span class="cv-stat-label">Pewność spektralna CV:</span>
+                  <span class="cv-stat-label">CV spectral confidence:</span>
                   <span id="cvConfidenceScore" class="cv-confidence-val">--%</span>
                 </div>
                 <div class="cv-confidence-bar-bg">
                   <div id="cvConfidenceFill" class="cv-confidence-fill" style="width: 0%"></div>
                 </div>
                 <div class="cv-stat-row" style="margin-top: 10px;">
-                  <span class="cv-stat-label">Próbka barwy (Racing Blue):</span>
+                  <span class="cv-stat-label">Colour sample (Racing Blue):</span>
                   <div style="display:flex;align-items:center;gap:8px;">
                     <span id="cvColorSwatch" class="cv-swatch" style="background:#0032A0"></span>
                     <span id="cvColorHex" style="font-family:monospace;font-size:12px;color:var(--text-secondary)">#0032A0</span>
@@ -378,24 +378,24 @@
               <div class="cv-insight-card hitl-highlight-card">
                 <div class="cv-insight-title">
                   <span>Human-in-the-Loop (HITL) Studio</span>
-                  <span id="cvHitlBadge" class="hitl-status-badge">Oczekuje na weryfikację</span>
+                  <span id="cvHitlBadge" class="hitl-status-badge">Awaiting verification</span>
                 </div>
                 <p class="hitl-desc">
-                  Weryfikacja ekspercka: Twoja decyzja koryguje wynik AI i zasila zbiór Ground Truth w bazie danych.
+                  Expert review: your decision corrects the AI result and feeds the Ground Truth set.
                 </p>
 
                 <div class="hitl-tag-section" style="margin-bottom:12px;">
                   <span style="font-size:11px;font-weight:700;color:#cbd5e1;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px;">
-                    Oznacz powód / tag weryfikacji (opcjonalnie):
+                    Add a reason / verification tag (optional):
                   </span>
                   <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;" id="cvHitlPillsContainer">
-                    <button type="button" class="cv-tag-pill-btn" onclick="window.cvHeatmapEngine.setTag('Słabe zdjęcie / miniatura')">Słabe zdjęcie / miniatura</button>
-                    <button type="button" class="cv-tag-pill-btn" onclick="window.cvHeatmapEngine.setTag('Pozostałe zdjęcia niebieskie')">Pozostałe zdjęcia niebieskie</button>
-                    <button type="button" class="cv-tag-pill-btn" onclick="window.cvHeatmapEngine.setTag('Wielokolorowy / zmiana plastików')">Wielokolorowy</button>
-                    <button type="button" class="cv-tag-pill-btn" onclick="window.cvHeatmapEngine.setTag('Złe oświetlenie / cień')">Złe oświetlenie</button>
-                    <button type="button" class="cv-tag-pill-btn" onclick="window.cvHeatmapEngine.setTag('Zweryfikowane manualnie')">Potwierdzone ręcznie</button>
+                    <button type="button" class="cv-tag-pill-btn" onclick="window.cvHeatmapEngine.setTag('Poor photo / thumbnail')">Poor photo / thumbnail</button>
+                    <button type="button" class="cv-tag-pill-btn" onclick="window.cvHeatmapEngine.setTag('Other photos show blue')">Other photos show blue</button>
+                    <button type="button" class="cv-tag-pill-btn" onclick="window.cvHeatmapEngine.setTag('Multicolour / changed plastics')">Multicolour</button>
+                    <button type="button" class="cv-tag-pill-btn" onclick="window.cvHeatmapEngine.setTag('Bad lighting / shadow')">Bad lighting</button>
+                    <button type="button" class="cv-tag-pill-btn" onclick="window.cvHeatmapEngine.setTag('Verified manually')">Confirmed manually</button>
                   </div>
-                  <input type="text" id="cvHitlTagInput" placeholder="Wpisz lub wybierz tag (np. zdjęcie nr 1 kijowe)..." style="width:100%;background:rgba(5,20,60,0.6);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:7px 10px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;" />
+                  <input type="text" id="cvHitlTagInput" placeholder="Type or pick a tag (e.g. photo 1 is poor)..." style="width:100%;background:rgba(5,20,60,0.6);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:7px 10px;color:#fff;font-size:12px;outline:none;box-sizing:border-box;" />
                 </div>
 
                 <div class="hitl-action-buttons">
@@ -403,14 +403,14 @@
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
                       <polyline points="20 6 9 17 4 12"/>
                     </svg>
-                    Potwierdź: To JEST Iconic Blue
+                    Confirm: this IS Iconic Blue
                   </button>
                   <button class="btn-hitl btn-hitl-no" onclick="window.cvHeatmapEngine.verifyCurrent(false)">
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
                       <line x1="18" y1="6" x2="6" y2="18"/>
                       <line x1="6" y1="6" x2="18" y2="18"/>
                     </svg>
-                    Odrzuć: Inny kolor / Nie-blue
+                    Reject: other colour / not blue
                   </button>
                 </div>
                 <div id="cvHitlFeedback" class="hitl-feedback-msg" style="display:none"></div>
@@ -418,10 +418,10 @@
 
               <div class="cv-direct-link-row">
                 <a id="cvListingLink" href="#" target="_blank" rel="noopener" class="cv-external-link">
-                  Otwórz oryginalne ogłoszenie
+                  Open original listing
                 </a>
-                <button type="button" class="btn-modal-reject" onclick="window.cvHeatmapEngine.rejectCurrentListing()" title="Trwale odrzuć ogłoszenie z bazy">
-                  ✕ Odrzuć to ogłoszenie
+                <button type="button" class="btn-modal-reject" onclick="window.cvHeatmapEngine.rejectCurrentListing()" title="Permanently reject listing">
+                  ✕ Reject this listing
                 </button>
               </div>
             </div>
@@ -481,17 +481,17 @@
     } catch (_) {}
 
     if (parts.length > 0) {
-      partsContainer.innerHTML = parts.map(p => `<span class="cv-part-tag">${p}</span>`).join('');
+      partsContainer.innerHTML = parts.map(p => `<span class="cv-part-tag">${({ plastiki: 'plastics', felgi: 'rims' })[p] || p}</span>`).join('');
     } else {
-      partsContainer.innerHTML = '<span style="color:var(--text-muted);font-size:12px;">Brak wykrytych elementów</span>';
+      partsContainer.innerHTML = '<span style="color:var(--text-muted);font-size:12px;">No parts detected</span>';
     }
 
     if (listing.iconic_blue === 1) {
-      blueStatusEl.innerHTML = '<span style="color:#1d4ed8;font-weight:700;">Wykryto Iconic Blue</span>';
+      blueStatusEl.innerHTML = '<span style="color:#60a5fa;font-weight:700;">Wykryto Iconic Blue</span>';
     } else if (listing.iconic_blue === 0) {
-      blueStatusEl.innerHTML = '<span style="color:#64748b;font-weight:600;">Brak Iconic Blue</span>';
+      blueStatusEl.innerHTML = '<span style="color:#94a3b8;font-weight:600;">No Iconic Blue</span>';
     } else {
-      blueStatusEl.innerHTML = '<span style="color:#1d4ed8;font-weight:600;">Nie sprawdzono</span>';
+      blueStatusEl.innerHTML = '<span style="color:#93c5fd;font-weight:600;">Not checked</span>';
     }
 
     updateHitlStatusBadge(listing.iconic_blue_verified, listing.iconic_blue);
@@ -511,7 +511,7 @@
         imgEl.dataset.hasProxyFallback = 'true';
         imgEl.src = `/api/proxy-image?url=${encodeURIComponent(listing.image)}`;
       } else {
-        loadingEl.textContent = 'Nie udało się wczytać zdjęcia';
+        loadingEl.textContent = 'Could not load photo';
       }
     };
 
@@ -524,10 +524,10 @@
     if (!badge) return;
     if (verified === 1) {
       badge.className = 'hitl-status-badge verified';
-      badge.textContent = isBlue === 1 ? 'Potwierdzone (Ground Truth)' : 'Odrzucone przez weryfikatora';
+      badge.textContent = isBlue === 1 ? 'Confirmed (Ground Truth)' : 'Rejected by reviewer';
     } else {
       badge.className = 'hitl-status-badge pending';
-      badge.textContent = 'Oczekuje na weryfikację (AI)';
+      badge.textContent = 'Awaiting verification (AI)';
     }
   }
 
@@ -577,7 +577,7 @@
     if (!currentModalItem || !currentModalItem.id) return;
     const feedback = document.getElementById('cvHitlFeedback');
     feedback.style.display = 'block';
-    feedback.innerHTML = '<span class="spinner-sm"></span> Zapisywanie weryfikacji w bazie...';
+    feedback.innerHTML = '<span class="spinner-sm"></span> Saving verification...';
 
     const tag = document.getElementById('cvHitlTagInput')?.value.trim() || null;
 
@@ -593,13 +593,13 @@
       currentModalItem.iconic_blue_verified = 1;
       currentModalItem.iconic_blue_tag = tag;
 
-      feedback.innerHTML = `Zapisano. Status: <strong>${isBlue ? 'Iconic Blue' : 'Inny kolor'}</strong>${tag ? ` (${tag})` : ''}`;
+      feedback.innerHTML = `Saved. Status: <strong>${isBlue ? 'Iconic Blue' : 'Other colour'}</strong>${tag ? ` (${tag})` : ''}`;
       feedback.className = 'hitl-feedback-msg success';
 
       // Update badge in modal
       const hitlBadgeEl = document.getElementById('cvHitlBadge');
       if (hitlBadgeEl) {
-        hitlBadgeEl.textContent = isBlue ? 'Zweryfikowano (Iconic Blue)' : 'Zweryfikowano (Nie-blue)';
+        hitlBadgeEl.textContent = isBlue ? 'Verified (Iconic Blue)' : 'Verified (not blue)';
         hitlBadgeEl.className = 'hitl-status-badge verified';
       }
 
@@ -609,20 +609,20 @@
       }));
 
     } catch (err) {
-      feedback.textContent = `Błąd zapisu: ${err.message}`;
+      feedback.textContent = `Save failed: ${err.message}`;
       feedback.className = 'hitl-feedback-msg error';
     }
   }
 
   async function rejectCurrentListing() {
     if (!currentModalItem || !currentModalItem.id) return;
-    const confirmed = confirm(`Czy na pewno trwale odrzucić to ogłoszenie z bazy?\n\n"${currentModalItem.title || currentModalItem.id}"\n\nOgłoszenie zostanie usunięte z bazy i dodane do czarnej listy.`);
+    const confirmed = confirm(`Permanently reject this listing?\n\n"${currentModalItem.title || currentModalItem.id}"\n\nIt will be removed from the database and added to the blacklist.`);
     if (!confirmed) return;
 
     const feedback = document.getElementById('cvHitlFeedback');
     if (feedback) {
       feedback.style.display = 'block';
-      feedback.innerHTML = '<span class="spinner-sm"></span> Trwa odrzucanie ogłoszenia...';
+      feedback.innerHTML = '<span class="spinner-sm"></span> Rejecting listing...';
       feedback.className = 'hitl-feedback-msg';
     }
 
@@ -635,7 +635,7 @@
           url: currentModalItem.url,
           title: currentModalItem.title,
           source: currentModalItem.source,
-          reason: 'Odrzucone z okna inspekcji'
+          reason: 'Rejected from inspection window'
         })
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -658,10 +658,10 @@
       closeModal();
     } catch (err) {
       if (feedback) {
-        feedback.textContent = `Błąd odrzucania: ${err.message}`;
+        feedback.textContent = `Rejection failed: ${err.message}`;
         feedback.className = 'hitl-feedback-msg error';
       } else {
-        alert(`Błąd odrzucania: ${err.message}`);
+        alert(`Rejection failed: ${err.message}`);
       }
     }
   }

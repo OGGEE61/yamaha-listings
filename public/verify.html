@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,10 +28,10 @@
     }
     .verify-card:hover {
       border-color: var(--border-bright);
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
     .verify-card.focused {
-      border-color: #3b6fd8;
+      border-color: #60a5fa;
       box-shadow: 0 0 0 2px #3b82f6, 0 12px 35px rgba(59, 130, 246, 0.4);
     }
     .verify-media-box {
@@ -70,14 +70,14 @@
       backdrop-filter: blur(8px);
       padding: 4px;
       border-radius: 6px;
-      border: 1px solid rgba(15, 23, 42, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
     .btn-media-toggle {
       flex: 1;
       padding: 4px 8px;
       border: none;
       background: transparent;
-      color: rgba(255, 255, 255, 0.78);
+      color: #cbd5e1;
       font-size: 11px;
       font-weight: 700;
       border-radius: 4px;
@@ -85,12 +85,12 @@
       transition: all 0.2s;
     }
     .btn-media-toggle:hover {
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
     }
     .btn-media-toggle.active {
       background: #2563eb;
-      color: var(--text-on-accent);
+      color: #fff;
     }
     .verify-body {
       padding: 16px 18px;
@@ -108,7 +108,7 @@
     .verify-title {
       font-weight: 700;
       font-size: 14px;
-      color: var(--text-primary);
+      color: #fff;
       line-height: 1.4;
       text-decoration: none;
       display: -webkit-box;
@@ -117,7 +117,7 @@
       overflow: hidden;
     }
     .verify-title:hover {
-      color: #1d4ed8;
+      color: #60a5fa;
     }
     .verify-meta-tags {
       display: flex;
@@ -158,19 +158,19 @@
       box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
     }
     .btn-no {
-      background: rgba(15, 23, 42, 0.04);
+      background: rgba(255, 255, 255, 0.08);
       border: 1px solid var(--border);
-      color: #475569;
+      color: #cbd5e1;
     }
     .btn-no:hover {
       background: rgba(239, 68, 68, 0.25);
       border-color: #ef4444;
-      color: var(--text-primary);
+      color: #fff;
     }
     .btn-inspect-mini {
-      background: rgba(15, 23, 42, 0.04);
+      background: rgba(255, 255, 255, 0.1);
       border: 1px solid var(--border);
-      color: #1d4ed8;
+      color: #93c5fd;
       border-radius: var(--radius-sm);
       padding: 10px 12px;
       cursor: pointer;
@@ -179,12 +179,12 @@
     }
     .btn-inspect-mini:hover {
       background: rgba(59, 130, 246, 0.3);
-      color: var(--text-primary);
+      color: #fff;
     }
     .btn-reject-listing {
       background: rgba(239, 68, 68, 0.12);
       border: 1px solid rgba(239, 68, 68, 0.35);
-      color: #b91c1c;
+      color: #fca5a5;
       border-radius: var(--radius-sm);
       padding: 10px 12px;
       cursor: pointer;
@@ -196,7 +196,7 @@
     .btn-reject-listing:hover {
       background: #dc2626;
       border-color: #ef4444;
-      color: var(--text-primary);
+      color: #fff;
       transform: translateY(-1px);
     }
     .btn-reject-listing:disabled {
@@ -236,37 +236,37 @@
           <span class="hitl-badge-active-learning">Active Learning Loop</span>
         </div>
         <div class="hitl-shortcuts-pill">
-          <span>Skróty klawiszowe:</span>
-          <span><span class="kbd-key">Y</span> = Potwierdź Blue</span>
-          <span><span class="kbd-key">N</span> = Odrzuć</span>
+          <span>Keyboard shortcuts:</span>
+          <span><span class="kbd-key">Y</span> = Confirm Blue</span>
+          <span><span class="kbd-key">N</span> = Reject</span>
           <span><span class="kbd-key">H</span> = Heatmap</span>
         </div>
       </div>
       <p class="hitl-step-text" style="max-width: 900px; font-size: 13px;">
-        Model Computer Vision (Gemini Vision + spektralna segmentacja barwy Yamaha Racing Blue #0033A0) analizuje zdjęcia motocykli.
-        Weryfikacja ekspercka (człowiek w pętli) koryguje niepewne przypadki, budując certyfikowany zbiór Ground Truth w bazie danych.
+        A computer-vision model (Gemini Vision + spectral segmentation of Yamaha Racing Blue #0033A0) analyses the motorcycle photos.
+        Expert review (human in the loop) corrects uncertain cases and builds a certified Ground Truth set in the database.
       </p>
 
       <div class="hitl-pipeline-steps">
         <div class="hitl-step-box">
-          <div class="hitl-step-num">Krok 1 · Ingestion</div>
-          <div class="hitl-step-text">Pobieranie zdjęć ogłoszeń (OLX / Autoplac)</div>
+          <div class="hitl-step-num">Step 1 · Ingestion</div>
+          <div class="hitl-step-text">Fetching listing photos (OLX / Autoplac)</div>
         </div>
         <div class="hitl-step-box">
-          <div class="hitl-step-num">Krok 2 · AI Vision</div>
-          <div class="hitl-step-text">Klasyfikacja elementów (Gemini 3.8 Flash Vision)</div>
+          <div class="hitl-step-num">Step 2 · AI Vision</div>
+          <div class="hitl-step-text">Part classification (Gemini 3.8 Flash Vision)</div>
         </div>
         <div class="hitl-step-box">
-          <div class="hitl-step-num">Krok 3 · CV Heatmap</div>
-          <div class="hitl-step-text">Generowanie mapy cieplnej nasycenia błękitu</div>
+          <div class="hitl-step-num">Step 3 · CV Heatmap</div>
+          <div class="hitl-step-text">Generating the blue-saturation heatmap</div>
         </div>
         <div class="hitl-step-box active-step">
-          <div class="hitl-step-num">Krok 4 · HITL Review</div>
-          <div class="hitl-step-text"><strong>Weryfikator ludzki</strong> potwierdza / odrzuca</div>
+          <div class="hitl-step-num">Step 4 · HITL Review</div>
+          <div class="hitl-step-text"><strong>Human reviewer</strong> confirms / rejects</div>
         </div>
         <div class="hitl-step-box">
-          <div class="hitl-step-num">Krok 5 · Ground Truth</div>
-          <div class="hitl-step-text">Zapis w Cloudflare D1 / SQLite jako baza wiedzy</div>
+          <div class="hitl-step-num">Step 5 · Ground Truth</div>
+          <div class="hitl-step-text">Stored in Cloudflare D1 / SQLite as the knowledge base</div>
         </div>
       </div>
     </section>
@@ -275,23 +275,23 @@
     <section class="hitl-kpi-bar" id="kpiBar">
       <div class="hitl-kpi-card">
         <span class="hitl-kpi-val" id="kpiPending">—</span>
-        <span class="hitl-kpi-lbl">Oczekuje na weryfikację</span>
+        <span class="hitl-kpi-lbl">Awaiting verification</span>
       </div>
       <div class="hitl-kpi-card">
         <span class="hitl-kpi-val" id="kpiVerified">—</span>
-        <span class="hitl-kpi-lbl">Zweryfikowane (Ground Truth)</span>
+        <span class="hitl-kpi-lbl">Verified (Ground Truth)</span>
       </div>
       <div class="hitl-kpi-card">
         <span class="hitl-kpi-val" id="kpiBlueCount">—</span>
-        <span class="hitl-kpi-lbl">Potwierdzone Iconic Blue</span>
+        <span class="hitl-kpi-lbl">Confirmed Iconic Blue</span>
       </div>
       <div class="hitl-kpi-card">
         <span class="hitl-kpi-val" id="kpiNonBlueCount">—</span>
-        <span class="hitl-kpi-lbl">Inny kolor / Odrzucone</span>
+        <span class="hitl-kpi-lbl">Other colour / Rejected</span>
       </div>
       <div class="hitl-kpi-card">
         <span class="hitl-kpi-val" id="kpiProgressPct">—%</span>
-        <span class="hitl-kpi-lbl">Postęp weryfikacji</span>
+        <span class="hitl-kpi-lbl">Verification progress</span>
       </div>
     </section>
 
@@ -301,22 +301,22 @@
         <label class="toggle-container">
           <input type="checkbox" id="showAll" onchange="renderCards()">
           <span class="toggle-slider"></span>
-          <span class="toggle-label">Pokaż już zweryfikowane</span>
+          <span class="toggle-label">Show already verified</span>
         </label>
         <label class="toggle-container">
           <input type="checkbox" id="showConfident" onchange="renderCards()" checked>
           <span class="toggle-slider"></span>
-          <span class="toggle-label">Pokaż też pewne wyniki AI (≥ 85%)</span>
+          <span class="toggle-label">Also show confident AI results (≥ 85%)</span>
         </label>
       </div>
 
       <!-- Global Heatmap Default Mode -->
       <div style="display:flex;align-items:center;gap:10px;">
-        <span style="font-size:12px;color:var(--text-secondary);font-weight:600;">Globalny podgląd:</span>
+        <span style="font-size:12px;color:#475569;font-weight:600;">Global view:</span>
         <div class="cv-mode-bar" style="margin:0;">
-          <button class="cv-mode-btn active" id="btnGlobalPhoto" onclick="setGlobalViewMode('photo')">Zdjęcia</button>
+          <button class="cv-mode-btn active" id="btnGlobalPhoto" onclick="setGlobalViewMode('photo')">Photos</button>
           <button class="cv-mode-btn" id="btnGlobalHeatmap" onclick="setGlobalViewMode('heatmap')">Heatmap CV</button>
-          <button class="cv-mode-btn" id="btnGlobalMask" onclick="setGlobalViewMode('mask')">Maska</button>
+          <button class="cv-mode-btn" id="btnGlobalMask" onclick="setGlobalViewMode('mask')">Mask</button>
         </div>
       </div>
     </div>
@@ -447,7 +447,7 @@
       const card = document.getElementById(`card-${id}`);
       const title = card ? (card.querySelector('.verify-title')?.textContent?.trim() || id) : id;
 
-      if (!confirm(`Czy na pewno chcesz odrzucić to ogłoszenie i dodać do czarnej listy?\n\n"${title}"\n\nOgłoszenie zostanie bezpowrotnie usunięte z bazy, a scraper NIGDY więcej go nie pobierze.`)) {
+      if (!confirm(`Reject this listing and add it to the blacklist?\n\n"${title}"\n\nIt will be permanently removed from the database and the scraper will never fetch it again.`)) {
         return;
       }
 
@@ -460,7 +460,7 @@
         const res = await fetch('/api/reject-listing', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id, reason: 'Odrzucone z ekranu weryfikacji HITL' })
+          body: JSON.stringify({ id, reason: 'Rejected from HITL verification screen' })
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
@@ -478,10 +478,10 @@
           }, 350);
         }
       } catch (err) {
-        alert('Błąd podczas odrzucania ogłoszenia: ' + err.message);
+        alert('Error rejecting listing: ' + err.message);
         if (btnEl) {
           btnEl.disabled = false;
-          btnEl.textContent = '✕ Odrzuć';
+          btnEl.textContent = '✕ Reject';
         }
       }
     }
@@ -513,7 +513,7 @@
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
             </svg>
             <h3>Wszystko zweryfikowane!</h3>
-            <p>Brak oczekujących ogłoszeń dla wybranych filtrów.</p>
+            <p>No pending listings for the selected filters.</p>
           </div>`;
         return;
       }
@@ -525,23 +525,23 @@
         } catch (_) {}
 
         const partsHtml = parts.length
-          ? parts.map(p => `<span class="cv-part-tag">${p}</span>`).join('')
-          : '<span style="font-size:11px;color:var(--text-muted)">Brak części</span>';
+          ? parts.map(p => `<span class="cv-part-tag">${({ plastiki: 'plastics', felgi: 'rims' })[p] || p}</span>`).join('')
+          : '<span style="font-size:11px;color:var(--text-muted)">No parts</span>';
 
         let hitlBadge = '';
         if (l.iconic_blue_verified === 1) {
           hitlBadge = l.iconic_blue === 1
             ? `<span class="hitl-status-badge verified">Ground Truth: Iconic Blue</span>`
-            : `<span class="hitl-status-badge verified" style="color:#64748b;border-color:#64748b;background:rgba(100,116,139,0.15)">Odrzucone: Inny kolor</span>`;
+            : `<span class="hitl-status-badge verified" style="color:#94a3b8;border-color:#64748b;background:rgba(100,116,139,0.15)">Rejected: other colour</span>`;
         } else {
-          hitlBadge = `<span class="hitl-status-badge pending">Oczekuje na HITL</span>`;
+          hitlBadge = `<span class="hitl-status-badge pending">Awaiting HITL</span>`;
         }
 
         const confPct = typeof l.iconic_blue_confidence === 'number'
           ? ` · ${Math.round(l.iconic_blue_confidence * 100)}%` : '';
         const modelPredictionBadge = l.iconic_blue === 1
           ? `<span class="badge-cv-hitl verified" style="font-size:10px;">AI: Iconic Blue${confPct}</span>`
-          : `<span class="badge-cv-hitl pending" style="font-size:10px;">AI: Nie-blue${confPct}</span>`;
+          : `<span class="badge-cv-hitl pending" style="font-size:10px;">AI: Not blue${confPct}</span>`;
         const reasonHtml = l.iconic_blue_reason
           ? `<div style="font-size:11px;color:var(--text-secondary);line-height:1.4;">${String(l.iconic_blue_reason).replace(/</g, '&lt;')}</div>`
           : '';
@@ -554,9 +554,9 @@
               <canvas class="verify-canvas" id="canvas-${l.id}"></canvas>
 
               <div class="verify-media-tools">
-                <button class="btn-media-toggle active" data-mode="photo" onclick="setCardViewMode('${l.id}', 'photo')">Foto</button>
+                <button class="btn-media-toggle active" data-mode="photo" onclick="setCardViewMode('${l.id}', 'photo')">Photo</button>
                 <button class="btn-media-toggle" data-mode="heatmap" onclick="setCardViewMode('${l.id}', 'heatmap')">Heatmap</button>
-                <button class="btn-media-toggle" data-mode="mask" onclick="setCardViewMode('${l.id}', 'mask')">Maska</button>
+                <button class="btn-media-toggle" data-mode="mask" onclick="setCardViewMode('${l.id}', 'mask')">Mask</button>
               </div>
             </div>
 
@@ -575,24 +575,24 @@
               </div>
 
               <div style="font-size:11px;color:var(--text-secondary);display:flex;align-items:center;gap:6px;">
-                <span>Elementy CV:</span>
+                <span>CV parts:</span>
                 ${partsHtml}
               </div>
               ${reasonHtml}
             </div>
 
             <div class="verify-actions">
-              <button class="btn-action btn-yes" onclick="verify('${l.id}', true)" title="Zatwierdź jako Yamaha Iconic Blue (Y)">
-                To jest Blue
+              <button class="btn-action btn-yes" onclick="verify('${l.id}', true)" title="Confirm as Yamaha Iconic Blue (Y)">
+                Is Blue
               </button>
               <button class="btn-action btn-no" onclick="verify('${l.id}', false)" title="Oznacz jako inny kolor (N)">
-                Inny kolor
+                Other colour
               </button>
-              <button class="btn-inspect-mini" onclick="openModalForCard('${l.id}')" title="Głęboka analiza w oknie modalnym">
+              <button class="btn-inspect-mini" onclick="openModalForCard('${l.id}')" title="Deep analysis in a modal">
                 Inspect
               </button>
-              <button class="btn-reject-listing" onclick="rejectListingFromVerify('${l.id}', this)" title="Odrzuć całe ogłoszenie z bazy (dodaj do czarnej listy)">
-                ✕ Odrzuć
+              <button class="btn-reject-listing" onclick="rejectListingFromVerify('${l.id}', this)" title="Reject the whole listing (add to blacklist)">
+                ✕ Reject
               </button>
             </div>
           </div>

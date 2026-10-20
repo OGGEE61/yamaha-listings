@@ -107,67 +107,91 @@
       </div>
 
       <div class="filters-container">
-        <!-- Row 1: ALL TOGGLES & PRICE -->
-        <div class="filters-row filters-row-toggles">
-          <label class="toggle-container">
-            <input type="checkbox" id="excludeTenere" onchange="loadListings()" checked>
-            <span class="toggle-slider"></span>
-            <span class="toggle-label">Hide Tenere & XJ6</span>
-          </label>
-          <label class="toggle-container">
-            <input type="checkbox" id="showInactive" onchange="loadListings()">
-            <span class="toggle-slider"></span>
-            <span class="toggle-label">Show Past</span>
-          </label>
-          <label class="toggle-container" title="Only bikes with plastics/rims in Yamaha Icon Blue (detected from photo)">
-            <input type="checkbox" id="filterIconicBlue" checked onchange="loadListings()">
-            <span class="toggle-slider"></span>
-            <span class="toggle-label">Iconic Blue (CV)</span>
-          </label>
-          <label class="toggle-container" title="Show only listings confirmed by a human verifier">
-            <input type="checkbox" id="filterHitl" onchange="loadListings()">
-            <span class="toggle-slider"></span>
-            <span class="toggle-label">HITL Verified Only</span>
-          </label>
-          <div class="filter-group price-filter-group">
-            <span class="filter-prefix">PLN</span>
-            <input type="number" id="filterMin" placeholder="Min price" oninput="debounceLoad()" />
-            <span class="filter-separator">-</span>
-            <input type="number" id="filterMax" placeholder="Max price" oninput="debounceLoad()" />
+        <!-- 1. FIND: what are you looking for -->
+        <div class="filters-section">
+          <span class="filters-caption">Find</span>
+          <div class="filters-row filters-row-inputs">
+            <div class="filter-group search-filter-group">
+              <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <input type="text" id="filterSearch" placeholder="Search title or location…" oninput="debounceLoad()" />
+            </div>
+            <div class="filter-group select-wrapper">
+              <select id="filterModel" onchange="onModelChange()" aria-label="Model">
+                <option value="">All models</option>
+                <option value="YZ 250 2T">YZ 250 2T</option>
+                <option value="YZ 250X">YZ 250X</option>
+                <option value="WR 250F">WR 250F</option>
+                <option value="WR 450F">WR 450F</option>
+                <option value="Tenere 700">Tenere 700</option>
+                <option value="XJ6 Naked">XJ6 Naked</option>
+                <option value="Yamaha Vintage">Yamaha Vintage (DT, XT, TT, IT)</option>
+              </select>
+            </div>
+            <div class="filter-group select-wrapper">
+              <select id="filterEngine" onchange="loadListings()" aria-label="Engine">
+                <option value="">All engines</option>
+                <option value="2T" selected>2-stroke (2T)</option>
+                <option value="4T">4-stroke (4T)</option>
+              </select>
+            </div>
+            <div class="filter-group select-wrapper">
+              <select id="filterSource" onchange="loadListings()" aria-label="Source">
+                <option value="">All sources</option>
+                <option value="OLX.pl">OLX.pl</option>
+                <option value="Autoplac">Autoplac</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        <!-- Row 2: DROPDOWNS AND SEARCH AT THE END -->
-        <div class="filters-row filters-row-inputs">
-          <div class="filter-group select-wrapper">
-            <select id="filterModel" onchange="onModelChange()">
-              <option value="">All Models</option>
-              <option value="YZ 250 2T">YZ 250 2T</option>
-              <option value="YZ 250X">YZ 250X</option>
-              <option value="WR 250F">WR 250F</option>
-              <option value="WR 450F">WR 450F</option>
-              <option value="Tenere 700">Tenere 700</option>
-              <option value="XJ6 Naked">XJ6 Naked</option>
-              <option value="Yamaha Vintage">Yamaha Vintage (DT, XT, TT, IT)</option>
-            </select>
+        <!-- 2. REFINE: price range and sort order -->
+        <div class="filters-section">
+          <span class="filters-caption">Price &amp; sort</span>
+          <div class="filters-row">
+            <div class="filter-group price-filter-group">
+              <span class="filter-prefix">PLN</span>
+              <input type="number" id="filterMin" placeholder="Min" min="0" oninput="debounceLoad()" aria-label="Minimum price" />
+              <span class="filter-separator">–</span>
+              <input type="number" id="filterMax" placeholder="Max" min="0" oninput="debounceLoad()" aria-label="Maximum price" />
+            </div>
+            <div class="filter-group select-wrapper sort-group">
+              <select id="sortBy" onchange="loadListings()" aria-label="Sort by">
+                <option value="recommended">Sort: Recommended</option>
+                <option value="newest">Sort: Newest first</option>
+                <option value="price_asc">Sort: Price, low to high</option>
+                <option value="price_desc">Sort: Price, high to low</option>
+                <option value="cc_desc">Sort: Engine size</option>
+                <option value="oldest">Sort: Oldest first</option>
+              </select>
+            </div>
           </div>
-          <div class="filter-group select-wrapper">
-            <select id="filterEngine" onchange="loadListings()">
-              <option value="">All Engines</option>
-              <option value="2T" selected>2-Stroke (2T)</option>
-              <option value="4T">4-Stroke (4T)</option>
-            </select>
-          </div>
-          <div class="filter-group select-wrapper">
-            <select id="filterSource" onchange="loadListings()">
-              <option value="">All Sources</option>
-              <option value="OLX.pl">OLX.pl</option>
-              <option value="Autoplac">Autoplac</option>
-            </select>
-          </div>
-          <div class="filter-group search-filter-group">
-            <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <input type="text" id="filterSearch" placeholder="Search title or location…" oninput="debounceLoad()" />
+        </div>
+
+        <!-- 3. SHOW: status and quality switches -->
+        <div class="filters-section">
+          <span class="filters-caption">Show</span>
+          <div class="filters-row filters-row-toggles">
+            <label class="toggle-container">
+              <input type="checkbox" id="showInactive" onchange="loadListings()">
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Include past listings</span>
+            </label>
+            <label class="toggle-container" title="Only bikes with plastics/rims in Yamaha Icon Blue (detected from photo)">
+              <input type="checkbox" id="filterIconicBlue" checked onchange="loadListings()">
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Iconic Blue only</span>
+            </label>
+            <label class="toggle-container" title="Show only listings confirmed by a human verifier">
+              <input type="checkbox" id="filterHitl" onchange="loadListings()">
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Human-verified only</span>
+            </label>
+            <label class="toggle-container">
+              <input type="checkbox" id="excludeTenere" onchange="loadListings()" checked>
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Hide Tenere &amp; XJ6</span>
+            </label>
+            <button type="button" class="btn-reset-filters" onclick="resetFilters()">Reset filters</button>
           </div>
         </div>
       </div>
@@ -195,9 +219,9 @@
           <div class="modal-badge-row">
             <span class="modal-badge-model" id="modalListingModel">Yamaha YZ 250</span>
             <span class="modal-badge-engine" id="modalListingEngine">2-Stroke</span>
-            <span class="modal-badge-verdict" id="modalListingVerdict" style="display:none">Warto obejrzeć</span>
+            <span class="modal-badge-verdict" id="modalListingVerdict" style="display:none">Worth a look</span>
           </div>
-          <h2 class="modal-title" id="modalListingTitle">Tytuł ogłoszenia</h2>
+          <h2 class="modal-title" id="modalListingTitle">Listing title</h2>
         </div>
         <button type="button" class="modal-btn-close" id="modalCloseBtn" aria-label="Zamknij" onclick="closeListingModal()">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -214,27 +238,27 @@
             </div>
 
             <div class="modal-specs-card">
-              <h3 class="modal-section-heading">Parametry ogłoszenia</h3>
+              <h3 class="modal-section-heading">Listing details</h3>
               <div class="modal-specs-list" id="modalSpecsList">
                 <!-- Dynamically filled -->
               </div>
             </div>
 
             <div class="modal-price-history-card" id="modalPriceHistoryCard">
-              <h3 class="modal-section-heading">Historia cen</h3>
+              <h3 class="modal-section-heading">Price history</h3>
               <div class="modal-price-history-list" id="modalPriceHistoryList">
-                <span class="text-muted">Brak wcześniejszych zmian cen.</span>
+                <span class="text-muted">No earlier price changes.</span>
               </div>
             </div>
 
             <div class="modal-actions-row">
               <a id="modalExternalLink" href="#" target="_blank" rel="noopener" class="btn-modal-primary">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
-                Otwórz ogłoszenie w portalu
+                Open listing on the marketplace
               </a>
               <button type="button" id="modalInspectCvBtn" class="btn-modal-secondary">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-                Heatmapa Iconic Blue (CV)
+                Iconic Blue heatmap (CV)
               </button>
             </div>
           </div>
@@ -249,28 +273,28 @@
                     <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>
                   </div>
                   <div>
-                    <h3 class="bielik-title">Bielik AI — Druga Warstwa Weryfikacji & Ekspert</h3>
-                    <span class="bielik-subtitle" id="bielikModelSubtitle">Lokalny model SpeakLeash Bielik 11B (Ollama)</span>
+                    <h3 class="bielik-title">Bielik AI — Second Verification Layer &amp; Expert</h3>
+                    <span class="bielik-subtitle" id="bielikModelSubtitle">Local SpeakLeash Bielik 11B model (Ollama)</span>
                   </div>
                 </div>
                 <button type="button" class="btn-bielik-action" id="btnRunBielik" onclick="triggerBielikAnalysis()">
                   <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                  <span id="btnRunBielikText">Przeanalizuj Bielikiem</span>
+                  <span id="btnRunBielikText">Analyse with Bielik</span>
                 </button>
               </div>
 
               <!-- Loading spinner -->
               <div class="bielik-loading" id="bielikLoading" style="display:none">
                 <div class="bielik-spinner"></div>
-                <div class="bielik-loading-text">Bielik 11B weryfikuje treść, rocznik, zawieszenie SSS oraz stan silnika…</div>
+                <div class="bielik-loading-text">Bielik 11B is checking the description, model year, SSS suspension and engine condition…</div>
               </div>
 
               <!-- Bielik Content -->
               <div class="bielik-content" id="bielikContent">
                 <!-- Summary Quote -->
                 <div class="bielik-summary-card" id="bielikSummaryCard">
-                  <div class="bielik-box-label">Podsumowanie eksperta dla kupującego:</div>
-                  <p class="bielik-summary-text" id="bielikSummaryText">Kliknij "Przeanalizuj Bielikiem", aby wygenerować wnikliwą analizę silnika, zawieszenia i stanu technicznego.</p>
+                  <div class="bielik-box-label">Expert summary for the buyer:</div>
+                  <p class="bielik-summary-text" id="bielikSummaryText">Click "Analyse with Bielik" to generate an in-depth analysis of the engine, suspension and overall condition.</p>
                 </div>
 
                 <!-- Badges of key features -->
@@ -286,7 +310,7 @@
 
                 <!-- Buyer Checkpoints (Model Knowledge) -->
                 <div class="bielik-checkpoints-box" id="bielikCheckpointsBox" style="display:none">
-                  <div class="bielik-box-label">Punkty kontrolne przy oględzinach (Baza Wiedzy):</div>
+                  <div class="bielik-box-label">Inspection checklist (Knowledge Base):</div>
                   <ul class="bielik-checkpoints-list" id="bielikCheckpointsList"></ul>
                 </div>
 
@@ -295,9 +319,9 @@
 
             <!-- Description Card -->
             <div class="modal-desc-card">
-              <h3 class="modal-section-heading">Treść ogłoszenia</h3>
+              <h3 class="modal-section-heading">Listing description</h3>
               <div class="modal-desc-body" id="modalDescBody">
-                <span class="text-muted">Ładowanie opisu…</span>
+                <span class="text-muted">Loading description…</span>
               </div>
             </div>
           </div>

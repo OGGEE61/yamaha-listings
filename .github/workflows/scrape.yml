@@ -2,9 +2,13 @@ name: Scrape Yamaha Listings
 
 on:
   schedule:
-    - cron: '0 7 * * *'   # 07:00 UTC = 9:00 CEST
-    - cron: '0 17 * * *'  # 17:00 UTC = 19:00 CEST
+    - cron: '0 */4 * * *'  # every 4 hours (00, 04, 08, 12, 16, 20 UTC)
   workflow_dispatch:       # manual trigger from GitHub UI
+
+# Never run two scrapes at once (a run takes ~15 min)
+concurrency:
+  group: scrape
+  cancel-in-progress: false
 
 jobs:
   scrape:

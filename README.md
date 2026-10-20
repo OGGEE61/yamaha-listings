@@ -40,7 +40,7 @@ Hosted on **Cloudflare Workers** with **Cloudflare D1 SQL Database** — zero ph
 ## How it works
 
 ```
-GitHub Actions (runs twice daily: 9:00 + 19:00 CEST)
+GitHub Actions (runs every 4 hours)
   └─ node src/scraper/scraper.js
        ├─ fetches OLX.pl listings via Puppeteer
        ├─ verifies each listing (title + description)

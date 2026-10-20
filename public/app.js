@@ -32,6 +32,7 @@ async function loadListings(page = 0) {
   const showInactive  = document.getElementById('showInactive') ? document.getElementById('showInactive').checked : false;
   const iconicBlue    = document.getElementById('filterIconicBlue') ? document.getElementById('filterIconicBlue').checked : true;
   const hitlOnly      = document.getElementById('filterHitl') ? document.getElementById('filterHitl').checked : false;
+  const sortBy        = document.getElementById('sortBy').value;
 
   const params = new URLSearchParams();
   params.set('limit', PAGE_SIZE);
@@ -46,6 +47,7 @@ async function loadListings(page = 0) {
   if (showInactive) params.set('activeOnly', 'false');
   if (iconicBlue) params.set('iconicBlue', 'true');
   if (hitlOnly) params.set('hitlOnly', 'true');
+  if (sortBy && sortBy !== 'recommended') params.set('sort', sortBy);
 
   try {
     const res = await fetch(`/api/listings?${params.toString()}`);
@@ -123,16 +125,22 @@ async function fallbackFetchAll(page = 0) {
       return true;
     });
 
-    // Default sort: Active first, then CC descending, then first_seen descending
-    filtered.sort((a, b) => {
-      const aActive = a.is_active !== undefined ? a.is_active : 1;
-      const bActive = b.is_active !== undefined ? b.is_active : 1;
-      if (bActive !== aActive) return bActive - aActive; // 1 before 0
-      const aCc = a.cc || 0;
-      const bCc = b.cc || 0;
-      if (bCc !== aCc) return bCc - aCc; // higher cc first
-      return new Date(b.first_seen || 0) - new Date(a.first_seen || 0);
-    });
+    const sortBy = document.getElementById('sortBy').value;
+    const byPrice = dir => (a, b) => {
+      if (a.price == null && b.price == null) return 0;
+      if (a.price == null) return 1;
+      if (b.price == null) return -1;
+      return dir * (a.price - b.price);
+    };
+    const bySeen = dir => (a, b) => dir * (new Date(a.first_seen || 0) - new Date(b.first_seen || 0));
+    const comparators = {
+      newest: bySeen(-1), oldest: bySeen(1), price_asc: byPrice(1), price_desc: byPrice(-1),
+      cc_desc: (a, b) => (b.cc || 0) - (a.cc || 0) || bySeen(-1)(a, b),
+      recommended: (a, b) => (b.cc || 0) - (a.cc || 0) || bySeen(-1)(a, b),
+    };
+    const cmp = comparators[sortBy] || comparators.recommended;
+    // Active listings always come first
+    filtered.sort((a, b) => ((b.is_active ?? 1) - (a.is_active ?? 1)) || cmp(a, b));
 
     const total = filtered.length;
     const slice = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
@@ -163,6 +171,21 @@ function applyAndRender(page = 0) {
 function debounceLoad() {
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => loadListings(0), 300);
+}
+
+function resetFilters() {
+  document.getElementById('filterSearch').value = '';
+  document.getElementById('filterMin').value = '';
+  document.getElementById('filterMax').value = '';
+  document.getElementById('filterModel').value = '';
+  document.getElementById('filterEngine').value = '2T';
+  document.getElementById('filterSource').value = '';
+  document.getElementById('sortBy').value = 'recommended';
+  document.getElementById('showInactive').checked = false;
+  document.getElementById('filterIconicBlue').checked = true;
+  document.getElementById('filterHitl').checked = false;
+  document.getElementById('excludeTenere').checked = true;
+  loadListings(0);
 }
 
 function onModelChange() {
@@ -245,10 +268,10 @@ function renderPriceChart(rawPrices) {
     
     // Yamaha Racing Blue gradient
     const gradient = ctx.createLinearGradient(0, 0, 0, 260);
-    gradient.addColorStop(0, 'rgba(0, 50, 160, 0.90)');
-    gradient.addColorStop(1, 'rgba(0, 50, 160, 0.30)');
+    gradient.addColorStop(0, 'rgba(59, 130, 246, 0.90)');
+    gradient.addColorStop(1, 'rgba(30, 64, 175, 0.25)');
 
-    Chart.defaults.color = '#475569';
+    Chart.defaults.color = '#cbd5e1';
     Chart.defaults.font.family = 'Inter, sans-serif';
 
     priceChart = new Chart(ctx, {
@@ -259,11 +282,11 @@ function renderPriceChart(rawPrices) {
           label: 'Listings',
           data: data,
           backgroundColor: gradient,
-          borderColor: 'rgba(0, 50, 160, 0.6)',
+          borderColor: 'rgba(147, 197, 253, 0.5)',
           borderWidth: 1,
           borderRadius: 6,
           borderSkipped: false,
-          hoverBackgroundColor: '#1d4ed8'
+          hoverBackgroundColor: '#ffffff'
         }]
       },
       options: {
@@ -280,9 +303,9 @@ function renderPriceChart(rawPrices) {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: 'rgba(15, 23, 42, 0.96)',
+            backgroundColor: 'rgba(10, 23, 56, 0.95)',
             titleColor: '#ffffff',
-            bodyColor: '#bfdbfe',
+            bodyColor: '#93c5fd',
             titleFont: { size: 13, weight: 'bold' },
             bodyFont: { size: 14 },
             padding: 12,
@@ -302,15 +325,15 @@ function renderPriceChart(rawPrices) {
             ticks: {
               stepSize: 1,
               precision: 0,
-              color: '#64748b',
+              color: '#94a3b8',
               font: { family: 'Inter, sans-serif', size: 12 }
             },
-            grid: { color: 'rgba(15, 23, 42, 0.07)' },
+            grid: { color: 'rgba(255, 255, 255, 0.06)' },
             border: { display: false }
           },
           x: {
             ticks: {
-              color: '#475569',
+              color: '#cbd5e1',
               font: { family: 'Inter, sans-serif', size: 12, weight: '500' },
               maxRotation: 0,
               autoSkip: true
@@ -347,7 +370,7 @@ function renderListings(listings) {
   grid.innerHTML = listings.map(l => {
     const isNew = l.first_seen && new Date(l.first_seen).toDateString() === today;
     const priceHtml = l.price
-      ? `<div class="listing-price">${formatPrice(l.price)} ${l.currency || 'PLN'}</div>`
+      ? `<div class="listing-price">${formatPrice(l.price)}</div>`
       : `<div class="listing-price no-price">Price on request</div>`;
 
     const imgHtml = l.image
@@ -363,7 +386,7 @@ function renderListings(listings) {
       </span>` : '';
 
     const dateChip = l.first_seen ? `
-      <span class="listing-chip" title="Widziane: ${formatLocalDate(l.first_seen)} (${timeAgo(l.first_seen)})">
+      <span class="listing-chip" title="First seen: ${formatLocalDate(l.first_seen)} (${timeAgo(l.first_seen)})">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
         </svg>
@@ -378,9 +401,9 @@ function renderListings(listings) {
       cardClass += ' is-inactive';
       const aging = window.cvHeatmapEngine
         ? window.cvHeatmapEngine.getInactiveAging(l.last_seen || l.first_seen)
-        : { grayscale: 85, opacity: 0.52, days: 30, label: 'dawno temu' };
+        : { grayscale: 85, opacity: 0.52, days: 30, label: 'long ago' };
       cardStyle = `filter: grayscale(${aging.grayscale}%); opacity: ${aging.opacity};`;
-      inactiveBadge = `<span class="listing-inactive-badge" title="Ogłoszenie nieaktualne od ${aging.days} dni (ostatnio widziane: ${aging.label})">Nieaktywne · widziane ${aging.label}</span>`;
+      inactiveBadge = `<span class="listing-inactive-badge" title="Listing inactive for ${aging.days} days (last seen: ${aging.label})">Inactive · seen ${aging.label}</span>`;
     }
 
     // CV Model & Human-in-the-Loop badges
@@ -394,14 +417,14 @@ function renderListings(listings) {
 
       if (l.iconic_blue_verified === 1) {
         cvBadge = `
-          <span class="badge-cv-hitl verified" onclick="inspectCvListing('${escHtml(l.id)}')" title="Weryfikacja człowieka (HITL Ground Truth): Potwierdzone Iconic Blue">
+          <span class="badge-cv-hitl verified" onclick="inspectCvListing('${escHtml(l.id)}')" title="Human verification (HITL Ground Truth): confirmed Iconic Blue">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             Iconic Blue
             <span class="hitl-pill hitl-ok">HITL Verified</span>
           </span>`;
       } else {
         cvBadge = `
-          <span class="badge-cv-hitl pending" onclick="inspectCvListing('${escHtml(l.id)}')" title="Predykcja AI (Gemini Vision): czeka na weryfikację człowieka">
+          <span class="badge-cv-hitl pending" onclick="inspectCvListing('${escHtml(l.id)}')" title="AI prediction (Gemini Vision): awaiting human verification">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
             Iconic Blue
             <span class="hitl-pill hitl-ai">AI Pred</span>
@@ -409,7 +432,7 @@ function renderListings(listings) {
       }
 
       if (parts.length) {
-        partsChips = parts.map(p => `<span class="cv-part-tag" style="font-size:10px;">${escHtml(p)}</span>`).join('');
+        partsChips = parts.map(p => `<span class="cv-part-tag" style="font-size:10px;">${escHtml(partLabel(p))}</span>`).join('');
       }
     }
 
@@ -443,9 +466,9 @@ function renderListings(listings) {
           </div>
         </div>
         <div class="listing-footer">
-          <button class="btn-card-details" onclick="event.stopPropagation(); openListingDetailModal('${escHtml(l.id)}')" title="Otwórz szczegóły ogłoszenia">
+          <button class="btn-card-details" onclick="event.stopPropagation(); openListingDetailModal('${escHtml(l.id)}')" title="Open listing details">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-            Szczegóły
+            Details
           </button>
           <a class="listing-link" href="${escHtml(l.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation();">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -453,7 +476,7 @@ function renderListings(listings) {
             </svg>
             View Listing
           </a>
-          <button class="btn-card-reject" onclick="rejectListingFromCard('${escHtml(l.id)}', this)" title="Odrzuć ogłoszenie (usuń z bazy i dodaj do czarnej listy)">
+          <button class="btn-card-reject" onclick="rejectListingFromCard('${escHtml(l.id)}', this)" title="Reject listing (remove from database and blacklist)">
             ✕
           </button>
         </div>
@@ -475,7 +498,7 @@ async function rejectListingFromCard(id, btnEl) {
   const titleEl = card ? card.querySelector('.listing-title') : null;
   const title = titleEl ? titleEl.textContent.trim() : id;
 
-  if (!confirm(`Czy na pewno chcesz odrzucić to ogłoszenie i dodać do czarnej listy?\n\n"${title}"\n\nOgłoszenie zostanie bezpowrotnie usunięte z bazy, a scraper NIGDY więcej go nie pobierze.`)) {
+  if (!confirm(`Reject this listing and add it to the blacklist?\n\n"${title}"\n\nIt will be permanently removed from the database and the scraper will never fetch it again.`)) {
     return;
   }
 
@@ -488,7 +511,7 @@ async function rejectListingFromCard(id, btnEl) {
     const res = await fetch('/api/reject-listing', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, reason: 'Odrzucone z kafelka' })
+      body: JSON.stringify({ id, reason: 'Rejected from card' })
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
@@ -502,7 +525,7 @@ async function rejectListingFromCard(id, btnEl) {
       }, 350);
     }
   } catch (err) {
-    alert('Błąd podczas odrzucania ogłoszenia: ' + err.message);
+    alert('Error rejecting listing: ' + err.message);
     if (btnEl) {
       btnEl.disabled = false;
       btnEl.textContent = '✕';
@@ -568,33 +591,38 @@ async function triggerScrape() {
   }
 }
 
+// CV parts are stored with Polish labels; show them in English
+function partLabel(p) {
+  return ({ plastiki: 'plastics', felgi: 'rims' })[p] || p;
+}
+
 function formatPrice(n) {
   if (!n && n !== 0) return '—';
-  return n.toLocaleString('pl-PL') + ' zł';
+  return n.toLocaleString('en-GB') + ' PLN';
 }
 
 function formatLocalDate(iso) {
   if (!iso) return '—';
   const d = new Date(iso);
   if (isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString('pl-PL');
+  return d.toLocaleDateString('en-GB');
 }
 
 function timeAgo(iso) {
-  if (!iso) return 'nieznane';
+  if (!iso) return 'unknown';
   const d = new Date(iso);
-  if (isNaN(d.getTime())) return 'nieznane';
+  if (isNaN(d.getTime())) return 'unknown';
   const secs = Math.floor((Date.now() - d.getTime()) / 1000);
-  if (secs < 60)     return 'przed chwilą';
-  if (secs < 3600)   return `${Math.floor(secs / 60)} min temu`;
-  if (secs < 86400)  return `${Math.floor(secs / 3600)} godz. temu`;
+  if (secs < 60)     return 'just now';
+  if (secs < 3600)   return `${Math.floor(secs / 60)} min ago`;
+  if (secs < 86400)  return `${Math.floor(secs / 3600)} h ago`;
   const days = Math.floor(secs / 86400);
-  if (days === 1)    return 'wczoraj';
-  if (days < 7)      return `${days} dni temu`;
+  if (days === 1)    return 'yesterday';
+  if (days < 7)      return `${days} days ago`;
   const weeks = Math.floor(days / 7);
-  if (weeks < 5)     return weeks === 1 ? '1 tydzień temu' : `${weeks} tyg. temu`;
+  if (weeks < 5)     return weeks === 1 ? '1 week ago' : `${weeks} wk ago`;
   const months = Math.floor(days / 30);
-  return months === 1 ? '1 mies. temu' : `${months} mies. temu`;
+  return months === 1 ? '1 month ago' : `${months} months ago`;
 }
 
 function escHtml(str) {
@@ -680,7 +708,7 @@ async function openListingDetailModal(id) {
 
   // If not yet in cache, create placeholder so modal opens instantly
   if (!listing) {
-    listing = { id, title: 'Ładowanie szczegółów...', model: '', price: null };
+    listing = { id, title: 'Loading details...', model: '', price: null };
   }
   currentModalListing = listing;
 
@@ -732,7 +760,7 @@ function renderListingModalData(l, priceHistory = []) {
   setText('modalListingModel', l.model || 'Unknown Model');
 
   const is2T = (l.model && (l.model.includes('2T') || l.model.includes('YZ 250') || l.model.includes('DT') || l.model.includes('IT')));
-  setText('modalListingEngine', is2T ? 'Dwusuw (2T)' : 'Czterosuw (4T)');
+  setText('modalListingEngine', is2T ? '2-stroke (2T)' : '4-stroke (4T)');
 
   // Verdict badge
   const verdictEl = document.getElementById('modalListingVerdict');
@@ -753,42 +781,42 @@ function renderListingModalData(l, priceHistory = []) {
     imgEl.src = 'favicon.png';
   }
 
-  const priceText = l.price ? `${formatPrice(l.price)} ${l.currency || 'PLN'}` : 'Cena do uzgodnienia';
+  const priceText = l.price ? formatPrice(l.price) : 'Price on request';
   setText('modalListingPrice', priceText);
 
   // Specs
   const specsList = document.getElementById('modalSpecsList');
   specsList.innerHTML = `
     <div class="modal-spec-item">
-      <span class="modal-spec-label">Model katalogowy:</span>
+      <span class="modal-spec-label">Catalogue model:</span>
       <span class="modal-spec-value">${escHtml(l.model || 'Unknown')}</span>
     </div>
     <div class="modal-spec-item">
-      <span class="modal-spec-label">Pojemność silnika:</span>
-      <span class="modal-spec-value">${l.cc ? l.cc + ' cm³' : 'Nie podano'}</span>
+      <span class="modal-spec-label">Engine size:</span>
+      <span class="modal-spec-value">${l.cc ? l.cc + ' cm³' : 'Not given'}</span>
     </div>
     <div class="modal-spec-item">
-      <span class="modal-spec-label">Lokalizacja:</span>
+      <span class="modal-spec-label">Location:</span>
       <span class="modal-spec-value">${escHtml(l.location || 'Polska')}</span>
     </div>
     <div class="modal-spec-item">
-      <span class="modal-spec-label">Źródło / Portal:</span>
+      <span class="modal-spec-label">Source:</span>
       <span class="modal-spec-value">${escHtml(l.source || 'OLX.pl')}</span>
     </div>
     <div class="modal-spec-item">
-      <span class="modal-spec-label">Pierwszy raz widziane:</span>
+      <span class="modal-spec-label">First seen:</span>
       <span class="modal-spec-value">${l.first_seen ? `${formatLocalDate(l.first_seen)} (${timeAgo(l.first_seen)})` : '—'}</span>
     </div>
     <div class="modal-spec-item">
-      <span class="modal-spec-label">Status ogłoszenia:</span>
-      <span class="modal-spec-value" id="modalActiveStatusValue" style="color:${l.is_active ? '#059669' : '#dc2626'}">
-        ${l.is_active ? 'Aktywne na portalu' : 'Archiwalne / Wygasłe'}
-        <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(l.id)}', '${escHtml(l.url)}')">Weryfikuj na żywo</button>
+      <span class="modal-spec-label">Listing status:</span>
+      <span class="modal-spec-value" id="modalActiveStatusValue" style="color:${l.is_active ? '#34d399' : '#f87171'}">
+        ${l.is_active ? 'Active on marketplace' : 'Archived / expired'}
+        <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(l.id)}', '${escHtml(l.url)}')">Verify live</button>
       </span>
     </div>
     <div class="modal-spec-item">
       <span class="modal-spec-label">Iconic Blue:</span>
-      <span class="modal-spec-value" style="color:${l.iconic_blue === 1 ? '#1d4ed8' : '#64748b'}">${l.iconic_blue === 1 ? 'Wykryto fabryczny błękit' : 'Brak / Niebieski nieobecny'}</span>
+      <span class="modal-spec-value" style="color:${l.iconic_blue === 1 ? '#60a5fa' : '#94a3b8'}">${l.iconic_blue === 1 ? 'Factory blue detected' : 'None / blue absent'}</span>
     </div>
   `;
 
@@ -802,17 +830,17 @@ function renderListingModalData(l, priceHistory = []) {
       let diffHtml = '';
       if (earlier) {
         const diff = ph.price - earlier.price;
-        if (diff < 0) diffHtml = ` <span style="color:#059669;font-weight:700;">(${diff.toLocaleString('pl-PL')} ${curr})</span>`;
-        if (diff > 0) diffHtml = ` <span style="color:#dc2626;font-weight:700;">(+${diff.toLocaleString('pl-PL')} ${curr})</span>`;
+        if (diff < 0) diffHtml = ` <span style="color:#34d399;font-weight:700;">(${diff.toLocaleString('pl-PL')} ${curr})</span>`;
+        if (diff > 0) diffHtml = ` <span style="color:#f87171;font-weight:700;">(+${diff.toLocaleString('pl-PL')} ${curr})</span>`;
       }
       return `
         <div class="modal-price-history-row">
-          <span class="modal-price-history-date">${new Date(ph.recorded_at).toLocaleDateString('pl-PL')}:</span>
+          <span class="modal-price-history-date">${new Date(ph.recorded_at).toLocaleDateString('en-GB')}:</span>
           <span class="modal-price-history-val">${ph.price ? ph.price.toLocaleString('pl-PL') : '—'} ${curr}${diffHtml}</span>
         </div>`;
     }).join('');
   } else {
-    historyList.innerHTML = `<span style="color:#64748b;font-size:12px;">Cena nie zmieniała się od momentu dodania (${priceText}).</span>`;
+    historyList.innerHTML = `<span style="color:#94a3b8;font-size:12px;">Price unchanged since first seen (${priceText}).</span>`;
   }
 
   // Links & actions
@@ -831,7 +859,7 @@ function renderListingModalData(l, priceHistory = []) {
   if (l.description && l.description.trim()) {
     descEl.textContent = l.description.trim();
   } else {
-    descEl.innerHTML = `<span style="color:#64748b;font-style:italic;">Opis tego ogłoszenia nie został jeszcze pobrany. Pojawi się po najbliższym przebiegu scrapera lub po analizie Bielikiem (lokalnie).</span>`;
+    descEl.innerHTML = `<span style="color:#94a3b8;font-style:italic;">This listing's description has not been fetched yet. It will appear after the next scraper run or after a Bielik analysis (local).</span>`;
   }
 
   // Bielik Panel Content
@@ -853,16 +881,16 @@ function renderListingModalBielik(analysis) {
   const subtitleEl = document.getElementById('bielikModelSubtitle');
 
   if (!analysis) {
-    btnText.textContent = 'Przeanalizuj Bielikiem';
+    btnText.textContent = 'Analyse with Bielik';
     badgesGrid.innerHTML = `
-      <span class="bielik-pill-feature feature-neutral">Czeka na analizę</span>
-      <span class="bielik-pill-feature feature-neutral">Baza Wiedzy Yamaha</span>
-      <span class="bielik-pill-feature feature-neutral">Weryfikacja generacji i stanu</span>
+      <span class="bielik-pill-feature feature-neutral">Awaiting analysis</span>
+      <span class="bielik-pill-feature feature-neutral">Yamaha knowledge base</span>
+      <span class="bielik-pill-feature feature-neutral">Generation & condition check</span>
     `;
     highlightsBox.style.display = 'none';
     if (checkpointsBox) checkpointsBox.style.display = 'none';
-    summaryText.textContent = 'Kliknij przycisk powyżej, aby uruchomić lokalny model Bielik 11B (Ollama) zasilony dedykowaną Bazą Wiedzy fabrycznych generacji Yamahy.';
-    subtitleEl.textContent = 'Lokalny model SpeakLeash Bielik 11B (Ollama)';
+    summaryText.textContent = 'Click the button above to run the local Bielik 11B model (Ollama), backed by a dedicated knowledge base of factory Yamaha generations.';
+    subtitleEl.textContent = 'Local SpeakLeash Bielik 11B model (Ollama)';
     return;
   }
 
@@ -883,14 +911,14 @@ function renderListingModalBielik(analysis) {
   // Factory consistency
   if (analysis.factory_consistency) {
     const isWarning = analysis.factory_consistency.toLowerCase().includes('niezgodn') || analysis.factory_consistency.toLowerCase().includes('anomali');
-    badges.push(`<span class="bielik-pill-feature ${isWarning ? 'feature-warning' : 'feature-neutral'}" title="Weryfikacja spójności ze specyfikacją fabryczną">${escHtml(analysis.factory_consistency)}</span>`);
+    badges.push(`<span class="bielik-pill-feature ${isWarning ? 'feature-warning' : 'feature-neutral'}" title="Consistency check against the factory specification">${escHtml(analysis.factory_consistency)}</span>`);
   }
 
   // Model-specific Kayaba SSS (only if applicable to this model family)
   if (analysis.has_kayaba_sss === true) {
     badges.push(`<span class="bielik-pill-feature feature-positive" title="Zawieszenie Kayaba Speed Sensitive System (fabryczne dla tego rocznika)">Zawieszenie Kayaba SSS</span>`);
   } else if (analysis.has_kayaba_sss === false) {
-    badges.push(`<span class="bielik-pill-feature feature-warning" title="Starszy rocznik lub brak zawieszenia Kayaba SSS">Brak Kayaba SSS</span>`);
+    badges.push(`<span class="bielik-pill-feature feature-warning" title="Older model year or no Kayaba SSS suspension">No Kayaba SSS</span>`);
   }
 
   // Model-specific Aluminum Frame (only if applicable to this model family)
@@ -913,7 +941,7 @@ function renderListingModalBielik(analysis) {
   // Mileage (MTH vs km)
   const mileageVal = analysis.mileage_total || analysis.total_hours;
   if (mileageVal) {
-    const label = (analysis.meter_unit === 'km' || String(mileageVal).toLowerCase().includes('km')) ? 'Przebieg' : 'Przebieg całkowity';
+    const label = (analysis.meter_unit === 'km' || String(mileageVal).toLowerCase().includes('km')) ? 'Mileage' : 'Total mileage';
     badges.push(`<span class="bielik-pill-feature feature-neutral">${label}: ${escHtml(mileageVal)}</span>`);
   }
 
@@ -930,7 +958,7 @@ function renderListingModalBielik(analysis) {
   if (analysis.is_registered === true) {
     badges.push(`<span class="bielik-pill-feature feature-positive">Zarejestrowany / Homologacja</span>`);
   } else if (analysis.is_registered === false) {
-    badges.push(`<span class="bielik-pill-feature feature-neutral">Brak homologacji</span>`);
+    badges.push(`<span class="bielik-pill-feature feature-neutral">No homologation</span>`);
   }
 
   badgesGrid.innerHTML = badges.join('');
@@ -955,7 +983,7 @@ function renderListingModalBielik(analysis) {
   }
 
   // Summary
-  summaryText.textContent = analysis.summary || 'Brak podsumowania.';
+  summaryText.textContent = analysis.summary || 'No summary available.';
 
   // Verdict badge in header
   const verdictEl = document.getElementById('modalListingVerdict');
@@ -1005,7 +1033,7 @@ async function triggerBielikAnalysis() {
       document.getElementById('modalDescBody').textContent = currentModalListing.description;
     }
   } catch (err) {
-    alert(`Błąd Bielik AI: ${err.message}\nUpewnij się, że Ollama działa na http://localhost:11434.`);
+    alert(`Bielik AI error: ${err.message}\nMake sure Ollama is running on http://localhost:11434.`);
   } finally {
     btn.disabled = false;
     btnText.textContent = 'Ponowna analiza';
@@ -1057,10 +1085,10 @@ async function verifyListingActiveLive(id, url) {
 
     const isActive = data.isActive === true;
     statusEl.innerHTML = `
-      <span style="color:${isActive ? '#059669' : '#dc2626'}">
-        ${isActive ? 'Aktywne na portalu' : 'Archiwalne / Wygasłe (' + (data.reason || 'Zakończone') + ')'}
+      <span style="color:${isActive ? '#34d399' : '#f87171'}">
+        ${isActive ? 'Active on marketplace' : 'Archived / expired (' + (data.reason || 'Ended') + ')'}
       </span>
-      <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(id)}', '${escHtml(url)}')">Sprawdź ponownie</button>
+      <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(id)}', '${escHtml(url)}')">Check again</button>
     `;
 
     // If fresh image was discovered during verification, update modal image
@@ -1080,8 +1108,8 @@ async function verifyListingActiveLive(id, url) {
     }
   } catch (err) {
     statusEl.innerHTML = `
-      <span style="color:#dc2626">Błąd sprawdzania: ${escHtml(err.message)}</span>
-      <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(id)}', '${escHtml(url)}')">Ponów</button>
+      <span style="color:#f87171">Check failed: ${escHtml(err.message)}</span>
+      <button type="button" class="btn-verify-live" onclick="verifyListingActiveLive('${escHtml(id)}', '${escHtml(url)}')">Retry</button>
     `;
   }
 }

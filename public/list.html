@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,7 +17,7 @@
       border-radius: var(--radius-lg);
       overflow-x: auto;
       margin-top: 20px;
-      box-shadow: 0 8px 30px rgba(15, 23, 42, 0.12);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.35);
       scrollbar-width: thin;
       scrollbar-color: #3b82f6 rgba(15, 23, 42, 0.6);
     }
@@ -25,7 +25,7 @@
       height: 8px;
     }
     .table-container::-webkit-scrollbar-track {
-      background: #f1f5f9;
+      background: rgba(15, 23, 42, 0.6);
       border-radius: 4px;
     }
     .table-container::-webkit-scrollbar-thumb {
@@ -41,10 +41,10 @@
       font-size: 13px;
     }
     .listings-table th {
-      background: #f1f5f9;
+      background: rgba(3, 13, 36, 0.95);
       padding: 14px 16px;
       font-weight: 700;
-      color: #1d4ed8;
+      color: #93c5fd;
       border-bottom: 1px solid var(--border);
       white-space: nowrap;
       user-select: none;
@@ -54,7 +54,7 @@
     }
     .listings-table td {
       padding: 12px 14px;
-      border-bottom: 1px solid rgba(15, 23, 42, 0.12);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       vertical-align: middle;
     }
     .listings-table tr:hover td {
@@ -71,7 +71,7 @@
     }
 
     .table-title-link {
-      color: var(--text-primary);
+      color: #ffffff;
       text-decoration: none;
       font-weight: 600;
       font-size: 13px;
@@ -85,7 +85,7 @@
       transition: color 0.15s;
     }
     .table-title-link:hover {
-      color: #1d4ed8;
+      color: #60a5fa;
       text-decoration: underline;
     }
 
@@ -97,12 +97,12 @@
     }
     .table-model-name {
       font-weight: 700;
-      color: var(--text-primary);
+      color: #ffffff;
       font-size: 13px;
     }
     .table-sub-tag {
       font-size: 11px;
-      color: #1d4ed8;
+      color: #93c5fd;
       background: rgba(59, 130, 246, 0.15);
       border: 1px solid rgba(59, 130, 246, 0.3);
       padding: 1px 6px;
@@ -114,7 +114,7 @@
     .table-price {
       font-weight: 800;
       font-size: 14px;
-      color: var(--text-primary);
+      color: #ffffff;
       white-space: nowrap;
     }
 
@@ -132,12 +132,12 @@
     }
     .status-badge.active {
       background: rgba(59, 130, 246, 0.18);
-      color: #1d4ed8;
+      color: #93c5fd;
       border: 1px solid rgba(59, 130, 246, 0.4);
     }
     .status-badge.inactive {
       background: rgba(100, 116, 139, 0.18);
-      color: #64748b;
+      color: #94a3b8;
       border: 1px solid rgba(100, 116, 139, 0.3);
     }
 
@@ -152,7 +152,7 @@
 
     .badge-iconic {
       background: rgba(59, 130, 246, 0.22);
-      color: #1d4ed8;
+      color: #93c5fd;
       border: 1px solid #3b82f6;
       padding: 3px 8px;
       border-radius: 4px;
@@ -163,19 +163,19 @@
     }
     .badge-iconic.verified {
       background: rgba(37, 99, 235, 0.35);
-      border-color: #3b6fd8;
-      color: var(--text-primary);
+      border-color: #60a5fa;
+      color: #ffffff;
       box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
     }
     .badge-iconic.ai {
       background: rgba(30, 41, 59, 0.7);
       border-color: #475569;
-      color: #64748b;
+      color: #94a3b8;
     }
     .badge-iconic-neutral {
-      background: rgba(15, 23, 42, 0.04);
-      border: 1px solid rgba(15, 23, 42, 0.12);
-      color: #64748b;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #94a3b8;
       padding: 3px 8px;
       border-radius: 4px;
       font-size: 11px;
@@ -185,14 +185,14 @@
     }
     .badge-iconic-neutral.verified {
       border-color: rgba(148, 163, 184, 0.4);
-      color: #475569;
+      color: #cbd5e1;
       background: rgba(71, 85, 105, 0.25);
     }
 
     .btn-edit-qual {
-      background: rgba(15, 23, 42, 0.04);
-      border: 1px solid rgba(15, 23, 42, 0.12);
-      color: #1d4ed8;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #93c5fd;
       padding: 2px 7px;
       border-radius: 4px;
       font-size: 11px;
@@ -207,7 +207,7 @@
     .btn-edit-qual:hover {
       background: rgba(59, 130, 246, 0.25);
       border-color: #3b82f6;
-      color: var(--text-primary);
+      color: #ffffff;
     }
 
     .hitl-tag-chip {
@@ -215,7 +215,7 @@
       font-weight: 600;
       background: rgba(59, 130, 246, 0.15);
       border: 1px solid rgba(59, 130, 246, 0.35);
-      color: #1d4ed8;
+      color: #bfdbfe;
       padding: 2px 7px;
       border-radius: 10px;
       white-space: nowrap;
@@ -227,14 +227,14 @@
 
     /* Modal kwalifikacji HITL */
     .qual-modal {
-      border: 1px solid rgba(15, 23, 42, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 12px;
       background: #0A2D82;
-      color: var(--text-primary);
+      color: #ffffff;
       padding: 0;
       width: 90%;
       max-width: 520px;
-      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
       margin: auto;
     }
     .qual-modal::backdrop {
@@ -249,18 +249,18 @@
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 16px;
-      border-bottom: 1px solid rgba(15, 23, 42, 0.12);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
       padding-bottom: 12px;
     }
     .qual-modal-title {
       font-size: 16px;
       font-weight: 700;
-      color: var(--text-primary);
+      color: #ffffff;
       margin-bottom: 4px;
     }
     .qual-modal-subtitle {
       font-size: 12px;
-      color: #1d4ed8;
+      color: #93c5fd;
       line-height: 1.4;
       max-width: 420px;
       white-space: nowrap;
@@ -270,14 +270,14 @@
     .qual-modal-close {
       background: none;
       border: none;
-      color: #64748b;
+      color: #94a3b8;
       font-size: 18px;
       cursor: pointer;
       padding: 2px 6px;
       line-height: 1;
     }
     .qual-modal-close:hover {
-      color: var(--text-primary);
+      color: #ffffff;
     }
     .qual-section {
       margin-bottom: 16px;
@@ -287,7 +287,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: #475569;
+      color: #cbd5e1;
       margin-bottom: 8px;
       display: block;
     }
@@ -299,9 +299,9 @@
     .btn-qual-toggle {
       padding: 10px 14px;
       border-radius: 6px;
-      border: 1px solid rgba(15, 23, 42, 0.12);
-      background: rgba(15, 23, 42, 0.04);
-      color: #475569;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.06);
+      color: #cbd5e1;
       font-weight: 700;
       font-size: 13px;
       cursor: pointer;
@@ -313,14 +313,14 @@
     }
     .btn-qual-toggle.active-blue {
       background: #2563eb;
-      border-color: #1d4ed8;
-      color: var(--text-on-accent);
+      border-color: #60a5fa;
+      color: #ffffff;
       box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
     }
     .btn-qual-toggle.active-not-blue {
-      background: rgba(15, 23, 42, 0.07);
+      background: rgba(255, 255, 255, 0.16);
       border-color: #cbd5e1;
-      color: var(--text-primary);
+      color: #ffffff;
     }
     .qual-tags-pills {
       display: flex;
@@ -331,7 +331,7 @@
     .qual-pill-btn {
       background: rgba(59, 130, 246, 0.12);
       border: 1px solid rgba(59, 130, 246, 0.3);
-      color: #1d4ed8;
+      color: #93c5fd;
       padding: 4px 10px;
       border-radius: 12px;
       font-size: 11px;
@@ -341,21 +341,21 @@
     }
     .qual-pill-btn:hover {
       background: rgba(59, 130, 246, 0.25);
-      color: var(--text-primary);
+      color: #ffffff;
       border-color: #3b82f6;
     }
     .qual-pill-btn.selected {
       background: #2563eb;
-      border-color: #1d4ed8;
-      color: var(--text-on-accent);
+      border-color: #93c5fd;
+      color: #ffffff;
     }
     .qual-input {
       width: 100%;
       background: rgba(5, 20, 60, 0.6);
-      border: 1px solid rgba(15, 23, 42, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 6px;
       padding: 8px 12px;
-      color: var(--text-primary);
+      color: #ffffff;
       font-size: 12px;
       outline: none;
       box-sizing: border-box;
@@ -369,12 +369,12 @@
       gap: 10px;
       margin-top: 20px;
       padding-top: 14px;
-      border-top: 1px solid rgba(15, 23, 42, 0.12);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
     .btn-qual-cancel {
       background: transparent;
-      border: 1px solid rgba(15, 23, 42, 0.12);
-      color: #475569;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #cbd5e1;
       padding: 8px 16px;
       border-radius: 6px;
       font-size: 12px;
@@ -384,7 +384,7 @@
     .btn-qual-save {
       background: #2563eb;
       border: 1px solid #60a5fa;
-      color: var(--text-on-accent);
+      color: #ffffff;
       padding: 8px 18px;
       border-radius: 6px;
       font-size: 12px;
@@ -423,32 +423,32 @@
     .btn-table-cv {
       background: rgba(59, 130, 246, 0.16);
       border: 1px solid rgba(59, 130, 246, 0.35);
-      color: #1d4ed8;
+      color: #93c5fd;
     }
     .btn-table-cv:hover {
       background: #2563eb;
-      color: var(--text-on-accent);
+      color: #fff;
     }
     .btn-table-open {
-      color: var(--text-primary);
-      background: rgba(15, 23, 42, 0.04);
-      border: 1px solid rgba(15, 23, 42, 0.12);
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
     .btn-table-open:hover {
-      background: rgba(15, 23, 42, 0.07);
-      color: #1d4ed8;
-      border-color: #3b6fd8;
+      background: rgba(255, 255, 255, 0.18);
+      color: #60a5fa;
+      border-color: #60a5fa;
     }
 
     .btn-table-reject {
       background: rgba(239, 68, 68, 0.1);
       border: 1px solid rgba(239, 68, 68, 0.28);
-      color: #b91c1c;
+      color: #fca5a5;
     }
     .btn-table-reject:hover {
       background: #dc2626;
       border-color: #ef4444;
-      color: var(--text-primary);
+      color: #ffffff;
     }
     .btn-table-reject:disabled {
       opacity: 0.5;
@@ -464,7 +464,7 @@
     .table-source-tag {
       font-size: 10px;
       font-weight: 700;
-      color: #1d4ed8;
+      color: #93c5fd;
       background: rgba(59, 130, 246, 0.12);
       padding: 1px 5px;
       border-radius: 3px;
@@ -500,9 +500,9 @@
       </nav>
 
       <div class="header-actions">
-        <button class="btn-batch-active" id="btnBatchCheck" onclick="checkVisibleListingsActiveBatch()" title="Sprawdź na żywo czy widoczne ogłoszenia na stronie nadal istnieją na OLX">
+        <button class="btn-batch-active" id="btnBatchCheck" onclick="checkVisibleListingsActiveBatch()" title="Check live whether the listings shown still exist on OLX">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
-          Weryfikuj statusy (OLX)
+          Verify statuses (OLX)
         </button>
         <button class="btn-scrape" id="btnScrape" onclick="fetchTableListings(currentPage)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
@@ -523,62 +523,86 @@
       </div>
 
       <div class="filters-container">
-        <!-- Row 1: ALL TOGGLES & PRICE -->
-        <div class="filters-row filters-row-toggles">
-          <label class="toggle-container">
-            <input type="checkbox" id="showInactive" onchange="fetchTableListings(0)">
-            <span class="toggle-slider"></span>
-            <span class="toggle-label">Include Inactive</span>
-          </label>
-          <label class="toggle-container" title="Only bikes with plastics/rims in Yamaha Icon Blue (CV)">
-            <input type="checkbox" id="filterIconicBlue" checked onchange="fetchTableListings(0)">
-            <span class="toggle-slider"></span>
-            <span class="toggle-label">Iconic Blue Only</span>
-          </label>
-          <label class="toggle-container" title="Show only listings confirmed by a human verifier">
-            <input type="checkbox" id="filterHitl" onchange="fetchTableListings(0)">
-            <span class="toggle-slider"></span>
-            <span class="toggle-label">HITL Verified Only</span>
-          </label>
-          <div class="filter-group price-filter-group">
-            <span class="filter-prefix">PLN</span>
-            <input type="number" id="filterMin" placeholder="Min price" oninput="debounceSearch()" />
-            <span class="filter-separator">-</span>
-            <input type="number" id="filterMax" placeholder="Max price" oninput="debounceSearch()" />
+        <!-- 1. FIND: what are you looking for -->
+        <div class="filters-section">
+          <span class="filters-caption">Find</span>
+          <div class="filters-row filters-row-inputs">
+            <div class="filter-group search-filter-group">
+              <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <input type="text" id="filterSearch" placeholder="Search title, description or location…" oninput="debounceSearch()" />
+            </div>
+            <div class="filter-group select-wrapper">
+              <select id="filterModel" onchange="fetchTableListings(0)" aria-label="Model">
+                <option value="">All models</option>
+                <option value="YZ 250 2T">YZ 250 2T</option>
+                <option value="YZ 250X">YZ 250X</option>
+                <option value="WR 250F">WR 250F</option>
+                <option value="WR 450F">WR 450F</option>
+                <option value="Tenere 700">Tenere 700</option>
+                <option value="XJ6 Naked">XJ6 Naked</option>
+                <option value="Yamaha Vintage">Yamaha Vintage (DT, XT, TT, IT)</option>
+              </select>
+            </div>
+            <div class="filter-group select-wrapper">
+              <select id="filterEngine" onchange="fetchTableListings(0)" aria-label="Engine">
+                <option value="">All engines</option>
+                <option value="2T">2-stroke (2T)</option>
+                <option value="4T">4-stroke (4T)</option>
+              </select>
+            </div>
+            <div class="filter-group select-wrapper">
+              <select id="filterSource" onchange="fetchTableListings(0)" aria-label="Source">
+                <option value="">All sources</option>
+                <option value="OLX.pl">OLX.pl</option>
+                <option value="Autoplac">Autoplac</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        <!-- Row 2: DROPDOWNS AND SEARCH AT THE END -->
-        <div class="filters-row filters-row-inputs">
-          <div class="filter-group select-wrapper">
-            <select id="filterModel" onchange="fetchTableListings(0)">
-              <option value="">All Models</option>
-              <option value="YZ 250 2T">YZ 250 2T</option>
-              <option value="YZ 250X">YZ 250X</option>
-              <option value="WR 250F">WR 250F</option>
-              <option value="WR 450F">WR 450F</option>
-              <option value="Tenere 700">Tenere 700</option>
-              <option value="XJ6 Naked">XJ6 Naked</option>
-              <option value="Yamaha Vintage">Yamaha Vintage (DT, XT, TT, IT)</option>
-            </select>
+        <!-- 2. REFINE: price range and sort order -->
+        <div class="filters-section">
+          <span class="filters-caption">Price &amp; sort</span>
+          <div class="filters-row">
+            <div class="filter-group price-filter-group">
+              <span class="filter-prefix">PLN</span>
+              <input type="number" id="filterMin" placeholder="Min" min="0" oninput="debounceSearch()" aria-label="Minimum price" />
+              <span class="filter-separator">–</span>
+              <input type="number" id="filterMax" placeholder="Max" min="0" oninput="debounceSearch()" aria-label="Maximum price" />
+            </div>
+            <div class="filter-group select-wrapper sort-group">
+              <select id="sortBy" onchange="fetchTableListings(0)" aria-label="Sort by">
+                <option value="recommended">Sort: Recommended</option>
+                <option value="newest">Sort: Newest first</option>
+                <option value="price_asc">Sort: Price, low to high</option>
+                <option value="price_desc">Sort: Price, high to low</option>
+                <option value="cc_desc">Sort: Engine size</option>
+                <option value="oldest">Sort: Oldest first</option>
+              </select>
+            </div>
           </div>
-          <div class="filter-group select-wrapper">
-            <select id="filterEngine" onchange="fetchTableListings(0)">
-              <option value="">All Engines</option>
-              <option value="2T">2-Stroke (2T)</option>
-              <option value="4T">4-Stroke (4T)</option>
-            </select>
-          </div>
-          <div class="filter-group select-wrapper">
-            <select id="filterSource" onchange="fetchTableListings(0)">
-              <option value="">All Sources</option>
-              <option value="OLX.pl">OLX.pl</option>
-              <option value="Autoplac">Autoplac</option>
-            </select>
-          </div>
-          <div class="filter-group search-filter-group">
-            <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <input type="text" id="filterSearch" placeholder="Search title, description or location…" oninput="debounceSearch()" />
+        </div>
+
+        <!-- 3. SHOW: status and quality switches -->
+        <div class="filters-section">
+          <span class="filters-caption">Show</span>
+          <div class="filters-row filters-row-toggles">
+            <label class="toggle-container">
+              <input type="checkbox" id="showInactive" onchange="fetchTableListings(0)">
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Include past listings</span>
+            </label>
+            <label class="toggle-container" title="Only bikes with plastics/rims in Yamaha Icon Blue (detected from photo)">
+              <input type="checkbox" id="filterIconicBlue" checked onchange="fetchTableListings(0)">
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Iconic Blue only</span>
+            </label>
+            <label class="toggle-container" title="Show only listings confirmed by a human verifier">
+              <input type="checkbox" id="filterHitl" onchange="fetchTableListings(0)">
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Human-verified only</span>
+            </label>
+            <button type="button" class="btn-reset-filters" onclick="resetTableFilters()">Reset filters</button>
           </div>
         </div>
       </div>
@@ -588,15 +612,15 @@
         <table class="listings-table">
           <thead>
             <tr>
-              <th style="width: 65px;">Miniaturka</th>
-              <th>Tytuł ogłoszenia</th>
-              <th style="width: 130px;">Model & Silnik</th>
-              <th style="width: 105px;">Cena</th>
-              <th style="width: 110px;">Lokalizacja</th>
-              <th style="width: 90px;">Źródło & Data</th>
+              <th style="width: 65px;">Photo</th>
+              <th>Listing title</th>
+              <th style="width: 130px;">Model & Engine</th>
+              <th style="width: 105px;">Price</th>
+              <th style="width: 110px;">Location</th>
+              <th style="width: 90px;">Source & Date</th>
               <th style="width: 85px;">Status</th>
               <th style="width: 120px;">Iconic Blue</th>
-              <th style="width: 76px;">Akcje</th>
+              <th style="width: 76px;">Actions</th>
             </tr>
           </thead>
           <tbody id="tableBody">
@@ -626,6 +650,15 @@
     let debounceTimer = null;
     let currentTableItems = [];
 
+    function resetTableFilters() {
+      ['filterSearch', 'filterMin', 'filterMax', 'filterModel', 'filterEngine', 'filterSource'].forEach(id => { document.getElementById(id).value = ''; });
+      document.getElementById('sortBy').value = 'recommended';
+      document.getElementById('showInactive').checked = false;
+      document.getElementById('filterIconicBlue').checked = true;
+      document.getElementById('filterHitl').checked = false;
+      fetchTableListings(0);
+    }
+
     function debounceSearch() {
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => fetchTableListings(0), 300);
@@ -642,6 +675,7 @@
       const showInactive = document.getElementById('showInactive').checked;
       const iconicBlue = document.getElementById('filterIconicBlue').checked;
       const hitlOnly = document.getElementById('filterHitl') ? document.getElementById('filterHitl').checked : false;
+      const sortBy = document.getElementById('sortBy').value;
 
       const params = new URLSearchParams();
       params.set('limit', PAGE_SIZE);
@@ -655,6 +689,7 @@
       if (showInactive) params.set('activeOnly', 'false');
       if (iconicBlue) params.set('iconicBlue', 'true');
       if (hitlOnly) params.set('hitlOnly', 'true');
+      if (sortBy && sortBy !== 'recommended') params.set('sort', sortBy);
 
       try {
         const res = await fetch(`/api/listings?${params.toString()}`);
@@ -664,14 +699,14 @@
         currentTableItems = data.listings || [];
         const total = data.total || 0;
 
-        document.getElementById('tableMeta').textContent = `Wyświetlono ${currentTableItems.length} z ${total} rekordów w bazie Cloudflare D1`;
+        document.getElementById('tableMeta').textContent = `Showing ${currentTableItems.length} of ${total} records in Cloudflare D1`;
         renderTable(currentTableItems);
         renderTablePagination(total, page);
 
       } catch (err) {
         document.getElementById('tableBody').innerHTML = `
           <tr><td colspan="9" style="text-align:center; padding: 30px; color:#ef4444;">
-            Błąd pobierania danych: ${err.message}
+            Failed to load data: ${err.message}
           </td></tr>`;
       }
     }
@@ -679,7 +714,7 @@
     function renderTable(items) {
       const tbody = document.getElementById('tableBody');
       if (!items || items.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 40px; color: var(--text-muted);">Brak ogłoszeń spełniających wybrane kryteria.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 40px; color: var(--text-muted);">No listings match the selected criteria.</td></tr>`;
         return;
       }
 
@@ -688,20 +723,20 @@
           ? `<img src="${item.image}" class="table-thumb" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NiIgaGVpZ2h0PSI0MiIgZmlsbD0iIzBhMmQ4MiI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIvPjwvc3ZnPg=='"/>`
           : `<div style="width:56px;height:42px;background:rgba(255,255,255,0.05);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:11px;">Brak</div>`;
 
-        const price = item.price ? `${item.price.toLocaleString('pl-PL')} zł` : '—';
+        const price = item.price ? `${item.price.toLocaleString('en-GB')} PLN` : '—';
         const dateStr = item.first_seen ? item.first_seen.slice(0, 10) : '—';
 
         // Inactive aging calculation
         let rowStyle = '';
         let statusBadge = '';
         if (item.is_active === 1) {
-          statusBadge = `<span class="status-badge active">Aktywne</span>`;
+          statusBadge = `<span class="status-badge active">Active</span>`;
         } else {
           const aging = window.cvHeatmapEngine
             ? window.cvHeatmapEngine.getInactiveAging(item.last_seen || item.first_seen)
-            : { grayscale: 80, opacity: 0.55, label: 'dawno temu' };
+            : { grayscale: 80, opacity: 0.55, label: 'long ago' };
           rowStyle = `filter: grayscale(${aging.grayscale}%); opacity: ${aging.opacity};`;
-          statusBadge = `<span class="status-badge inactive" title="Widziane: ${aging.label}">Nieaktywne (${aging.label})</span>`;
+          statusBadge = `<span class="status-badge inactive" title="Last seen: ${aging.label}">Inactive (${aging.label})</span>`;
         }
 
         // Iconic Blue qualification with manual override and tag
@@ -711,15 +746,15 @@
 
         if (item.iconic_blue === 1) {
           if (item.iconic_blue_verified === 1) {
-            iconicBadgeHtml = `<span class="badge-iconic verified" title="Ground Truth (zatwierdzone przez człowieka)">Ground Truth: Blue</span>`;
+            iconicBadgeHtml = `<span class="badge-iconic verified" title="Ground Truth (confirmed by a human)">Ground Truth: Blue</span>`;
           } else {
             iconicBadgeHtml = `<span class="badge-iconic ai" title="Predykcja modelu AI">AI: Iconic Blue</span>`;
           }
         } else {
           if (item.iconic_blue_verified === 1) {
-            iconicBadgeHtml = `<span class="badge-iconic-neutral verified" title="Ręcznie odrzucone / inny kolor">Zweryfikowane: Nie-blue</span>`;
+            iconicBadgeHtml = `<span class="badge-iconic-neutral verified" title="Manually rejected / other colour">Verified: Not blue</span>`;
           } else {
-            iconicBadgeHtml = `<span class="badge-iconic-neutral" title="Brak cech Iconic Blue">Nie-blue</span>`;
+            iconicBadgeHtml = `<span class="badge-iconic-neutral" title="No Iconic Blue features">Not blue</span>`;
           }
         }
 
@@ -729,7 +764,7 @@
               ${iconicBadgeHtml}
               <button class="btn-edit-qual" onclick="openQualModal('${item.id}')" title="Manualna korekta kwalifikacji Iconic Blue i dodanie tagu">
                 <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                Zmień
+                Edit
               </button>
             </div>
             ${hasTag}
@@ -762,14 +797,14 @@
             <td>${iconicCell}</td>
             <td>
               <div class="table-actions-cell">
-                <button class="btn-table-cv" style="background:rgba(30,80,200,0.25);color:#1d4ed8;border-color:rgba(96,165,250,0.4);font-weight:700;" onclick="openListingDetailModal('${item.id}')" title="Otwórz szczegóły ogłoszenia">
-                  Szczegóły
+                <button class="btn-table-cv" style="background:rgba(30,80,200,0.25);color:#93c5fd;border-color:rgba(96,165,250,0.4);font-weight:700;" onclick="openListingDetailModal('${item.id}')" title="Open listing details">
+                  Details
                 </button>
-                <a href="${item.url}" target="_blank" rel="noopener" class="btn-table-open" title="Otwórz w nowej karcie">
+                <a href="${item.url}" target="_blank" rel="noopener" class="btn-table-open" title="Open in new tab">
                   OLX
                 </a>
-                <button class="btn-table-reject" onclick="rejectListingItem('${item.id}', this)" title="Odrzuć ogłoszenie (usuń z bazy i trwale zablokuj przed ponownym zaciąganiem)">
-                  ✕ Odrzuć
+                <button class="btn-table-reject" onclick="rejectListingItem('${item.id}', this)" title="Reject listing (remove from database and block permanently)">
+                  ✕ Reject
                 </button>
               </div>
             </td>
@@ -784,7 +819,7 @@
       const titleLink = tr ? tr.querySelector('.table-title-link') : null;
       const title = titleLink ? titleLink.textContent.trim() : id;
 
-      if (!confirm(`Czy na pewno chcesz odrzucić to ogłoszenie i dodać do czarnej listy?\n\n"${title}"\n\nOgłoszenie zostanie bezpowrotnie usunięte z bazy, a scraper NIGDY więcej go nie pobierze.`)) {
+      if (!confirm(`Reject this listing and add it to the blacklist?\n\n"${title}"\n\nIt will be permanently removed from the database and the scraper will never fetch it again.`)) {
         return;
       }
 
@@ -797,7 +832,7 @@
         const res = await fetch('/api/reject-listing', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id, reason: 'Odrzucone ręcznie z listy tabelarycznej' })
+          body: JSON.stringify({ id, reason: 'Rejected manually from the table list' })
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
@@ -810,15 +845,15 @@
             currentTableItems = currentTableItems.filter(l => l.id !== id);
             const meta = document.getElementById('tableMeta');
             if (meta) {
-              meta.textContent = `Wyświetlono ${currentTableItems.length} rekordów (odrzucono 1)`;
+              meta.textContent = `Showing ${currentTableItems.length} records (1 rejected)`;
             }
           }, 350);
         }
       } catch (err) {
-        alert('Błąd podczas odrzucania: ' + err.message);
+        alert('Error rejecting: ' + err.message);
         if (btnEl) {
           btnEl.disabled = false;
-          btnEl.textContent = '✕ Odrzuć';
+          btnEl.textContent = '✕ Reject';
         }
       }
     }
@@ -861,7 +896,7 @@
 
       if (btn) {
         btn.disabled = false;
-        btn.textContent = 'Weryfikuj statusy (OLX)';
+        btn.textContent = 'Verify statuses (OLX)';
       }
     }
     window.checkVisibleListingsActiveBatch = checkVisibleListingsActiveBatch;
@@ -898,7 +933,7 @@
       // Determine initial choice: default to 1 (Iconic Blue) if user wants to override, or current state
       selectedQualChoice = (item.iconic_blue === 1);
 
-      document.getElementById('qualModalListingTitle').textContent = item.title || 'Ogłoszenie Yamaha';
+      document.getElementById('qualModalListingTitle').textContent = item.title || 'Yamaha listing';
       document.getElementById('qualTagInput').value = item.iconic_blue_tag || '';
 
       updateQualChoiceButtons();
@@ -980,10 +1015,10 @@
 
         closeQualModal();
       } catch (err) {
-        alert('Błąd zapisu kwalifikacji: ' + err.message);
+        alert('Failed to save qualification: ' + err.message);
       } finally {
         btnSave.disabled = false;
-        btnSave.textContent = 'Zapisz kwalifikację';
+        btnSave.textContent = 'Save qualification';
       }
     }
     window.saveQualification = saveQualification;
@@ -1017,7 +1052,7 @@
         }
         const meta = document.getElementById('tableMeta');
         if (meta) {
-          meta.textContent = `Wyświetlono ${currentTableItems.length} rekordów`;
+          meta.textContent = `Showing ${currentTableItems.length} records`;
         }
       });
 
@@ -1052,26 +1087,26 @@
             Iconic Blue (Niebieski)
           </button>
           <button type="button" class="btn-qual-toggle" id="btnQualChoiceNotBlue" onclick="setQualChoice(false)">
-            Nie-blue (Inny kolor)
+            Not blue (other colour)
           </button>
         </div>
       </div>
 
       <div class="qual-section">
-        <label class="qual-label">Tag przyczyny / wyjaśnienia (kliknij lub wpisz):</label>
+        <label class="qual-label">Reason tag (click or type):</label>
         <div class="qual-tags-pills" id="qualTagsContainer">
-          <button type="button" class="qual-pill-btn" data-tag="Słabe zdjęcie / miniatura" onclick="applyTagPill('Słabe zdjęcie / miniatura')">Słabe zdjęcie / miniatura</button>
-          <button type="button" class="qual-pill-btn" data-tag="Pozostałe zdjęcia niebieskie" onclick="applyTagPill('Pozostałe zdjęcia niebieskie')">Pozostałe zdjęcia niebieskie</button>
-          <button type="button" class="qual-pill-btn" data-tag="Wielokolorowy / zmiana plastików" onclick="applyTagPill('Wielokolorowy / zmiana plastików')">Wielokolorowy</button>
-          <button type="button" class="qual-pill-btn" data-tag="Złe oświetlenie / cień" onclick="applyTagPill('Złe oświetlenie / cień')">Złe oświetlenie</button>
-          <button type="button" class="qual-pill-btn" data-tag="Zweryfikowane manualnie" onclick="applyTagPill('Zweryfikowane manualnie')">Potwierdzone ręcznie</button>
+          <button type="button" class="qual-pill-btn" data-tag="Poor photo / thumbnail" onclick="applyTagPill('Poor photo / thumbnail')">Poor photo / thumbnail</button>
+          <button type="button" class="qual-pill-btn" data-tag="Other photos show blue" onclick="applyTagPill('Other photos show blue')">Other photos show blue</button>
+          <button type="button" class="qual-pill-btn" data-tag="Multicolour / changed plastics" onclick="applyTagPill('Multicolour / changed plastics')">Multicolour</button>
+          <button type="button" class="qual-pill-btn" data-tag="Bad lighting / shadow" onclick="applyTagPill('Bad lighting / shadow')">Bad lighting</button>
+          <button type="button" class="qual-pill-btn" data-tag="Verified manually" onclick="applyTagPill('Verified manually')">Confirmed manually</button>
         </div>
-        <input type="text" id="qualTagInput" class="qual-input" placeholder="Wpisz powód (np. zdjęcie nr 1 jest kijowe, na pozostałych niebieski)..." />
+        <input type="text" id="qualTagInput" class="qual-input" placeholder="Enter a reason (e.g. photo 1 is poor, the others show blue)..." />
       </div>
 
       <div class="qual-modal-footer">
         <button type="button" class="btn-qual-cancel" onclick="closeQualModal()">Anuluj</button>
-        <button type="button" class="btn-qual-save" id="btnQualSave" onclick="saveQualification()">Zapisz kwalifikację</button>
+        <button type="button" class="btn-qual-save" id="btnQualSave" onclick="saveQualification()">Save qualification</button>
       </div>
     </div>
   </dialog>
@@ -1084,9 +1119,9 @@
           <div class="modal-badge-row">
             <span class="modal-badge-model" id="modalListingModel">Yamaha YZ 250</span>
             <span class="modal-badge-engine" id="modalListingEngine">2-Stroke</span>
-            <span class="modal-badge-verdict" id="modalListingVerdict" style="display:none">Warto obejrzeć</span>
+            <span class="modal-badge-verdict" id="modalListingVerdict" style="display:none">Worth a look</span>
           </div>
-          <h2 class="modal-title" id="modalListingTitle">Tytuł ogłoszenia</h2>
+          <h2 class="modal-title" id="modalListingTitle">Listing title</h2>
         </div>
         <button type="button" class="modal-btn-close" id="modalCloseBtn" aria-label="Zamknij" onclick="closeListingModal()">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -1103,25 +1138,25 @@
             </div>
 
             <div class="modal-specs-card">
-              <h3 class="modal-section-heading">Parametry ogłoszenia</h3>
+              <h3 class="modal-section-heading">Listing details</h3>
               <div class="modal-specs-list" id="modalSpecsList"></div>
             </div>
 
             <div class="modal-price-history-card" id="modalPriceHistoryCard">
-              <h3 class="modal-section-heading">Historia cen</h3>
+              <h3 class="modal-section-heading">Price history</h3>
               <div class="modal-price-history-list" id="modalPriceHistoryList">
-                <span class="text-muted">Brak wcześniejszych zmian cen.</span>
+                <span class="text-muted">No earlier price changes.</span>
               </div>
             </div>
 
             <div class="modal-actions-row">
               <a id="modalExternalLink" href="#" target="_blank" rel="noopener" class="btn-modal-primary">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
-                Otwórz ogłoszenie w portalu
+                Open listing on the marketplace
               </a>
               <button type="button" id="modalInspectCvBtn" class="btn-modal-secondary">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-                Heatmapa Iconic Blue (CV)
+                Iconic Blue heatmap (CV)
               </button>
             </div>
           </div>
@@ -1136,27 +1171,27 @@
                     <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>
                   </div>
                   <div>
-                    <h3 class="bielik-title">Bielik AI — Druga Warstwa Weryfikacji & Ekspert</h3>
-                    <span class="bielik-subtitle" id="bielikModelSubtitle">Lokalny model SpeakLeash Bielik 11B (Ollama)</span>
+                    <h3 class="bielik-title">Bielik AI — Second Verification Layer &amp; Expert</h3>
+                    <span class="bielik-subtitle" id="bielikModelSubtitle">Local SpeakLeash Bielik 11B model (Ollama)</span>
                   </div>
                 </div>
                 <button type="button" class="btn-bielik-action" id="btnRunBielik" onclick="triggerBielikAnalysis()">
                   <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                  <span id="btnRunBielikText">Przeanalizuj Bielikiem</span>
+                  <span id="btnRunBielikText">Analyse with Bielik</span>
                 </button>
               </div>
 
               <!-- Loading spinner -->
               <div class="bielik-loading" id="bielikLoading" style="display:none">
                 <div class="bielik-spinner"></div>
-                <div class="bielik-loading-text">Bielik 11B weryfikuje treść, rocznik, zawieszenie SSS oraz stan silnika…</div>
+                <div class="bielik-loading-text">Bielik 11B is checking the description, model year, SSS suspension and engine condition…</div>
               </div>
 
               <!-- Bielik Content -->
               <div class="bielik-content" id="bielikContent">
                 <div class="bielik-summary-card" id="bielikSummaryCard">
-                  <div class="bielik-box-label">Podsumowanie eksperta dla kupującego:</div>
-                  <p class="bielik-summary-text" id="bielikSummaryText">Kliknij "Przeanalizuj Bielikiem", aby wygenerować wnikliwą analizę silnika, zawieszenia i stanu technicznego.</p>
+                  <div class="bielik-box-label">Expert summary for the buyer:</div>
+                  <p class="bielik-summary-text" id="bielikSummaryText">Click "Analyse with Bielik" to generate an in-depth analysis of the engine, suspension and overall condition.</p>
                 </div>
 
                 <div class="bielik-badges-grid" id="bielikBadgesGrid"></div>
@@ -1168,7 +1203,7 @@
 
                 <!-- Buyer Checkpoints (Model Knowledge) -->
                 <div class="bielik-checkpoints-box" id="bielikCheckpointsBox" style="display:none">
-                  <div class="bielik-box-label">Punkty kontrolne przy oględzinach (Baza Wiedzy):</div>
+                  <div class="bielik-box-label">Inspection checklist (Knowledge Base):</div>
                   <ul class="bielik-checkpoints-list" id="bielikCheckpointsList"></ul>
                 </div>
 
@@ -1177,9 +1212,9 @@
 
             <!-- Description Card -->
             <div class="modal-desc-card">
-              <h3 class="modal-section-heading">Treść ogłoszenia</h3>
+              <h3 class="modal-section-heading">Listing description</h3>
               <div class="modal-desc-body" id="modalDescBody">
-                <span class="text-muted">Ładowanie opisu…</span>
+                <span class="text-muted">Loading description…</span>
               </div>
             </div>
           </div>
@@ -1208,7 +1243,7 @@
                     (allTableData && allTableData.find(l => String(l.id) === String(id)));
 
       if (!listing) {
-        listing = { id, title: 'Ładowanie szczegółów...', model: '', price: null };
+        listing = { id, title: 'Loading details...', model: '', price: null };
       }
       currentModalListing = listing;
 
@@ -1256,7 +1291,7 @@
       setText('modalListingModel', l.model || 'Unknown Model');
 
       const is2T = (l.model && (l.model.includes('2T') || l.model.includes('YZ 250') || l.model.includes('DT') || l.model.includes('IT')));
-      setText('modalListingEngine', is2T ? 'Dwusuw (2T)' : 'Czterosuw (4T)');
+      setText('modalListingEngine', is2T ? '2-stroke (2T)' : '4-stroke (4T)');
 
       const verdictEl = document.getElementById('modalListingVerdict');
       if (l.bielik_verdict) {
@@ -1275,18 +1310,18 @@
         imgEl.src = 'favicon.png';
       }
 
-      const priceText = l.price ? `${l.price.toLocaleString('pl-PL')} ${l.currency || 'PLN'}` : 'Cena do uzgodnienia';
+      const priceText = l.price ? `${l.price.toLocaleString('en-GB')} ${l.currency || 'PLN'}` : 'Price on request';
       setText('modalListingPrice', priceText);
 
       const specsList = document.getElementById('modalSpecsList');
       specsList.innerHTML = `
         <div class="modal-spec-item"><span class="modal-spec-label">Model:</span><span class="modal-spec-value">${l.model || 'Unknown'}</span></div>
-        <div class="modal-spec-item"><span class="modal-spec-label">Pojemność:</span><span class="modal-spec-value">${l.cc ? l.cc + ' cm³' : 'Nie podano'}</span></div>
-        <div class="modal-spec-item"><span class="modal-spec-label">Lokalizacja:</span><span class="modal-spec-value">${l.location || 'Polska'}</span></div>
-        <div class="modal-spec-item"><span class="modal-spec-label">Źródło:</span><span class="modal-spec-value">${l.source || 'OLX.pl'}</span></div>
-        <div class="modal-spec-item"><span class="modal-spec-label">Widziane:</span><span class="modal-spec-value">${l.first_seen ? new Date(l.first_seen).toLocaleDateString('pl-PL') : '—'}</span></div>
-        <div class="modal-spec-item"><span class="modal-spec-label">Status:</span><span class="modal-spec-value" style="color:${l.is_active ? '#059669' : '#dc2626'}">${l.is_active ? 'Aktywne' : 'Archiwalne'}</span></div>
-        <div class="modal-spec-item"><span class="modal-spec-label">Iconic Blue:</span><span class="modal-spec-value" style="color:${l.iconic_blue === 1 ? '#1d4ed8' : '#64748b'}">${l.iconic_blue === 1 ? 'Wykryto błękit' : 'Brak'}</span></div>
+        <div class="modal-spec-item"><span class="modal-spec-label">Engine size:</span><span class="modal-spec-value">${l.cc ? l.cc + ' cm³' : 'Not given'}</span></div>
+        <div class="modal-spec-item"><span class="modal-spec-label">Location:</span><span class="modal-spec-value">${l.location || 'Poland'}</span></div>
+        <div class="modal-spec-item"><span class="modal-spec-label">Source:</span><span class="modal-spec-value">${l.source || 'OLX.pl'}</span></div>
+        <div class="modal-spec-item"><span class="modal-spec-label">First seen:</span><span class="modal-spec-value">${l.first_seen ? new Date(l.first_seen).toLocaleDateString('en-GB') : '—'}</span></div>
+        <div class="modal-spec-item"><span class="modal-spec-label">Status:</span><span class="modal-spec-value" style="color:${l.is_active ? '#34d399' : '#f87171'}">${l.is_active ? 'Active' : 'Archived'}</span></div>
+        <div class="modal-spec-item"><span class="modal-spec-label">Iconic Blue:</span><span class="modal-spec-value" style="color:${l.iconic_blue === 1 ? '#60a5fa' : '#94a3b8'}">${l.iconic_blue === 1 ? 'Blue detected' : 'None'}</span></div>
       `;
 
       const historyList = document.getElementById('modalPriceHistoryList');
@@ -1298,13 +1333,13 @@
           let diffHtml = '';
           if (earlier) {
             const diff = ph.price - earlier.price;
-            if (diff < 0) diffHtml = ` <span style="color:#059669;font-weight:700;">(${diff.toLocaleString('pl-PL')} ${curr})</span>`;
-            if (diff > 0) diffHtml = ` <span style="color:#dc2626;font-weight:700;">(+${diff.toLocaleString('pl-PL')} ${curr})</span>`;
+            if (diff < 0) diffHtml = ` <span style="color:#34d399;font-weight:700;">(${diff.toLocaleString('pl-PL')} ${curr})</span>`;
+            if (diff > 0) diffHtml = ` <span style="color:#f87171;font-weight:700;">(+${diff.toLocaleString('pl-PL')} ${curr})</span>`;
           }
-          return `<div class="modal-price-history-row"><span class="modal-price-history-date">${new Date(ph.recorded_at).toLocaleDateString('pl-PL')}:</span><span class="modal-price-history-val">${ph.price ? ph.price.toLocaleString('pl-PL') : '—'} ${curr}${diffHtml}</span></div>`;
+          return `<div class="modal-price-history-row"><span class="modal-price-history-date">${new Date(ph.recorded_at).toLocaleDateString('en-GB')}:</span><span class="modal-price-history-val">${ph.price ? ph.price.toLocaleString('pl-PL') : '—'} ${curr}${diffHtml}</span></div>`;
         }).join('');
       } else {
-        historyList.innerHTML = `<span style="color:#64748b;font-size:12px;">Brak wcześniejszych zmian cen.</span>`;
+        historyList.innerHTML = `<span style="color:#94a3b8;font-size:12px;">No earlier price changes.</span>`;
       }
 
       document.getElementById('modalExternalLink').href = l.url || '#';
@@ -1318,7 +1353,7 @@
       if (l.description && l.description.trim()) {
         descEl.textContent = l.description.trim();
       } else {
-        descEl.innerHTML = `<span style="color:#64748b;font-style:italic;">Opis tego ogłoszenia nie został jeszcze pobrany. Pojawi się po najbliższym przebiegu scrapera lub po analizie Bielikiem (lokalnie).</span>`;
+        descEl.innerHTML = `<span style="color:#94a3b8;font-style:italic;">This listing's description has not been fetched yet. It will appear after the next scraper run or after a Bielik analysis (local).</span>`;
       }
 
       let analysis = null;
@@ -1337,15 +1372,15 @@
       const subtitleEl = document.getElementById('bielikModelSubtitle');
 
       if (!analysis) {
-        btnText.textContent = 'Przeanalizuj Bielikiem';
+        btnText.textContent = 'Analyse with Bielik';
         badgesGrid.innerHTML = `
-          <span class="bielik-pill-feature feature-neutral">Czeka na analizę</span>
+          <span class="bielik-pill-feature feature-neutral">Awaiting analysis</span>
           <span class="bielik-pill-feature feature-neutral">Sprawdzenie Kayaba SSS (2006+)</span>
           <span class="bielik-pill-feature feature-neutral">Weryfikacja ramy i silnika</span>
         `;
         highlightsBox.style.display = 'none';
-        summaryText.textContent = 'Kliknij przycisk powyżej, aby uruchomić lokalny model Bielik 11B (Ollama).';
-        subtitleEl.textContent = 'Lokalny model SpeakLeash Bielik 11B (Ollama)';
+        summaryText.textContent = 'Click the button above to run the local Bielik 11B model (Ollama).';
+        subtitleEl.textContent = 'Local SpeakLeash Bielik 11B model (Ollama)';
         return;
       }
 
@@ -1374,7 +1409,7 @@
         highlightsBox.style.display = 'none';
       }
 
-      summaryText.textContent = analysis.summary || 'Brak podsumowania.';
+      summaryText.textContent = analysis.summary || 'No summary available.';
 
       const verdictEl = document.getElementById('modalListingVerdict');
       if (analysis.verdict) {
@@ -1420,7 +1455,7 @@
           document.getElementById('modalDescBody').textContent = currentModalListing.description;
         }
       } catch (err) {
-        alert(`Błąd Bielik AI: ${err.message}\nUpewnij się, że Ollama działa na http://localhost:11434.`);
+        alert(`Bielik AI error: ${err.message}\nMake sure Ollama is running on http://localhost:11434.`);
       } finally {
         btn.disabled = false;
         btnText.textContent = 'Ponowna analiza';
