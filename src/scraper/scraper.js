@@ -17,15 +17,19 @@ const { execSync } = require('child_process');
 function determineYamahaModel(title, description = '') {
   if (!title) return null;
   // Sellers append SEO tag spam like "(nie sx sxf tc fc kx ...)"; drop it so it doesn't count as competing brands
-  const t = title.toLowerCase()
+  const fold = x => x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const t = fold(title)
     .replace(/\(\s*nie\b[^)]*(\)|$)/g, ' ')
+    // brackets stuffed with 2+ bare model codes are SEO tag spam too, e.g. "( yz kx sx rm exc)"
+    .replace(/\([^)]*\)/g, m => (m.match(/\b(sx|sxf|exc|excf|rm|rmz|kx|kxf|cr|crf|tc|te|tx|mc|mcf|fc|ec|ecf|xc|fe|wr|yzf|yz)\b/g) || []).length >= 2 ? ' ' : m)
     .replace(/\s+/g, ' ').trim();
-  const d = description.toLowerCase().replace(/\s+/g, ' ').trim().substring(0, 400); // Only check the first 400 chars of desc
+  const d = fold(description).replace(/\s+/g, ' ').trim().substring(0, 400); // Only check the first 400 chars of desc
 
   const hasYamaha = /\byamaha\b/.test(t);
   
   // 1. Aggressively filter out tag spam and competing brands
-  const competingBrands = ['ktm', 'honda', 'suzuki', 'kawasaki', 'husqvarna', 'gasgas', 'beta', 'aprilia', 'sherco', 'derbi', 'rieju', 'keeway', 'peugeot', 'motorhispania', 'tm', 'husaberg', 'bmw', 'triumph', 'ducati'];
+  const competingBrands = ['ktm', 'honda', 'suzuki', 'kawasaki', 'husqvarna', 'gasgas', 'beta', 'aprilia', 'sherco', 'derbi', 'rieju', 'keeway', 'peugeot', 'motorhispania', 'tm', 'husaberg', 'bmw', 'triumph', 'ducati',
+    'fantic', 'stark', 'ossa', 'montesa', 'mondial', 'cfmoto', 'benelli', 'romet', 'junak', 'zipp', 'barton', 'kymco', 'piaggio', 'vespa', 'harley', 'royal enfield'];
   
   const firstWord = t.split(' ')[0];
   if (competingBrands.includes(firstWord)) {
@@ -46,7 +50,7 @@ function determineYamahaModel(title, description = '') {
   }
 
   // Reject Super Tenere / 1200cc models
-  if (/\b(super tenere|supertenere|xt1200|xtz1200|xtz 1200|xt 1200|xtz 750|1200ze|1200z|1200)\b/i.test(t)) {
+  if (/(super[\s-]*tenere|xtz?[\s-]*1200|xtz[\s-]*750|\b1200\b)/i.test(t)) {
       return null;
   }
 
