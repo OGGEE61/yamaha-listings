@@ -1,3 +1,5 @@
 # Backlog
 
-- [ ] Zmiana modelu "Computer Vision" z chmurowego (Gemini API) na własny, wytrenowany model lokalny (żeby obniżyć koszty tokenów i mieć większą kontrolę nad jakością detekcji Iconic Blue).
+- [ ] Replace the cloud "Computer Vision" model (Gemini API) with a locally trained model, to cut token costs and gain control over Iconic Blue detection quality.
+- [ ] Fine-tune YOLO.
+- [ ] Detect with CV whether a bike is complete or in parts.
