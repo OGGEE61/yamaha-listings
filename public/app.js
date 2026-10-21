@@ -370,8 +370,8 @@ function renderListings(listings) {
   grid.innerHTML = listings.map(l => {
     const isNew = l.first_seen && new Date(l.first_seen).toDateString() === today;
     const priceHtml = l.price
-      ? `<div class="listing-price">${formatPrice(l.price)}</div>`
-      : `<div class="listing-price no-price">Price on request</div>`;
+      ? `<div class="listing-price-tag">${formatPrice(l.price)}</div>`
+      : `<div class="listing-price-tag is-muted">Price on request</div>`;
 
     const imgHtml = l.image
       ? `<img class="listing-img" src="${escHtml(l.image)}" alt="${escHtml(l.title)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="listing-img-placeholder" style="display:none">${motorcycleIcon()}</div>`
@@ -393,6 +393,14 @@ function renderListings(listings) {
         ${formatLocalDate(l.first_seen)}
       </span>` : '';
 
+    // Freshness: when we last confirmed this listing on the marketplace
+    let freshChip = '';
+    if (l.is_active !== 0 && l.last_seen) {
+      const hours = (Date.now() - new Date(l.last_seen).getTime()) / 36e5;
+      const tone = hours <= 6 ? 'fresh' : hours <= 24 ? 'aging' : 'stale';
+      freshChip = `<span class="listing-chip listing-fresh is-${tone}" title="Last confirmed on the marketplace: ${formatLocalDate(l.last_seen)} (${timeAgo(l.last_seen)})"><i></i>Checked ${timeAgo(l.last_seen)}</span>`;
+    }
+
     // Inactive aging calculation
     let cardClass = 'listing-card' + (isNew ? ' new' : '');
     let cardStyle = '';
@@ -406,79 +414,72 @@ function renderListings(listings) {
       inactiveBadge = `<span class="listing-inactive-badge" title="Listing inactive for ${aging.days} days (last seen: ${aging.label})">Inactive · seen ${aging.label}</span>`;
     }
 
-    // CV Model & Human-in-the-Loop badges
+    // Colour-check result: one badge pinned to the photo (parts live in its tooltip)
     let cvBadge = '';
-    let partsChips = '';
     if (l.iconic_blue === 1) {
       let parts = [];
       try {
         parts = Array.isArray(l.iconic_blue_parts) ? l.iconic_blue_parts : JSON.parse(l.iconic_blue_parts || '[]');
       } catch (_) {}
+      const partsText = parts.length ? ` (${parts.map(partLabel).join(', ')})` : '';
+      const open = `event.stopPropagation(); inspectCvListing('${escHtml(l.id)}')`;
 
-      if (l.iconic_blue_verified === 1) {
-        cvBadge = `
-          <span class="badge-cv-hitl verified" onclick="inspectCvListing('${escHtml(l.id)}')" title="Human verification (HITL Ground Truth): confirmed Iconic Blue">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Iconic Blue
-            <span class="hitl-pill hitl-ok">HITL Verified</span>
-          </span>`;
-      } else {
-        cvBadge = `
-          <span class="badge-cv-hitl pending" onclick="inspectCvListing('${escHtml(l.id)}')" title="AI prediction (Gemini Vision): awaiting human verification">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
-            Iconic Blue
-            <span class="hitl-pill hitl-ai">AI Pred</span>
-          </span>`;
-      }
-
-      if (parts.length) {
-        partsChips = parts.map(p => `<span class="cv-part-tag" style="font-size:10px;">${escHtml(partLabel(p))}</span>`).join('');
-      }
+      cvBadge = l.iconic_blue_verified === 1
+        ? `<button type="button" class="media-badge is-verified" onclick="${open}" title="Confirmed by a human reviewer: Iconic Blue${escHtml(partsText)}">
+             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+             Iconic Blue
+           </button>`
+        : `<button type="button" class="media-badge is-ai" onclick="${open}" title="AI prediction, awaiting human review: Iconic Blue${escHtml(partsText)}">
+             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+             AI · Iconic Blue
+           </button>`;
     }
 
-    let tagChip = '';
+    // Chips: one consistent pill style
+    const chips = [];
+    chips.push(`<span class="chip chip--model">${escHtml(l.model || 'Unknown')}</span>`);
+    if (l.cc) chips.push(`<span class="chip">${l.cc} cc</span>`);
+    if (l.source && l.source !== 'OLX.pl') chips.push(`<span class="chip chip--muted">${escHtml(l.source)}</span>`);
     if (l.iconic_blue_tag) {
-      tagChip = `<span class="hitl-tag-chip" style="font-size:10px;cursor:pointer;" onclick="inspectCvListing('${escHtml(l.id)}')" title="Tag HITL: ${escHtml(l.iconic_blue_tag)}">${escHtml(l.iconic_blue_tag)}</span>`;
+      chips.push(`<span class="chip chip--muted" style="cursor:pointer" onclick="event.stopPropagation(); inspectCvListing('${escHtml(l.id)}')" title="Review tag: ${escHtml(l.iconic_blue_tag)}">${escHtml(l.iconic_blue_tag)}</span>`);
     }
-
-    let bielikChip = '';
     if (l.bielik_verdict) {
-      bielikChip = `<span class="modal-badge-verdict ${getVerdictClass(l.bielik_verdict)}" style="font-size:10px;cursor:pointer;" onclick="event.stopPropagation(); openListingDetailModal('${escHtml(l.id)}')" title="Bielik AI verdict: ${escHtml(l.bielik_summary || l.bielik_verdict)}">${escHtml(l.bielik_verdict)}</span>`;
+      const tone = { 'verdict-positive': 'chip--ok', 'verdict-warning': 'chip--warn', 'verdict-danger': 'chip--bad' }[getVerdictClass(l.bielik_verdict)] || '';
+      chips.push(`<span class="chip ${tone}" style="cursor:pointer" onclick="event.stopPropagation(); openListingDetailModal('${escHtml(l.id)}')" title="Bielik AI verdict: ${escHtml(l.bielik_summary || l.bielik_verdict)}">${escHtml(l.bielik_verdict)}</span>`);
     }
+    if (inactiveBadge) chips.push(inactiveBadge);
 
     return `
       <article class="${cardClass}" id="card-${escHtml(l.id)}" data-id="${escHtml(l.id)}" style="${cardStyle}" onclick="handleCardClick(event, '${escHtml(l.id)}')">
-        ${imgHtml}
+        <div class="listing-media">
+          ${imgHtml}
+          ${cvBadge}
+          <div class="listing-price-fade">${priceHtml}</div>
+        </div>
         <div class="listing-body">
-          <div class="listing-title">${escHtml(l.title)}</div>
-          ${priceHtml}
-          <div class="listing-meta-row">
+          <h3 class="listing-title">${escHtml(l.title)}</h3>
+          <div class="listing-facts">
             ${location}
             ${dateChip}
-            ${l.cc ? `<span class="listing-source" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd;">${l.cc} cc</span>` : ''}
-            ${cvBadge}
-            ${tagChip}
-            ${partsChips}
-            ${bielikChip}
-            <span class="listing-source" style="background:var(--gray-200);color:var(--gray-800);border-color:var(--gray-300);">${escHtml(l.model || 'Unknown')}</span>
-            <span class="listing-source">${escHtml(l.source || 'OLX.pl')}</span>
-            ${inactiveBadge}
+            ${freshChip}
           </div>
+          <div class="chip-row">${chips.join('')}</div>
         </div>
         <div class="listing-footer">
           <button class="btn-card-details" onclick="event.stopPropagation(); openListingDetailModal('${escHtml(l.id)}')" title="Open listing details">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
             Details
           </button>
           <a class="listing-link" href="${escHtml(l.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation();">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
-            </svg>
-            View Listing
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+            Open listing
           </a>
-          <button class="btn-card-reject" onclick="rejectListingFromCard('${escHtml(l.id)}', this)" title="Reject listing (remove from database and blacklist)">
-            ✕
-          </button>
+          <details class="card-menu" onclick="event.stopPropagation()">
+            <summary aria-label="More actions" title="More actions">⋯</summary>
+            <div class="card-menu-panel">
+              <button type="button" class="card-menu-item" onclick="rejectListingFromCard('${escHtml(l.id)}', this)">Reject listing…</button>
+            </div>
+          </details>
         </div>
       </article>`;
   }).join('');
@@ -528,7 +529,7 @@ async function rejectListingFromCard(id, btnEl) {
     alert('Error rejecting listing: ' + err.message);
     if (btnEl) {
       btnEl.disabled = false;
-      btnEl.textContent = '✕';
+      btnEl.textContent = 'Reject listing…';
     }
   }
 }
@@ -687,7 +688,7 @@ function getVerdictClass(verdict) {
 
 function handleCardClick(event, id) {
   // Ignore clicks on external link or secondary CV/reject action buttons
-  if (event.target.closest('a.listing-link, .btn-card-reject, .badge-cv-hitl, .btn-cv-inspect, .hitl-tag-chip')) {
+  if (event.target.closest('a.listing-link, .card-menu, .media-badge, .badge-cv-hitl, .btn-cv-inspect, .hitl-tag-chip, .chip[onclick]')) {
     return;
   }
   openListingDetailModal(id);
@@ -1048,7 +1049,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (grid) {
     grid.addEventListener('click', (e) => {
       // Don't intercept clicks on external links, delete/reject buttons, or CV badge inspection
-      if (e.target.closest('a.listing-link, .btn-card-reject, .badge-cv-hitl, .btn-cv-inspect, .hitl-tag-chip')) {
+      if (e.target.closest('a.listing-link, .card-menu, .media-badge, .badge-cv-hitl, .btn-cv-inspect, .hitl-tag-chip, .chip[onclick]')) {
         return;
       }
       const card = e.target.closest('.listing-card');

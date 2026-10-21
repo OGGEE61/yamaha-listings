@@ -24,3 +24,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (chartSection.open && typeof priceChart !== 'undefined' && priceChart) priceChart.resize();
   });
 });
+
+// Overflow menus on cards: close when clicking anywhere else
+document.addEventListener('click', (event) => {
+  document.querySelectorAll('.card-menu[open]').forEach((menu) => {
+    if (!menu.contains(event.target)) menu.removeAttribute('open');
+  });
+});
+
+// Only one overflow menu open at a time
+document.addEventListener('toggle', (event) => {
+  if (!event.target.matches || !event.target.matches('.card-menu') || !event.target.open) return;
+  document.querySelectorAll('.card-menu[open]').forEach((menu) => { if (menu !== event.target) menu.removeAttribute('open'); });
+}, true);

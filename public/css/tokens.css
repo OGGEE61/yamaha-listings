@@ -151,6 +151,8 @@
   --shadow-md: 0 6px 18px rgba(0, 20, 80, 0.28);
   --shadow-lg: 0 14px 34px rgba(0, 20, 80, 0.38);
   --shadow-header: 0 2px 12px rgba(0, 20, 80, 0.20);
+  --shadow-text: 0 1px 6px rgba(0, 0, 0, 0.55);
+  --photo-fade: linear-gradient(to top, rgba(3, 10, 28, 0.88), rgba(3, 10, 28, 0));
   --shadow-modal: 0 25px 60px rgba(0, 0, 0, 0.70);
 
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
