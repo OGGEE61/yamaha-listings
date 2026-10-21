@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Yamaha Listings — Table List View (Cloudflare D1)</title>
-  <meta name="description" content="Table list view of Yamaha motorcycle listings powered by Cloudflare D1." />
+  <title>Yamaha Listings — Table</title>
+  <meta name="description" content="Sortable table of every tracked Yamaha motorcycle listing." />
   <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=4" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -24,29 +24,29 @@
       <nav class="nav-tabs">
         <a href="index.html" class="nav-tab">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          Card Grid
+          Cards
         </a>
         <a href="list.html" class="nav-tab active">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-          Table List (D1)
+          Table
         </a>
         <a href="verify.html" class="nav-tab">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          HITL Studio (Model CV)
+          Review
         </a>
       </nav>
 
       <div class="header-actions">
         <button class="btn-batch-active" id="btnBatchCheck" onclick="checkVisibleListingsActiveBatch()" title="Check live whether the listings shown still exist on OLX">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
-          Verify statuses (OLX)
+          <span class="btn-label">Verify statuses (OLX)</span>
         </button>
         <button class="btn-scrape" id="btnScrape" onclick="fetchTableListings(currentPage)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
             <path d="M23 4v6h-6M1 20v-6h6"/>
             <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
           </svg>
-          Refresh D1
+          <span class="btn-label">Refresh</span>
         </button>
       </div>
     </div>
@@ -55,19 +55,34 @@
   <main class="main">
     <section class="section">
       <div class="section-header">
-        <h2 class="section-title">All Database Records (Cloudflare D1)</h2>
-        <div class="listing-meta" id="tableMeta">Loading listings directly from Cloudflare D1 SQL…</div>
+        <h2 class="section-title">All records</h2>
+        <div class="section-tools">
+          <div class="listing-meta" id="tableMeta">Loading records…</div>
+          <div class="filter-group select-wrapper sort-group">
+            <select id="sortBy" onchange="fetchTableListings(0)" aria-label="Sort by">
+              <option value="recommended">Sort: Recommended</option>
+              <option value="newest">Sort: Newest first</option>
+              <option value="price_asc">Sort: Price, low to high</option>
+              <option value="price_desc">Sort: Price, high to low</option>
+              <option value="cc_desc">Sort: Engine size</option>
+              <option value="oldest">Sort: Oldest first</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      <div class="filters-container">
-        <!-- 1. FIND: what are you looking for -->
-        <div class="filters-section">
-          <span class="filters-caption">Find</span>
-          <div class="filters-row filters-row-inputs">
-            <div class="filter-group search-filter-group">
-              <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-              <input type="text" id="filterSearch" placeholder="Search title, description or location…" oninput="debounceSearch()" />
-            </div>
+      <div class="toolbar" id="toolbar">
+        <div class="filter-group search-filter-group">
+          <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input type="text" id="filterSearch" placeholder="Search title, description or location…" oninput="debounceSearch()" aria-label="Search" />
+        </div>
+        <button type="button" class="toolbar-toggle" id="toolbarToggle" aria-expanded="false" aria-controls="toolbarMore" onclick="toggleToolbar()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+          Filters
+        </button>
+
+        <div class="toolbar-more" id="toolbarMore">
+          <div class="toolbar-selects">
             <div class="filter-group select-wrapper">
               <select id="filterModel" onchange="fetchTableListings(0)" aria-label="Model">
                 <option value="">All models</option>
@@ -94,36 +109,15 @@
                 <option value="Autoplac">Autoplac</option>
               </select>
             </div>
-          </div>
-        </div>
-
-        <!-- 2. REFINE: price range and sort order -->
-        <div class="filters-section">
-          <span class="filters-caption">Price &amp; sort</span>
-          <div class="filters-row">
             <div class="filter-group price-filter-group">
               <span class="filter-prefix">PLN</span>
               <input type="number" id="filterMin" placeholder="Min" min="0" oninput="debounceSearch()" aria-label="Minimum price" />
               <span class="filter-separator">–</span>
               <input type="number" id="filterMax" placeholder="Max" min="0" oninput="debounceSearch()" aria-label="Maximum price" />
             </div>
-            <div class="filter-group select-wrapper sort-group">
-              <select id="sortBy" onchange="fetchTableListings(0)" aria-label="Sort by">
-                <option value="recommended">Sort: Recommended</option>
-                <option value="newest">Sort: Newest first</option>
-                <option value="price_asc">Sort: Price, low to high</option>
-                <option value="price_desc">Sort: Price, high to low</option>
-                <option value="cc_desc">Sort: Engine size</option>
-                <option value="oldest">Sort: Oldest first</option>
-              </select>
-            </div>
           </div>
-        </div>
 
-        <!-- 3. SHOW: status and quality switches -->
-        <div class="filters-section">
-          <span class="filters-caption">Show</span>
-          <div class="filters-row filters-row-toggles">
+          <div class="toolbar-toggles">
             <label class="toggle-container">
               <input type="checkbox" id="showInactive" onchange="fetchTableListings(0)">
               <span class="toggle-slider"></span>
@@ -175,10 +169,11 @@
   </main>
 
   <footer class="footer">
-    <span id="lastUpdated">Cloudflare D1 Database View</span>
-    <span>· Real-time SQL queries against Cloudflare D1 · Zero static file dependency</span>
+    <span id="lastUpdated">Table view</span>
+    <span>· Live data, filtered on the server</span>
   </footer>
 
+  <script src="ui.js?v=1"></script>
   <script src="admin.js?v=1"></script>
   <script src="cv-heatmap.js"></script>
   <script>
@@ -236,7 +231,7 @@
         currentTableItems = data.listings || [];
         const total = data.total || 0;
 
-        document.getElementById('tableMeta').textContent = `Showing ${currentTableItems.length} of ${total} records in Cloudflare D1`;
+        document.getElementById('tableMeta').textContent = `Showing ${currentTableItems.length} of ${total} records`;
         renderTable(currentTableItems);
         renderTablePagination(total, page);
 
@@ -258,7 +253,7 @@
       tbody.innerHTML = items.map(item => {
         const thumb = item.image
           ? `<img src="${item.image}" class="table-thumb" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NiIgaGVpZ2h0PSI0MiIgZmlsbD0iIzBhMmQ4MiI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIvPjwvc3ZnPg=='"/>`
-          : `<div style="width:56px;height:42px;background:rgba(255,255,255,0.05);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:11px;">Brak</div>`;
+          : `<div style="width:56px;height:42px;background:rgba(255,255,255,0.05);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:11px;">No photo</div>`;
 
         const price = item.price ? `${item.price.toLocaleString('en-GB')} PLN` : '—';
         const dateStr = item.first_seen ? item.first_seen.slice(0, 10) : '—';
@@ -279,7 +274,7 @@
         // Iconic Blue qualification with manual override and tag
         let iconicBadgeHtml = '';
         const tagText = item.iconic_blue_tag || '';
-        const hasTag = tagText ? `<span class="hitl-tag-chip" title="Tag weryfikacji: ${tagText}">${tagText}</span>` : '';
+        const hasTag = tagText ? `<span class="hitl-tag-chip" title="Verification tag: ${tagText}">${tagText}</span>` : '';
 
         if (item.iconic_blue === 1) {
           if (item.iconic_blue_verified === 1) {
@@ -409,7 +404,7 @@
       const btn = document.getElementById('btnBatchCheck');
       if (btn) {
         btn.disabled = true;
-        btn.textContent = `Weryfikacja (0/${currentTableItems.length})...`;
+        btn.querySelector('.btn-label').textContent = `Checking (0/${currentTableItems.length})...`;
       }
 
       let done = 0;
@@ -427,13 +422,13 @@
           }
         } catch (_) {}
         done++;
-        if (btn) btn.textContent = `Sprawdzono ${done}/${currentTableItems.length}...`;
+        if (btn) btn.querySelector('.btn-label').textContent = `Checked ${done}/${currentTableItems.length}...`;
         renderTable(currentTableItems);
       }
 
       if (btn) {
         btn.disabled = false;
-        btn.textContent = 'Verify statuses (OLX)';
+        btn.querySelector('.btn-label').textContent = 'Verify statuses (OLX)';
       }
     }
     window.checkVisibleListingsActiveBatch = checkVisibleListingsActiveBatch;
@@ -532,7 +527,7 @@
       const id = currentQualItem.id;
 
       btnSave.disabled = true;
-      btnSave.textContent = 'Zapisywanie...';
+      btnSave.textContent = 'Saving...';
 
       try {
         const res = await fetch('/api/verify-blue', {
@@ -642,7 +637,7 @@
       </div>
 
       <div class="qual-modal-footer">
-        <button type="button" class="btn-qual-cancel" onclick="closeQualModal()">Anuluj</button>
+        <button type="button" class="btn-qual-cancel" onclick="closeQualModal()">Cancel</button>
         <button type="button" class="btn-qual-save" id="btnQualSave" onclick="saveQualification()">Save qualification</button>
       </div>
     </div>
@@ -660,7 +655,7 @@
           </div>
           <h2 class="modal-title" id="modalListingTitle">Listing title</h2>
         </div>
-        <button type="button" class="modal-btn-close" id="modalCloseBtn" aria-label="Zamknij" onclick="closeListingModal()">
+        <button type="button" class="modal-btn-close" id="modalCloseBtn" aria-label="Close" onclick="closeListingModal()">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
@@ -912,8 +907,8 @@
         btnText.textContent = 'Analyse with Bielik';
         badgesGrid.innerHTML = `
           <span class="bielik-pill-feature feature-neutral">Awaiting analysis</span>
-          <span class="bielik-pill-feature feature-neutral">Sprawdzenie Kayaba SSS (2006+)</span>
-          <span class="bielik-pill-feature feature-neutral">Weryfikacja ramy i silnika</span>
+          <span class="bielik-pill-feature feature-neutral">Kayaba SSS check (2006+)</span>
+          <span class="bielik-pill-feature feature-neutral">Frame & engine check</span>
         `;
         highlightsBox.style.display = 'none';
         summaryText.textContent = 'Click the button above to run the local Bielik 11B model (Ollama).';

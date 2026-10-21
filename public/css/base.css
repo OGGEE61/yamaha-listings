@@ -1,5 +1,7 @@
 /* Base — reset, page shell, header/navigation, footer, feedback (toast, spinner, empty state) */
 
+/* ── Reset & document ─────────────────────── */
+
 *,
 *::before,
 *::after {
@@ -13,8 +15,8 @@ html {
 }
 
 body {
-  background: var(--bg-page);
-  color: var(--text-primary);
+  background: var(--page-bg);
+  color: var(--text);
   font-family: var(--font-sans);
   font-size: var(--fs-base);
   line-height: 1.6;
@@ -22,11 +24,15 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ── Header ───────────────────────────────────
+   Compact brand bar. Desktop: logo | tabs | actions in one row.
+   Phone: logo + actions on row 1, horizontally scrolling tabs on row 2. */
+
 .header {
   position: sticky;
   top: 0;
   z-index: 100;
-  padding: 14px 24px;
+  padding: var(--sp-3) var(--sp-6);
   background: var(--brand);
   box-shadow: var(--shadow-header);
 }
@@ -35,10 +41,9 @@ body {
   max-width: 1400px;
   margin: 0 auto;
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px 28px;
+  gap: var(--sp-3) var(--sp-8);
 }
 
 .brand-logo {
@@ -50,25 +55,25 @@ body {
 
 .nav-tabs {
   display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin: 0;
+  gap: var(--sp-1);
   flex: 1;
+  margin: 0;
 }
 
 .nav-tab {
-  padding: 7px 16px;
-  border-radius: var(--radius-md);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: var(--fs-md);
-  color: var(--white-80);
-  background: transparent;
-  border: 1px solid transparent;
-  transition: background 0.15s, color 0.15s;
   display: flex;
   align-items: center;
   gap: 6px;
+  padding: 7px var(--sp-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--white-80);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
 }
 
 .nav-tab:hover {
@@ -85,21 +90,20 @@ body {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin: 0;
+  gap: var(--sp-3);
 }
 
 .status-pill {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: var(--white-10);
+  gap: var(--sp-2);
+  padding: 7px 14px;
   border: 1px solid var(--white-20);
   border-radius: var(--radius-pill);
-  padding: 7px 14px;
+  background: var(--white-10);
+  color: var(--white);
   font-size: var(--fs-sm);
   font-weight: 600;
-  color: var(--white);
 }
 
 .status-dot {
@@ -111,38 +115,43 @@ body {
 }
 
 .status-dot.idle {
-  background: var(--green);
-  box-shadow: 0 0 10px var(--green);
+  background: var(--green-400);
+  box-shadow: 0 0 8px var(--green-400);
 }
 
 .status-dot.running {
-  background: var(--amber);
-  box-shadow: 0 0 10px var(--amber);
+  background: var(--amber-400);
+  box-shadow: 0 0 8px var(--amber-400);
   animation: pulse 1s infinite;
+}
+
+.status-dot.error {
+  background: var(--red-400);
+  box-shadow: 0 0 8px var(--red-400);
 }
 
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.6; transform: scale(0.85); }
+  50%      { opacity: 0.6; transform: scale(0.85); }
 }
 
+/* Primary header action (white pill on the brand bar) */
 .btn-scrape {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  background: var(--white);
-  color: var(--brand);
+  gap: var(--sp-2);
+  padding: var(--sp-2) 18px;
   border: none;
   border-radius: var(--radius-pill);
-  padding: 8px 18px;
+  background: var(--white);
+  color: var(--brand);
+  font-family: var(--font-display);
   font-size: var(--fs-md);
   font-weight: 800;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.2s;
-  font-family: var(--font-display);
-  box-shadow: none;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
 }
 
 .btn-scrape:hover {
@@ -160,35 +169,63 @@ body {
   transform: none;
 }
 
+/* Secondary header action (outlined pill on the brand bar) */
+.btn-batch-active {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px solid var(--white-35);
+  border-radius: var(--radius-pill);
+  background: var(--white-10);
+  color: var(--white);
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-batch-active:hover {
+  background: var(--white-20);
+}
+
+.btn-batch-active:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* ── Page shell & sections ────────────────── */
+
 .main {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 40px 28px 80px;
+  padding: var(--sp-6) var(--sp-6) 64px;
 }
 
 .section {
-  margin-bottom: 48px;
+  margin-bottom: var(--sp-8);
 }
 
 .section-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: var(--sp-3) var(--sp-4);
+  margin-bottom: var(--sp-4);
 }
 
 .section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
   font-family: var(--font-display);
   font-size: var(--fs-2xl);
   font-weight: 800;
-  color: var(--white);
-  text-transform: uppercase;
   letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  text-transform: uppercase;
+  color: var(--on-page);
 }
 
 .section-title::before {
@@ -196,7 +233,19 @@ body {
   display: block;
   width: 4px;
   height: 24px;
-  background: var(--white);
+  background: var(--on-page);
+}
+
+/* Right-hand side of a section header: result count + sort */
+.section-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3) var(--sp-4);
+}
+
+.section-tools .listing-meta {
+  margin: 0;
 }
 
 .chart-loading {
@@ -209,11 +258,11 @@ body {
   grid-column: 1 / -1;
   width: 48px;
   height: 48px;
+  margin: 60px auto;
   border: 4px solid var(--border);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
-  margin: 60px auto;
 }
 
 @keyframes spin {
@@ -221,60 +270,62 @@ body {
 }
 
 .footer {
-  text-align: center;
-  padding: 24px;
-  font-size: var(--fs-md);
-  color: var(--white);
-  font-weight: 500;
+  padding: var(--sp-6);
   border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: var(--fs-md);
+  font-weight: 500;
+  color: var(--on-page);
 }
 
 .empty-state {
   grid-column: 1 / -1;
+  padding: 80px var(--sp-5);
   text-align: center;
-  padding: 80px 20px;
-  color: var(--white);
+  color: var(--on-page);
 }
 
 .empty-state svg {
   width: 64px;
   height: 64px;
-  margin-bottom: 20px;
-  opacity: 0.2;
+  margin-bottom: var(--sp-5);
+  opacity: 0.25;
 }
 
 .empty-state h3 {
+  margin-bottom: var(--sp-2);
   font-size: var(--fs-lg);
-  color: var(--text-primary);
-  margin-bottom: 8px;
   font-weight: 700;
+  color: var(--on-page);
 }
+
+/* ── Toast ────────────────────────────────── */
 
 .toast {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-bright);
+  right: var(--sp-6);
+  bottom: var(--sp-6);
+  z-index: 9999;
+  max-width: 350px;
+  padding: var(--sp-4) var(--sp-5);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-md);
-  padding: 16px 20px;
+  background: var(--surface);
+  color: var(--text);
   font-size: var(--fs-base);
   font-weight: 600;
-  color: var(--text-primary);
   box-shadow: var(--shadow-lg);
-  z-index: 9999;
   animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  max-width: 350px;
 }
 
 .toast.success {
-  border-color: var(--green);
-  color: var(--green);
+  border-color: var(--green-500);
+  color: var(--green-400);
 }
 
 .toast.error {
-  border-color: var(--red);
-  color: var(--red);
+  border-color: var(--red-500);
+  color: var(--red-300);
 }
 
 @keyframes slideIn {
@@ -282,35 +333,110 @@ body {
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.btn-batch-active {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--white-10);
-  border: 1px solid var(--white-35);
-  color: var(--white);
+/* ── Phone layout ─────────────────────────── */
+
+@media (max-width: 720px) {
+  .header {
+    padding: 10px var(--sp-4) 0;
+  }
+
+  .header-inner {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "logo actions"
+      "nav  nav";
+    gap: var(--sp-2) var(--sp-3);
+  }
+
+  .brand-logo {
+    grid-area: logo;
+    height: 32px;
+  }
+
+  .header-actions {
+    grid-area: actions;
+    justify-self: end;
+    gap: var(--sp-2);
+  }
+
+  /* Tabs scroll sideways instead of wrapping into a tall stack */
+  .nav-tabs {
+    grid-area: nav;
+    flex: none;
+    margin: 0 calc(var(--sp-4) * -1);
+    padding: 0 var(--sp-4) var(--sp-2);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-tab {
+    flex: none;
+    padding: 6px var(--sp-3);
+  }
+
+  /* Status shrinks to its dot; buttons shrink to icons */
+  .status-pill {
+    padding: 9px;
+  }
+
+  .status-pill .status-label,
+  .btn-label {
+    display: none;
+  }
+
+  .btn-scrape,
+  .btn-batch-active {
+    padding: 9px;
+  }
+
+  .main {
+    padding: var(--sp-4) var(--sp-4) 48px;
+  }
+
+  .section {
+    margin-bottom: var(--sp-6);
+  }
+
+  .section-title {
+    font-size: var(--fs-xl);
+  }
+
+  .section-title::before {
+    height: 20px;
+  }
+
+  .section-tools {
+    width: 100%;
+  }
+
+  .toast {
+    right: var(--sp-4);
+    bottom: var(--sp-4);
+    left: var(--sp-4);
+    max-width: none;
+  }
+}
+
+/* Count bubble inside a nav tab (review queue size) */
+.nav-count {
+  display: inline-block;
+  min-width: 20px;
+  padding: 0 6px;
   border-radius: var(--radius-pill);
-  padding: 8px 16px;
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s;
-  font-family: var(--font-sans);
-}
-
-.btn-batch-active:hover {
   background: var(--white-20);
+  color: inherit;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
 }
 
-.btn-batch-active:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-
-.empty-state p {
-  color: var(--white);
-}
-
-.section-header .badge {
+.nav-tab.active .nav-count {
+  background: var(--brand);
   color: var(--white);
 }

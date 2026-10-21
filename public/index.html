@@ -23,15 +23,15 @@
       <nav class="nav-tabs">
         <a href="index.html" class="nav-tab active">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          Card Grid
+          Cards
         </a>
         <a href="list.html" class="nav-tab">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-          Table List (D1)
+          Table
         </a>
         <a href="verify.html" class="nav-tab">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          HITL Studio (Model CV)
+          Review
         </a>
       </nav>
 
@@ -45,7 +45,7 @@
             <path d="M23 4v6h-6M1 20v-6h6"/>
             <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
           </svg>
-          Refresh Data
+          <span class="btn-label">Refresh Data</span>
         </button>
       </div>
     </div>
@@ -91,33 +91,37 @@
       </div>
     </section>
 
-    <!-- Price Range Chart -->
-    <section class="section">
-      <div class="section-header">
-        <h2 class="section-title">Price Distribution</h2>
-        <span class="badge">PLN</span>
-      </div>
-      <div class="chart-container" id="priceChartContainer">
-        <canvas id="priceChartCanvas"></canvas>
-      </div>
-    </section>
-
     <!-- Filters & Listings -->
     <section class="section">
       <div class="section-header">
         <h2 class="section-title">Listings</h2>
-        <div class="listing-meta" id="listingMeta">Loading listings…</div>
+        <div class="section-tools">
+          <div class="listing-meta" id="listingMeta">Loading listings…</div>
+          <div class="filter-group select-wrapper sort-group">
+            <select id="sortBy" onchange="loadListings()" aria-label="Sort by">
+              <option value="recommended">Sort: Recommended</option>
+              <option value="newest">Sort: Newest first</option>
+              <option value="price_asc">Sort: Price, low to high</option>
+              <option value="price_desc">Sort: Price, high to low</option>
+              <option value="cc_desc">Sort: Engine size</option>
+              <option value="oldest">Sort: Oldest first</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      <div class="filters-container">
-        <!-- 1. FIND: what are you looking for -->
-        <div class="filters-section">
-          <span class="filters-caption">Find</span>
-          <div class="filters-row filters-row-inputs">
-            <div class="filter-group search-filter-group">
-              <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-              <input type="text" id="filterSearch" placeholder="Search title or location…" oninput="debounceLoad()" />
-            </div>
+      <div class="toolbar" id="toolbar">
+        <div class="filter-group search-filter-group">
+          <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input type="text" id="filterSearch" placeholder="Search title or location…" oninput="debounceLoad()" aria-label="Search" />
+        </div>
+        <button type="button" class="toolbar-toggle" id="toolbarToggle" aria-expanded="false" aria-controls="toolbarMore" onclick="toggleToolbar()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+          Filters
+        </button>
+
+        <div class="toolbar-more" id="toolbarMore">
+          <div class="toolbar-selects">
             <div class="filter-group select-wrapper">
               <select id="filterModel" onchange="onModelChange()" aria-label="Model">
                 <option value="">All models</option>
@@ -144,36 +148,15 @@
                 <option value="Autoplac">Autoplac</option>
               </select>
             </div>
-          </div>
-        </div>
-
-        <!-- 2. REFINE: price range and sort order -->
-        <div class="filters-section">
-          <span class="filters-caption">Price &amp; sort</span>
-          <div class="filters-row">
             <div class="filter-group price-filter-group">
               <span class="filter-prefix">PLN</span>
               <input type="number" id="filterMin" placeholder="Min" min="0" oninput="debounceLoad()" aria-label="Minimum price" />
               <span class="filter-separator">–</span>
               <input type="number" id="filterMax" placeholder="Max" min="0" oninput="debounceLoad()" aria-label="Maximum price" />
             </div>
-            <div class="filter-group select-wrapper sort-group">
-              <select id="sortBy" onchange="loadListings()" aria-label="Sort by">
-                <option value="recommended">Sort: Recommended</option>
-                <option value="newest">Sort: Newest first</option>
-                <option value="price_asc">Sort: Price, low to high</option>
-                <option value="price_desc">Sort: Price, high to low</option>
-                <option value="cc_desc">Sort: Engine size</option>
-                <option value="oldest">Sort: Oldest first</option>
-              </select>
-            </div>
           </div>
-        </div>
 
-        <!-- 3. SHOW: status and quality switches -->
-        <div class="filters-section">
-          <span class="filters-caption">Show</span>
-          <div class="filters-row filters-row-toggles">
+          <div class="toolbar-toggles">
             <label class="toggle-container">
               <input type="checkbox" id="showInactive" onchange="loadListings()">
               <span class="toggle-slider"></span>
@@ -189,11 +172,11 @@
               <span class="toggle-slider"></span>
               <span class="toggle-label">Human-verified only</span>
             </label>
-            <label class="toggle-container">
-              <input type="checkbox" id="excludeTenere" onchange="loadListings()" checked>
-              <span class="toggle-slider"></span>
-              <span class="toggle-label">Hide Tenere &amp; XJ6</span>
-            </label>
+        <label class="toggle-container">
+          <input type="checkbox" id="excludeTenere" onchange="loadListings()" checked>
+          <span class="toggle-slider"></span>
+          <span class="toggle-label">Hide Tenere &amp; XJ6</span>
+        </label>
             <button type="button" class="btn-reset-filters" onclick="resetFilters()">Reset filters</button>
           </div>
         </div>
@@ -206,6 +189,18 @@
 
       <div class="pagination" id="pagination"></div>
     </section>
+
+    <!-- Price distribution (collapsed by default: secondary to the listings) -->
+    <details class="section chart-section" id="chartSection">
+      <summary class="chart-summary">
+        <h2 class="section-title">Price distribution</h2>
+        <span class="badge">PLN</span>
+        <svg class="chart-chevron" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="chart-container" id="priceChartContainer">
+        <canvas id="priceChartCanvas"></canvas>
+      </div>
+    </details>
   </main>
 
   <!-- Last updated footer -->
@@ -226,7 +221,7 @@
           </div>
           <h2 class="modal-title" id="modalListingTitle">Listing title</h2>
         </div>
-        <button type="button" class="modal-btn-close" id="modalCloseBtn" aria-label="Zamknij" onclick="closeListingModal()">
+        <button type="button" class="modal-btn-close" id="modalCloseBtn" aria-label="Close" onclick="closeListingModal()">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
@@ -334,6 +329,7 @@
   </dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="ui.js?v=1"></script>
   <script src="admin.js?v=1"></script>
   <script src="cv-heatmap.js?v=4"></script>
   <script src="app.js?v=5"></script>

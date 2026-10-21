@@ -63,7 +63,7 @@ async function loadListings(page = 0) {
       setText('lastUpdated', `Last scraped ${timeAgo(data.updatedAt)}`);
       const statusPill = document.getElementById('scrapeStatus');
       if (statusPill) {
-        statusPill.innerHTML = `<span class="status-dot" style="background:#3b82f6"></span><span class="status-label">Up to date</span>`;
+        statusPill.innerHTML = `<span class="status-dot idle"></span><span class="status-label">Up to date</span>`;
       }
     }
 
@@ -75,7 +75,7 @@ async function loadListings(page = 0) {
     renderPagination(total, page);
 
   } catch (err) {
-    console.warn('[Dashboard] Direct D1 query failed, trying /listings.json fallback...', err);
+    console.warn('[Dashboard] Listings API failed, trying /listings.json fallback...', err);
     await fallbackFetchAll(page);
   }
 }
@@ -160,7 +160,7 @@ async function fallbackFetchAll(page = 0) {
 
   } catch (e) {
     document.getElementById('listingsGrid').innerHTML =
-      '<div class="empty-state"><p>Could not load listings. Please ensure Cloudflare D1 is connected.</p></div>';
+      '<div class="empty-state"><p>Could not load listings. Please try again in a moment.</p></div>';
   }
 }
 
@@ -443,7 +443,7 @@ function renderListings(listings) {
 
     let bielikChip = '';
     if (l.bielik_verdict) {
-      bielikChip = `<span class="modal-badge-verdict ${getVerdictClass(l.bielik_verdict)}" style="font-size:10px;cursor:pointer;" onclick="event.stopPropagation(); openListingDetailModal('${escHtml(l.id)}')" title="Weryfikacja Bielik AI: ${escHtml(l.bielik_summary || l.bielik_verdict)}">${escHtml(l.bielik_verdict)}</span>`;
+      bielikChip = `<span class="modal-badge-verdict ${getVerdictClass(l.bielik_verdict)}" style="font-size:10px;cursor:pointer;" onclick="event.stopPropagation(); openListingDetailModal('${escHtml(l.id)}')" title="Bielik AI verdict: ${escHtml(l.bielik_summary || l.bielik_verdict)}">${escHtml(l.bielik_verdict)}</span>`;
     }
 
     return `
@@ -574,16 +574,16 @@ async function triggerScrape() {
   const btn = document.getElementById('btnScrape');
   
   if (statusPill) {
-    statusPill.innerHTML = `<span class="status-dot" style="background:#f59e0b; animation: pulse 1.5s infinite"></span><span class="status-label">Refreshing...</span>`;
+    statusPill.innerHTML = `<span class="status-dot running"></span><span class="status-label">Refreshing...</span>`;
   }
   if (btn) btn.disabled = true;
 
   try {
     await loadListings(0);
-    showToast('Dashboard data refreshed from D1!', 'success');
+    showToast('Listings refreshed', 'success');
   } catch (err) {
     if (statusPill) {
-      statusPill.innerHTML = `<span class="status-dot" style="background:#ef4444"></span><span class="status-label">Error</span>`;
+      statusPill.innerHTML = `<span class="status-dot error"></span><span class="status-label">Error</span>`;
     }
     showToast('Failed to refresh data', 'error');
   } finally {
@@ -1072,7 +1072,7 @@ async function verifyListingActiveLive(id, url) {
   const statusEl = document.getElementById('modalActiveStatusValue');
   if (!id || !url || !statusEl) return;
 
-  statusEl.innerHTML = `<span style="color:#f59e0b;animation:pulse 1.5s infinite">Sprawdzanie na portalu OLX…</span>`;
+  statusEl.innerHTML = `<span style="color:#f59e0b;animation:pulse 1.5s infinite">Checking on OLX…</span>`;
 
   try {
     const res = await fetch('/api/check-listing-active', {

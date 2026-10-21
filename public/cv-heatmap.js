@@ -309,11 +309,11 @@
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
                 </svg>
-                Model CV & Heatmap Analyzer
+                Colour analysis
               </span>
               <h3 id="cvModalTitle" class="cv-modal-title">Yamaha Listing</h3>
             </div>
-            <button class="cv-modal-close" onclick="window.cvHeatmapEngine.closeModal()" title="Zamknij (Esc)">
+            <button class="cv-modal-close" onclick="window.cvHeatmapEngine.closeModal()" title="Close (Esc)">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
               </svg>

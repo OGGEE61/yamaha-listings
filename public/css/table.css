@@ -339,3 +339,20 @@
   color: var(--text-muted);
   white-space: nowrap;
 }
+
+/* Phone: keep only the columns you decide with (photo, title, model, price, actions) */
+@media (max-width: 720px) {
+  .listings-table {
+    min-width: 0;
+  }
+
+  .listings-table th:nth-child(n+5):nth-child(-n+8),
+  .listings-table td:nth-child(n+5):nth-child(-n+8) {
+    display: none;
+  }
+
+  .table-title-link {
+    min-width: 0;
+    max-width: none;
+  }
+}

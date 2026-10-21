@@ -359,3 +359,34 @@
   opacity: 0.5;
   cursor: wait;
 }
+
+/* Review-queue switches sit full-width above the cards */
+.verify-toggles {
+  margin-bottom: var(--sp-4);
+}
+
+.verify-toggles .toggle-container {
+  border-radius: var(--radius-sm);
+  flex: 1 1 100%;
+}
+
+/* Phone: shortcuts are keyboard-only and the pipeline explainer is background reading */
+@media (max-width: 720px) {
+  .hitl-shortcuts-pill,
+  .hitl-pipeline-steps {
+    display: none;
+  }
+
+  .hitl-workflow-banner {
+    padding: var(--sp-4);
+  }
+
+  .hitl-banner-title {
+    font-size: var(--fs-lg);
+  }
+}
+
+.hitl-badge-active-learning {
+  flex: none;
+  white-space: nowrap;
+}

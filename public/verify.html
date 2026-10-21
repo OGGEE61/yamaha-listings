@@ -22,15 +22,15 @@
       <nav class="nav-tabs">
         <a href="index.html" class="nav-tab">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          Card Grid
+          Cards
         </a>
         <a href="list.html" class="nav-tab">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-          Table List (D1)
+          Table
         </a>
         <a href="verify.html" class="nav-tab active">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          HITL Studio (Model CV) (<span id="count-badge">...</span>)
+          Review <span class="nav-count" id="count-badge">…</span>
         </a>
       </nav>
     </div>
@@ -75,7 +75,7 @@
         </div>
         <div class="hitl-step-box">
           <div class="hitl-step-num">Step 5 · Ground Truth</div>
-          <div class="hitl-step-text">Stored in Cloudflare D1 / SQLite as the knowledge base</div>
+          <div class="hitl-step-text">Stored in the database as the knowledge base</div>
         </div>
       </div>
     </section>
@@ -106,7 +106,7 @@
 
     <!-- Filter and View Mode Toolbar -->
     <div class="section-header" style="flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
-      <div class="filters-container" style="flex-wrap: wrap;">
+      <div class="toolbar-toggles verify-toggles">
         <label class="toggle-container">
           <input type="checkbox" id="showAll" onchange="renderCards()">
           <span class="toggle-slider"></span>
@@ -135,6 +135,7 @@
     </div>
   </main>
 
+  <script src="ui.js?v=1"></script>
   <script src="admin.js?v=1"></script>
   <script src="cv-heatmap.js"></script>
   <script>
