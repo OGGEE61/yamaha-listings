@@ -1,0 +1,174 @@
+/* ==========================================================================
+   Design tokens — the single source of truth for colour, type, space, shape.
+   Nothing else in the stylesheet should contain a raw colour value.
+   Layers:  1) palette (raw values)   2) semantic roles (what a colour is FOR)
+   ========================================================================== */
+
+:root {
+  /* ── 1. PALETTE ───────────────────────────────────────────────────────── */
+
+  /* Brand + surfaces */
+  --white:        #ffffff;
+  --black:        #000000;
+  --brand:        #0032a0;   /* Yamaha racing blue: header, primary actions */
+  --brand-hover:  #002680;
+  --brand-bright: #1e50c8;
+  --brand-70:     #4d70bd;   /* brand at 70% on white: page background */
+  --brand-50:     #8099d0;   /* brand at 50% on white: form controls on the page */
+
+  --navy-950: #030d24;       /* photo wells, table head */
+  --navy-900: #051438;       /* modal headers, inset panels */
+  --navy-800: #081d4e;       /* modal bodies */
+  --navy-700: #0a2d82;       /* cards (default surface) */
+  --navy-600: #123b9e;       /* card hover */
+
+  /* Blues */
+  --blue-900: #1e3a8a;
+  --blue-800: #1e40af;
+  --blue-700: #1d4ed8;
+  --blue-600: #2563eb;
+  --blue-500: #3b82f6;
+  --blue-400: #60a5fa;
+  --blue-300: #93c5fd;
+  --blue-200: #bfdbfe;
+
+  /* Neutrals */
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+
+  /* Status */
+  --green-500: #10b981;  --green-400: #34d399;  --green-300: #6ee7b7;
+  --amber-500: #f59e0b;  --amber-400: #fbbf24;  --amber-300: #fcd34d;  --amber-100: #fef3c7;
+  --red-600:   #dc2626;  --red-500:   #ef4444;  --red-400:   #f87171;  --red-300:   #fca5a5;
+  --purple-500: #8b5cf6;
+
+  /* Translucent overlays (named by hue + opacity %) */
+  --white-5:  rgba(255, 255, 255, 0.05);
+  --white-10: rgba(255, 255, 255, 0.10);
+  --white-15: rgba(255, 255, 255, 0.16);
+  --white-20: rgba(255, 255, 255, 0.20);
+  --white-35: rgba(255, 255, 255, 0.35);
+  --white-40: rgba(255, 255, 255, 0.45);
+  --white-60: rgba(255, 255, 255, 0.65);
+  --white-80: rgba(255, 255, 255, 0.78);
+
+  --blue-a15: rgba(59, 130, 246, 0.15);
+  --blue-a25: rgba(59, 130, 246, 0.25);
+  --blue-a40: rgba(59, 130, 246, 0.40);
+  --blue-a55: rgba(59, 130, 246, 0.55);
+  --blue400-a25: rgba(96, 165, 250, 0.25);
+  --blue400-a40: rgba(96, 165, 250, 0.40);
+  --blue400-a55: rgba(96, 165, 250, 0.55);
+  --blue600-a30: rgba(37, 99, 235, 0.30);
+  --blue600-a50: rgba(37, 99, 235, 0.50);
+  --blue300-a30: rgba(147, 197, 253, 0.30);
+  --blue300-a50: rgba(147, 197, 253, 0.50);
+
+  --red-a12: rgba(239, 68, 68, 0.12);
+  --red-a25: rgba(239, 68, 68, 0.25);
+  --red-a40: rgba(239, 68, 68, 0.40);
+  --green-a20: rgba(16, 185, 129, 0.20);
+  --green-a40: rgba(52, 211, 153, 0.42);
+  --amber-a10: rgba(245, 158, 11, 0.10);
+  --amber-a20: rgba(245, 158, 11, 0.22);
+  --amber-a40: rgba(245, 158, 11, 0.42);
+  --slate-a15: rgba(148, 163, 184, 0.16);
+  --slate-a30: rgba(148, 163, 184, 0.32);
+
+  --inset:      rgba(0, 20, 60, 0.45);    /* sunken panel on a navy surface */
+  --inset-dark: rgba(0, 0, 0, 0.25);
+  --inset-ink:  rgba(15, 23, 42, 0.60);
+  --scrim:      rgba(3, 10, 28, 0.85);    /* modal backdrops */
+  --scrim-75:   rgba(0, 10, 30, 0.80);    /* controls floating on photos */
+
+  /* ── 2. SEMANTIC ROLES ────────────────────────────────────────────────── */
+
+  /* Page (mid-blue canvas) */
+  --page-bg:        var(--brand-70);
+  --on-page:        var(--white);
+  --control-bg:     var(--brand-50);       /* inputs / toggles that sit on the page */
+  --control-text:   var(--slate-900);
+  --control-hint:   var(--slate-700);
+
+  /* Surfaces (dark navy components) */
+  --surface:        var(--navy-700);
+  --surface-hover:  var(--navy-600);
+  --surface-sunken: var(--navy-900);
+  --surface-modal:  var(--navy-800);
+  --surface-media:  var(--navy-950);
+
+  --border:         var(--white-15);
+  --border-strong:  var(--white-35);
+
+  --text:           var(--white);          /* on surfaces */
+  --text-2:         var(--slate-300);
+  --text-muted:     var(--slate-500);
+  --text-accent:    var(--blue-300);       /* small labels on navy */
+
+  --accent:         var(--white);          /* highlight on dark */
+  --accent-glow:    var(--white-35);
+  --action:         var(--blue-600);       /* primary action fill on dark */
+  --action-hover:   var(--blue-700);
+  --focus-ring:     var(--white-35);
+
+  --success: var(--green-500);
+  --warning: var(--amber-500);
+  --danger:  var(--red-500);
+
+  /* ── 3. TYPE ──────────────────────────────────────────────────────────── */
+  --font-sans:    'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+
+  /* Modular scale — use ONLY these sizes */
+  --fs-2xs: 10px;   /* micro caps labels (badges inside chips) */
+  --fs-xs:  11px;   /* captions, chips */
+  --fs-sm:  12px;   /* secondary text, buttons */
+  --fs-md:  13px;   /* body in components */
+  --fs-base: 14px;  /* default body */
+  --fs-lg:  16px;   /* card titles */
+  --fs-xl:  20px;   /* section figures */
+  --fs-2xl: 24px;   /* prices, section titles */
+  --fs-3xl: 32px;   /* hero numbers */
+
+  /* ── 4. SPACE (4px grid) ──────────────────────────────────────────────── */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px;  --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px;  --sp-10: 40px;
+
+  /* ── 5. SHAPE + DEPTH ─────────────────────────────────────────────────── */
+  --radius-sm:   6px;     /* inputs, buttons */
+  --radius-md:   10px;    /* panels */
+  --radius-lg:   14px;    /* cards, modals */
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(0, 10, 40, 0.25);
+  --shadow-md: 0 6px 18px rgba(0, 20, 80, 0.28);
+  --shadow-lg: 0 14px 34px rgba(0, 20, 80, 0.38);
+  --shadow-header: 0 2px 12px rgba(0, 20, 80, 0.20);
+  --shadow-modal: 0 25px 60px rgba(0, 0, 0, 0.70);
+
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ── 6. LEGACY ALIASES (kept so inline JS style strings keep working) ── */
+  --bg-card:        var(--surface);
+  --bg-card-hover:  var(--surface-hover);
+  --bg-dark-blue:   var(--navy-700);
+  --bg-page:        var(--page-bg);
+  --bg-bright-blue: var(--page-bg);
+  --text-primary:   var(--text);
+  --text-secondary: var(--text-2);
+  --blue:           var(--blue-500);
+  --green:          var(--green-500);
+  --amber:          var(--amber-500);
+  --red:            var(--red-500);
+  --purple:         var(--purple-500);
+  --border-bright:  var(--border-strong);
+  --radius-xl:      18px;
+  --shadow:         none;
+}
