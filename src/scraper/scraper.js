@@ -265,7 +265,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
     const priceText = $el.find('[data-testid="ad-price"]').text().trim();
     const price = parsePrice(priceText);
     const location = $el.find('[data-testid="location-date"]').text().trim().split('-')[0].trim();
-    const img = $el.find('img').first().attr('src') || null;
+    const img = realPhoto($el.find('img').first().attr('src'));
 
     seen.add(href);
     listings.push({
@@ -361,6 +361,13 @@ async function scrapeAutoplac(pageNum = 1, searchUrl) {
   const preliminaryListings = listings.filter(l => determineYamahaModel(l.title, ''));
   console.log(`[Autoplac] Page ${pageNum}: found ${preliminaryListings.length} preliminary matches`);
   return { listings: preliminaryListings, hasMore };
+}
+
+// OLX lazy-loads card photos: until they scroll into view the <img> src is a relative
+// "/app/static/media/no_thumbnail.*.svg" placeholder, which is a broken image on our own origin.
+function realPhoto(src) {
+  if (!src || !/^https?:\/\//.test(src) || /no_thumbnail|placeholder/.test(src)) return null;
+  return src;
 }
 
 async function fetchDetails(url) {
@@ -480,7 +487,8 @@ async function scrapeAll() {
   } catch (_) {}
 
   // Listings already in D1 passed verification before; don't reopen their detail pages every run
-  const knownIds = new Set((await fetchActiveListings()).map(l => l.id));
+  const knownById = new Map((await fetchActiveListings()).map(l => [l.id, l]));
+  const knownIds = new Set(knownById.keys());
 
   console.log(`[Scraper] Found ${unique.length} unique candidates (${rejectedUrls.size} permanently blacklisted, ${knownIds.size} already known). Verifying new ones...`);
   const verifiedListings = [];
@@ -495,6 +503,13 @@ async function scrapeAll() {
     }
 
     if (knownIds.has(id)) {
+      // Heal rows an earlier run saved with a placeholder photo: fall back to the first gallery image
+      const known = knownById.get(id);
+      if (!listing.image && !realPhoto(known.image)) {
+        let gallery = known.images;
+        if (typeof gallery === 'string') { try { gallery = JSON.parse(gallery); } catch (_) { gallery = []; } }
+        listing.image = (gallery || []).map(realPhoto).find(Boolean) || null;
+      }
       verifiedListings.push(listing);
       continue;
     }
@@ -506,12 +521,10 @@ async function scrapeAll() {
 
     console.log(`[Scraper] Checking details for: ${listing.title.substring(0, 40)}...`);
     const details = await fetchDetails(listing.url);
-    if (details.image) {
-      listing.image = details.image;
-    }
     if (details.images && details.images.length) {
       listing.images = details.images.slice(0, 8);
     }
+    listing.image = realPhoto(details.image) || realPhoto(listing.image) || (listing.images || []).map(realPhoto).find(Boolean) || null;
     if (details.desc) {
       listing.description = details.desc;
     }
