@@ -278,7 +278,7 @@ async function workerApi(path, { method = 'GET', body } = {}) {
  * Analyse every listing in the D1 queue and write the verdicts back.
  * Safe to call after every scrape; human-verified listings are never in the queue.
  */
-async function runColorCheck({ limit = 500, dry = false } = {}) {
+async function runColorCheck({ limit = 500, dry = false, deadline = Infinity } = {}) {
   if (!process.env.GEMINI_API_KEY) {
     console.warn('[Vision] GEMINI_API_KEY not set – skipping Iconic Blue check.');
     return { checked: 0, blue: 0, failed: 0, skipped: true };
@@ -288,7 +288,7 @@ async function runColorCheck({ limit = 500, dry = false } = {}) {
   console.log(`[Vision] ${queue.length} listing(s) to analyse (models: ${MODELS.join(' → ')}, photos/listing ≤ ${MAX_PHOTOS})...`);
 
   const pending = [];
-  let checked = 0, blue = 0, failed = 0, quotaStop = false;
+  let checked = 0, blue = 0, failed = 0, quotaStop = false, timeStop = false;
 
   const flush = async () => {
     if (!pending.length || dry) { pending.length = 0; return; }
@@ -297,6 +297,7 @@ async function runColorCheck({ limit = 500, dry = false } = {}) {
 
   async function worker() {
     while (queue.length && !quotaStop) {
+      if (Date.now() > deadline) { timeStop = true; break; }
       const listing = queue.shift();
       try {
         const r = await analyzeListing(listing);
@@ -321,6 +322,7 @@ async function runColorCheck({ limit = 500, dry = false } = {}) {
   await Promise.all(Array.from({ length: CONCURRENCY }, worker));
   await flush();
 
+  if (timeStop) console.warn(`[Vision] ⏱ Time budget reached – remaining ${queue.length} listing(s) will be analysed on the next run.`);
   const summary = { checked, blue, failed, remaining: queue.length + (quotaStop ? 1 : 0), dry };
   console.log('[Vision] Done:', summary);
   return summary;

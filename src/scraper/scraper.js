@@ -128,6 +128,14 @@ const MAX_PAGES_PER_QUERY = 8;
 // anything over the cap is simply picked up by the next run.
 const MAX_NEW_DETAILS_PER_RUN = 60;
 
+// The CI job is killed at 30 min and nothing is synced if that happens, so every slow phase watches
+// a shared wall-clock budget and hands leftovers (details, liveness checks, colour checks) to the next run.
+const RUN_STARTED = Date.now();
+const RUN_BUDGET_MS = (parseFloat(process.env.RUN_BUDGET_MINUTES) || 25) * 60 * 1000;
+const pastBudget = (fraction = 1) => Date.now() - RUN_STARTED > RUN_BUDGET_MS * fraction;
+const DETAILS_BUDGET = 0.6;   // new-listing detail pages stop here, leaving room for liveness checks + sync
+const LIVENESS_BUDGET = 0.75; // "is it gone?" checks stop here, then sync runs
+
 const SOURCES = {
   olx: {
     name: 'OLX.pl',
@@ -172,7 +180,8 @@ function fetchWithPuppeteer(url) {
     // Call the puppeteer script
     const html = execSync(`node "${scriptPath}" "${url}"`, { 
       encoding: 'utf8',
-      maxBuffer: 1024 * 1024 * 10 // 10MB buffer for large HTML
+      maxBuffer: 1024 * 1024 * 10, // 10MB buffer for large HTML
+      timeout: 90000 // a hung browser must not eat the whole run budget
     });
 
     if (html.includes('datadome') || html.includes('Just a moment...') || html.includes('px-captcha')) {
@@ -514,7 +523,7 @@ async function scrapeAll() {
       continue;
     }
 
-    if (++newDetailCount > MAX_NEW_DETAILS_PER_RUN) {
+    if (++newDetailCount > MAX_NEW_DETAILS_PER_RUN || pastBudget(DETAILS_BUDGET)) {
       deferred++;
       continue;
     }
@@ -539,7 +548,7 @@ async function scrapeAll() {
     await delay(500); // Politeness delay between fetching items
   }
 
-  if (deferred) console.log(`[Scraper] ${deferred} new listings deferred to the next run (per-run detail cap)`);
+  if (deferred) console.log(`[Scraper] ${deferred} new listings deferred to the next run (per-run detail cap / time budget)`);
   console.log(`[Scraper] Done. Total VERIFIED Yamaha listings: ${verifiedListings.length}`);
   return verifiedListings;
 }
@@ -564,6 +573,7 @@ function confirmGone(urls, cap = 40) {
   const gone = [];
   const toCheck = urls.slice(0, cap);
   for (const url of toCheck) {
+    if (pastBudget(LIVENESS_BUDGET)) { console.log('[Scraper] Time budget reached; remaining liveness checks wait for the next run'); break; }
     const r = checkListingActive(url);
     console.log(`[Scraper] Liveness check (${r.isActive === true ? 'LIVE' : r.isActive === false ? 'GONE' : 'unknown'}): ${url}`);
     if (r.isActive === false) gone.push(url);
@@ -654,7 +664,7 @@ if (require.main === module) {
 
       // Post-processing: Iconic Blue detection on listing photos (Gemini vision)
       try {
-        await require('../ai/vision').runColorCheck();
+        await require('../ai/vision').runColorCheck({ deadline: RUN_STARTED + RUN_BUDGET_MS });
       } catch (err) {
         console.error('[CLI] Iconic Blue check failed (scrape results kept):', err.message);
       }
