@@ -91,13 +91,13 @@ async function ensureListingDescription(listing) {
 
 const WORKER_URL = process.env.WORKER_URL || 'https://yamaha-listings.maxgustaw.workers.dev';
 
-async function persistAnalysis(id, { summary, verdict, analysis, description, isParts }) {
+async function persistAnalysis(id, { summary, verdict, analysis, description, isParts, year }) {
   const secret = process.env.ADMIN_SYNC_SECRET;
   if (secret) {
     const res = await fetch(`${WORKER_URL}/api/bielik/save`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-sync-secret': secret },
-      body: JSON.stringify({ id, summary, verdict, analysis, description, is_parts: isParts }),
+      body: JSON.stringify({ id, summary, verdict, analysis, description, is_parts: isParts, year }),
       signal: AbortSignal.timeout(30000),
     });
     if (!res.ok) throw new Error(`Worker /api/bielik/save HTTP ${res.status}`);
@@ -290,6 +290,7 @@ Zwróć odpowiedź WYŁĄCZNIE jako poprawny format JSON (żadnego tekstu poza J
     analysis: result,
     description: description || null,
     // null leaves the keyword-based flag untouched when the model gave no usable answer
+    year: result.year || null,
     isParts: result.parts_status ? (result.parts_status === 'complete' ? 0 : 1) : null
   });
 

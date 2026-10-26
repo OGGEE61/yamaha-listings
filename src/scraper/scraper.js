@@ -120,6 +120,20 @@ function detectParts(title, desc = '') {
   return strong.test(t) || partOnly.test(t) || strong.test(d);
 }
 
+// Model year from the title, then the description: "2019", or a two-digit "22r". Newest plausible year wins
+// over nothing, but the first match is kept so "2005 (jak 2019)" stays 2005.
+function extractYear(title, desc = '') {
+  const max = new Date().getFullYear() + 1;
+  for (const text of [title, (desc || '').substring(0, 500)]) {
+    const t = (text || '').toLowerCase();
+    const full = t.match(/(?<![\d.,])(19[6-9]\d|20[0-3]\d)(?![\d])(?!\s?(?:cc|ccm|km|mth|zl|zł|kw))/);
+    if (full && +full[1] <= max) return +full[1];
+    const short = t.match(/(?<![\d.,])(\d{2})\s?r\b(?!\w)/);
+    if (short) { const y = +short[1] + (+short[1] <= max - 2000 ? 2000 : 1900); if (y >= 1965 && y <= max) return y; }
+  }
+  return null;
+}
+
 function extractCC(title, desc, model) {
   if (model === 'Tenere 700') return 700;
   if (model === 'WR 450F') return 450;
@@ -247,6 +261,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
             id: cleanUrl ? cleanUrl.split('/').filter(Boolean).pop() : null,
             title,
             is_parts: detectParts(title) ? 1 : undefined,
+            year: extractYear(title),
             model: modelName,
             cc: extractCC(title, '', modelName),
             price: offer.price || null,
@@ -292,6 +307,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
       id: href.split('/').filter(Boolean).pop(),
       title,
       is_parts: detectParts(title) ? 1 : undefined,
+      year: extractYear(title),
       model: modelName,
       cc: extractCC(title, '', modelName),
       price,
@@ -571,6 +587,7 @@ async function scrapeAll() {
       listing.model = finalModel;
       listing.cc = extractCC(listing.title, details.desc, finalModel);
       listing.is_parts = detectParts(listing.title, details.desc) ? 1 : 0;
+      listing.year = extractYear(listing.title, details.desc) || listing.year || null;
       verifiedListings.push(listing);
     } else {
       console.log(`[Scraper] ❌ REJECTED based on description: ${listing.url}`);
@@ -646,7 +663,7 @@ async function syncListingsToD1(listings, runStats, inactiveUrls = []) {
   return result;
 }
 
-module.exports = { scrapeAll, determineYamahaModel, detectParts, cleanTitle, extractCC, syncListingsToD1, __test: { scrapeOLX } };
+module.exports = { scrapeAll, determineYamahaModel, detectParts, cleanTitle, extractYear, extractCC, syncListingsToD1, __test: { scrapeOLX } };
 
 if (require.main === module) {
   (async () => {

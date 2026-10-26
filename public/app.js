@@ -137,10 +137,13 @@ async function fallbackFetchAll(page = 0) {
       return dir * (a.price - b.price);
     };
     const bySeen = dir => (a, b) => dir * (new Date(a.first_seen || 0) - new Date(b.first_seen || 0));
+    // Newest model year first; listings without a year go last
+    const byYear = (a, b) => (a.year == null) - (b.year == null) || (b.year || 0) - (a.year || 0);
     const comparators = {
       newest: bySeen(-1), oldest: bySeen(1), price_asc: byPrice(1), price_desc: byPrice(-1),
-      cc_desc: (a, b) => (b.cc || 0) - (a.cc || 0) || bySeen(-1)(a, b),
-      recommended: (a, b) => (b.cc || 0) - (a.cc || 0) || bySeen(-1)(a, b),
+      cc_desc: (a, b) => (b.cc || 0) - (a.cc || 0) || byYear(a, b) || bySeen(-1)(a, b),
+      year_desc: (a, b) => byYear(a, b) || (b.cc || 0) - (a.cc || 0) || bySeen(-1)(a, b),
+      recommended: (a, b) => (b.cc || 0) - (a.cc || 0) || byYear(a, b) || bySeen(-1)(a, b),
     };
     const cmp = comparators[sortBy] || comparators.recommended;
     // Active listings always come first
@@ -444,6 +447,7 @@ function renderListings(listings) {
     const chips = [];
     chips.push(`<span class="chip chip--model">${escHtml(l.model || 'Unknown')}</span>`);
     if (l.cc) chips.push(`<span class="chip">${l.cc} cc</span>`);
+    if (l.year) chips.push(`<span class="chip">${l.year}</span>`);
     if (l.source && l.source !== 'OLX.pl') chips.push(`<span class="chip chip--muted">${escHtml(l.source)}</span>`);
     if (l.iconic_blue_tag) {
       chips.push(`<span class="chip chip--muted" style="cursor:pointer" onclick="event.stopPropagation(); inspectCvListing('${escHtml(l.id)}')" title="Review tag: ${escHtml(l.iconic_blue_tag)}">${escHtml(l.iconic_blue_tag)}</span>`);
