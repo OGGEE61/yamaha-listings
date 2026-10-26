@@ -109,6 +109,17 @@ function determineYamahaModel(title, description = '') {
   return null;
 }
 
+// Bikes sold for spares ("na części", donor bike, breaker) or part-only ads ("Plastiki Yamaha YZ"),
+// which we want to rank last. Descriptions are only trusted for strong phrases, and a leading "nie" negates them.
+function detectParts(title, desc = '') {
+  const fold = x => (x || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
+  const t = fold(title).replace(/\s+/g, ' ').trim();
+  const d = fold(desc).replace(/\s+/g, ' ').trim().substring(0, 500);
+  const strong = /(?<!\bnie )(?<!\bnie na )\b(na (czesci|czesc)|dawca|do rozbiorki|rozbiorka|szrot|czesci zamienne|tylko czesci|czesci do)\b/;
+  const partOnly = /^(yamaha )?(plastiki|owiewki|rama|silnik|cylinder|tlok|wahacz|amortyzator|lagi|zawieszenie|zbiornik|blotnik|felgi?|kolo|kola|naklejki|zestaw)\b/;
+  return strong.test(t) || partOnly.test(t) || strong.test(d);
+}
+
 function extractCC(title, desc, model) {
   if (model === 'Tenere 700') return 700;
   if (model === 'WR 450F') return 450;
@@ -225,7 +236,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
       const data = JSON.parse(match[1]);
       if (data['@type'] === 'Product' && data.offers && data.offers.offers) {
         for (const offer of data.offers.offers) {
-          const title = offer.name || '';
+          const title = cleanTitle(offer.name);
           const modelName = determineYamahaModel(title);
           if (!modelName) continue;
 
@@ -235,6 +246,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
           listings.push({
             id: cleanUrl ? cleanUrl.split('/').filter(Boolean).pop() : null,
             title,
+            is_parts: detectParts(title) ? 1 : undefined,
             model: modelName,
             cc: extractCC(title, '', modelName),
             price: offer.price || null,
@@ -259,8 +271,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
   $('[data-testid="l-card"]').each((_, el) => {
     const $el = $(el);
     // OLX renamed the title element over time; accept the current and previous markup, then any <h4>
-    const title = ($el.find('[data-testid="ad-card-title"], [data-testid="ad-title"]').first().text()
-      || $el.find('h4').first().text()).trim();
+    const title = cardTitle($, $el);
     const modelName = determineYamahaModel(title);
     if (!modelName) return;
 
@@ -280,6 +291,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
     listings.push({
       id: href.split('/').filter(Boolean).pop(),
       title,
+      is_parts: detectParts(title) ? 1 : undefined,
       model: modelName,
       cc: extractCC(title, '', modelName),
       price,
@@ -370,6 +382,23 @@ async function scrapeAutoplac(pageNum = 1, searchUrl) {
   const preliminaryListings = listings.filter(l => determineYamahaModel(l.title, ''));
   console.log(`[Autoplac] Page ${pageNum}: found ${preliminaryListings.length} preliminary matches`);
   return { listings: preliminaryListings, hasMore };
+}
+
+// OLX (emotion) injects an inline <style>.css-xxx{...}</style> inside the title element, so a plain .text()
+// returns CSS followed by the real title. Read the heading's own text nodes and drop any leftover rule blocks.
+function cardTitle($, $el) {
+  const $t = $el.find('[data-testid="ad-card-title"], [data-testid="ad-title"]').first();
+  const $h = $t.find('h1, h2, h3, h4, h5, h6').first();
+  const $src = ($h.length ? $h : $t.length ? $t : $el.find('h4').first()).clone();
+  $src.find('style, script').remove();
+  return cleanTitle($src.text());
+}
+
+function cleanTitle(text) {
+  // Splitting on the rules keeps the title as the first real segment; the wrapper also holds
+  // "30 900 zł" / "do negocjacji" in the segments that follow.
+  const parts = (text || '').split(/\.css-[\w-]+[^{}]*\{[^}]*\}/).map(p => p.replace(/\s+/g, ' ').trim()).filter(Boolean);
+  return parts[0] || '';
 }
 
 // OLX lazy-loads card photos: until they scroll into view the <img> src is a relative
@@ -541,6 +570,7 @@ async function scrapeAll() {
     if (finalModel) {
       listing.model = finalModel;
       listing.cc = extractCC(listing.title, details.desc, finalModel);
+      listing.is_parts = detectParts(listing.title, details.desc) ? 1 : 0;
       verifiedListings.push(listing);
     } else {
       console.log(`[Scraper] ❌ REJECTED based on description: ${listing.url}`);
@@ -616,7 +646,7 @@ async function syncListingsToD1(listings, runStats, inactiveUrls = []) {
   return result;
 }
 
-module.exports = { scrapeAll, determineYamahaModel, extractCC, syncListingsToD1, __test: { scrapeOLX } };
+module.exports = { scrapeAll, determineYamahaModel, detectParts, cleanTitle, extractCC, syncListingsToD1, __test: { scrapeOLX } };
 
 if (require.main === module) {
   (async () => {

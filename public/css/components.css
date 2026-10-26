@@ -924,3 +924,6 @@
   filter: brightness(1.15);
   transform: translateY(-1px);
 }
+
+/* Parts bikes sit at the end of the grid; soften them so whole bikes stand out */
+.listing-card.is-parts .listing-media { opacity: 0.65; }

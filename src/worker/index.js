@@ -44,6 +44,7 @@ export default {
         const activeOnly    = searchParams.get('activeOnly') !== 'false';
         const iconicBlue    = searchParams.get('iconicBlue') === 'true';
         const hitlOnly      = searchParams.get('hitlOnly') === 'true';
+        const hideParts     = searchParams.get('hideParts') === 'true';
         const sort          = searchParams.get('sort') || 'recommended';
         const limit         = Math.min(parseInt(searchParams.get('limit') || '24', 10), 500);
         const offset        = Math.max(parseInt(searchParams.get('offset') || '0', 10), 0);
@@ -67,6 +68,9 @@ export default {
         }
         if (hitlOnly) {
           where.push('iconic_blue_verified = 1');
+        }
+        if (hideParts) {
+          where.push('COALESCE(is_parts, 0) = 0');
         }
         if (minPrice !== null && !isNaN(minPrice)) {
           where.push('price >= ?');
@@ -94,7 +98,7 @@ export default {
         const whereClause = where.length ? 'WHERE ' + where.join(' AND ') : '';
 
         // Sort order is chosen from a fixed whitelist (never interpolated from user input).
-        // Active listings always come first; listings without a price sort last.
+        // Active listings always come first, then whole bikes before parts bikes; listings without a price sort last.
         const SORTS = {
           recommended: 'cc DESC, first_seen DESC',
           newest:      'first_seen DESC',
@@ -103,7 +107,7 @@ export default {
           price_desc:  'price IS NULL, price DESC',
           cc_desc:     'cc DESC, first_seen DESC',
         };
-        const orderBy = `is_active DESC, ${SORTS[sort] || SORTS.recommended}`;
+        const orderBy = `is_active DESC, COALESCE(is_parts, 0) ASC, ${SORTS[sort] || SORTS.recommended}`;
 
         // Query listings for current page
         const sqlListings = `SELECT * FROM listings ${whereClause} ORDER BY ${orderBy} LIMIT ? OFFSET ?`;
@@ -305,7 +309,7 @@ export default {
             status: 401, headers: { 'Content-Type': 'application/json', ...corsHeaders }
           });
         }
-        const { id, summary, verdict, analysis, description } = await request.json();
+        const { id, summary, verdict, analysis, description, is_parts } = await request.json();
         if (!id) {
           return new Response(JSON.stringify({ error: 'Missing id' }), {
             status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders }
@@ -314,13 +318,15 @@ export default {
         await env.DB.prepare(`
           UPDATE listings SET
             bielik_summary = ?, bielik_verdict = ?, bielik_analysis = ?, bielik_checked_at = ?,
-            description = COALESCE(?, description)
+            description = COALESCE(?, description),
+            is_parts = COALESCE(?, is_parts)
           WHERE id = ?
         `).bind(
           summary || null, verdict || null,
           analysis ? (typeof analysis === 'string' ? analysis : JSON.stringify(analysis)) : null,
           new Date().toISOString(),
           description ? String(description).slice(0, 20000) : null,
+          is_parts ?? null,
           id
         ).run();
         return new Response(JSON.stringify({ success: true, id }), {
@@ -500,8 +506,8 @@ export default {
             env.DB.prepare(`
               INSERT INTO listings (
                 id, title, model, price, currency, location, url, image, cc, source, first_seen, last_seen, valid_until, is_active,
-                iconic_blue, iconic_blue_parts, iconic_blue_image, iconic_blue_checked_at, iconic_blue_verified, iconic_blue_title, search_url, images, description
-              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                iconic_blue, iconic_blue_parts, iconic_blue_image, iconic_blue_checked_at, iconic_blue_verified, iconic_blue_title, search_url, images, description, is_parts
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
               ON CONFLICT(id) DO UPDATE SET
                 title = excluded.title,
                 model = CASE WHEN excluded.model != 'Unknown' THEN excluded.model ELSE listings.model END,
@@ -511,6 +517,7 @@ export default {
                 images = CASE WHEN excluded.images IS NOT NULL THEN excluded.images ELSE listings.images END,
                 description = CASE WHEN excluded.description IS NOT NULL AND excluded.description != '' THEN excluded.description ELSE listings.description END,
                 cc = CASE WHEN excluded.cc > 0 THEN excluded.cc ELSE listings.cc END,
+                is_parts = CASE WHEN excluded.is_parts IS NOT NULL THEN excluded.is_parts ELSE listings.is_parts END,
                 last_seen = excluded.last_seen,
                 valid_until = excluded.valid_until,
                 is_active = 1,
@@ -541,7 +548,8 @@ export default {
               item.iconic_blue_title || null,
               item.search_url || null,
               Array.isArray(item.images) && item.images.length ? JSON.stringify(item.images) : null,
-              item.description ? String(item.description).slice(0, 20000) : null
+              item.description ? String(item.description).slice(0, 20000) : null,
+              item.is_parts ?? null
             )
           );
 

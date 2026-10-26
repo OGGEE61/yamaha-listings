@@ -32,6 +32,7 @@ async function loadListings(page = 0) {
   const showInactive  = document.getElementById('showInactive') ? document.getElementById('showInactive').checked : false;
   const iconicBlue    = document.getElementById('filterIconicBlue') ? document.getElementById('filterIconicBlue').checked : true;
   const hitlOnly      = document.getElementById('filterHitl') ? document.getElementById('filterHitl').checked : false;
+  const hideParts     = document.getElementById('filterHideParts')?.checked || false;
   const sortBy        = document.getElementById('sortBy').value;
 
   const params = new URLSearchParams();
@@ -47,6 +48,7 @@ async function loadListings(page = 0) {
   if (showInactive) params.set('activeOnly', 'false');
   if (iconicBlue) params.set('iconicBlue', 'true');
   if (hitlOnly) params.set('hitlOnly', 'true');
+  if (hideParts) params.set('hideParts', 'true');
   if (sortBy && sortBy !== 'recommended') params.set('sort', sortBy);
 
   try {
@@ -101,6 +103,7 @@ async function fallbackFetchAll(page = 0) {
     const showInactive  = document.getElementById('showInactive')?.checked || false;
     const iconicBlue    = document.getElementById('filterIconicBlue') ? document.getElementById('filterIconicBlue').checked : true;
     const hitlOnly      = document.getElementById('filterHitl')?.checked || false;
+    const hideParts     = document.getElementById('filterHideParts')?.checked || false;
 
     const filtered = cachedFallbackListings.filter(l => {
       if (!showInactive && l.is_active === 0) return false;
@@ -108,6 +111,7 @@ async function fallbackFetchAll(page = 0) {
       if (model  && l.model  !== model)  return false;
       if (iconicBlue && l.iconic_blue !== 1) return false;
       if (hitlOnly && l.iconic_blue_verified !== 1) return false;
+      if (hideParts && l.is_parts === 1) return false;
       if (engine === '2T') {
         const is2T = l.model === 'YZ 250 2T' || l.model === 'YZ 250X' || (l.model === 'Yamaha Vintage' && /\b(dt|it)\b/i.test(l.title));
         if (!is2T) return false;
@@ -140,7 +144,7 @@ async function fallbackFetchAll(page = 0) {
     };
     const cmp = comparators[sortBy] || comparators.recommended;
     // Active listings always come first
-    filtered.sort((a, b) => ((b.is_active ?? 1) - (a.is_active ?? 1)) || cmp(a, b));
+    filtered.sort((a, b) => ((b.is_active ?? 1) - (a.is_active ?? 1)) || ((a.is_parts || 0) - (b.is_parts || 0)) || cmp(a, b));
 
     const total = filtered.length;
     const slice = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
@@ -184,6 +188,7 @@ function resetFilters() {
   document.getElementById('showInactive').checked = false;
   document.getElementById('filterIconicBlue').checked = true;
   document.getElementById('filterHitl').checked = false;
+  document.getElementById('filterHideParts').checked = false;
   document.getElementById('excludeTenere').checked = true;
   loadListings(0);
 }
@@ -402,7 +407,7 @@ function renderListings(listings) {
     }
 
     // Inactive aging calculation
-    let cardClass = 'listing-card' + (isNew ? ' new' : '');
+    let cardClass = 'listing-card' + (isNew ? ' new' : '') + (l.is_parts === 1 ? ' is-parts' : '');
     let cardStyle = '';
     let inactiveBadge = '';
     if (l.is_active === 0) {
@@ -447,6 +452,7 @@ function renderListings(listings) {
       const tone = { 'verdict-positive': 'chip--ok', 'verdict-warning': 'chip--warn', 'verdict-danger': 'chip--bad' }[getVerdictClass(l.bielik_verdict)] || '';
       chips.push(`<span class="chip ${tone}" style="cursor:pointer" onclick="event.stopPropagation(); openListingDetailModal('${escHtml(l.id)}')" title="Bielik AI verdict: ${escHtml(l.bielik_summary || l.bielik_verdict)}">${escHtml(l.bielik_verdict)}</span>`);
     }
+    if (l.is_parts === 1) chips.push(`<span class="chip chip--warn" title="Sold for spares or a parts-only ad">Parts bike</span>`);
     if (inactiveBadge) chips.push(inactiveBadge);
 
     return `

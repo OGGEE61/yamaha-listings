@@ -91,13 +91,13 @@ async function ensureListingDescription(listing) {
 
 const WORKER_URL = process.env.WORKER_URL || 'https://yamaha-listings.maxgustaw.workers.dev';
 
-async function persistAnalysis(id, { summary, verdict, analysis, description }) {
+async function persistAnalysis(id, { summary, verdict, analysis, description, isParts }) {
   const secret = process.env.ADMIN_SYNC_SECRET;
   if (secret) {
     const res = await fetch(`${WORKER_URL}/api/bielik/save`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-sync-secret': secret },
-      body: JSON.stringify({ id, summary, verdict, analysis, description }),
+      body: JSON.stringify({ id, summary, verdict, analysis, description, is_parts: isParts }),
       signal: AbortSignal.timeout(30000),
     });
     if (!res.ok) throw new Error(`Worker /api/bielik/save HTTP ${res.status}`);
@@ -169,7 +169,8 @@ ${textContent.slice(0, 2600)}
 5. HIGHLIGHTS: 3-4 najważniejsze, konkretne fakty w punktach (rocznik, wersja, stan, osprzęt).
 6. BUYER_CHECKPOINTS: 2-3 konkretne punkty do weryfikacji na miejscu przy oględzinach dla TEGO modelu z bazy wiedzy.
 7. SUMMARY: 2-3 zdaniowa ocena oferty dla kupującego.
-8. VERDICT: "Warto obejrzeć" | "Ostrożnie / Dopytaj" | "Błędny model / Odrzuć".
+8. KOMPLETNOŚĆ: Oceń czy to kompletny, jeżdżący motocykl ("complete"), czy brakuje istotnych elementów, np. silnika, ramy, kół, zawieszenia, dokumentów ("incomplete"), czy ogłoszenie dotyczy sprzedaży na części / dawcy / samych części ("parts_only"). Frazy typu "nie na części" oznaczają complete. W missing_parts wypisz czego brakuje (lub []).
+9. VERDICT: "Warto obejrzeć" | "Ostrożnie / Dopytaj" | "Błędny model / Odrzuć".
 
 Zwróć odpowiedź WYŁĄCZNIE jako poprawny format JSON (żadnego tekstu poza JSON):
 {
@@ -185,6 +186,8 @@ Zwróć odpowiedź WYŁĄCZNIE jako poprawny format JSON (żadnego tekstu poza J
   "is_registered": true | false | null,
   "highlights": ["Punkt 1", "Punkt 2", "Punkt 3"],
   "buyer_checkpoints": ["Na co uważać 1", "Na co uważać 2"],
+  "parts_status": "complete" | "incomplete" | "parts_only",
+  "missing_parts": ["np. silnik", "np. dokumenty"],
   "summary": "Zwięzła, merytoryczna ocena stanu oferty i poradnik dla kupującego.",
   "verdict": "Warto obejrzeć" | "Ostrożnie / Dopytaj" | "Błędny model / Odrzuć"
 }`;
@@ -272,6 +275,8 @@ Zwróć odpowiedź WYŁĄCZNIE jako poprawny format JSON (żadnego tekstu poza J
     is_registered: typeof parsed.is_registered === 'boolean' ? parsed.is_registered : (modelKnowledge?.street_legal_default ?? null),
     highlights: Array.isArray(parsed.highlights) ? parsed.highlights : [],
     buyer_checkpoints: Array.isArray(parsed.buyer_checkpoints) ? parsed.buyer_checkpoints : (matchedGen?.buyer_checklist || []),
+    parts_status: ['complete', 'incomplete', 'parts_only'].includes(parsed.parts_status) ? parsed.parts_status : null,
+    missing_parts: Array.isArray(parsed.missing_parts) ? parsed.missing_parts : [],
     summary: parsed.summary || 'Brak podsumowania',
     verdict: parsed.verdict || 'Warto obejrzeć',
     model_used: modelToUse,
@@ -283,7 +288,9 @@ Zwróć odpowiedź WYŁĄCZNIE jako poprawny format JSON (żadnego tekstu poza J
     summary: result.summary,
     verdict: result.verdict,
     analysis: result,
-    description: description || null
+    description: description || null,
+    // null leaves the keyword-based flag untouched when the model gave no usable answer
+    isParts: result.parts_status ? (result.parts_status === 'complete' ? 0 : 1) : null
   });
 
   return result;
