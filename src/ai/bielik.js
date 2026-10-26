@@ -169,7 +169,7 @@ ${textContent.slice(0, 2600)}
 5. HIGHLIGHTS: 3-4 najważniejsze, konkretne fakty w punktach (rocznik, wersja, stan, osprzęt).
 6. BUYER_CHECKPOINTS: 2-3 konkretne punkty do weryfikacji na miejscu przy oględzinach dla TEGO modelu z bazy wiedzy.
 7. SUMMARY: 2-3 zdaniowa ocena oferty dla kupującego.
-8. KOMPLETNOŚĆ: Oceń czy to kompletny, jeżdżący motocykl ("complete"), czy brakuje istotnych elementów, np. silnika, ramy, kół, zawieszenia, dokumentów ("incomplete"), czy ogłoszenie dotyczy sprzedaży na części / dawcy / samych części ("parts_only"). Frazy typu "nie na części" oznaczają complete. W missing_parts wypisz czego brakuje (lub []).
+8. KOMPLETNOŚĆ: Domyślnie motocykl jest kompletny ("complete"). Wybierz "incomplete" TYLKO gdy treść ogłoszenia WPROST mówi, że czegoś brakuje lub jest rozebrane (np. "bez silnika", "bez ramy", "bez kół", "rozebrany", "do skompletowania"). Wybierz "parts_only" TYLKO gdy ogłoszenie dotyczy sprzedaży na części / dawcy / samych części ("na części", "dawca", "szrot"). Brak dokumentów / rejestracji nie ma znaczenia dla kompletności motocykla. Brak informacji w ogłoszeniu (np. o przebiegu, stanie silnika, dokumentach) NIE oznacza braków. Swap silnika (np. silnik od innego modelu) to nadal kompletny motocykl. Frazy typu "nie na części" oznaczają complete. W missing_parts wpisz wyłącznie elementy, o których ogłoszenie wprost mówi, że ich brak (inaczej []).
 9. VERDICT: "Warto obejrzeć" | "Ostrożnie / Dopytaj" | "Błędny model / Odrzuć".
 
 Zwróć odpowiedź WYŁĄCZNIE jako poprawny format JSON (żadnego tekstu poza JSON):
