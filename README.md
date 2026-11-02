@@ -19,6 +19,8 @@
 | **Yamaha Vintage** | 2T/4T | DT, IT (2T) · XT, TT (4T) |
 | **Ténéré 700** | 4T Adventure | Hidden by default, toggleable |
 
+Models live in one registry, [src/models/registry.js](src/models/registry.js): match patterns, category, engine, displacement and knowledge file per model. Add or rework a bike there, apply `migrations/0006_engine_category.sql`, then run `node scripts/reclassify.js --apply` to re-label stored listings.
+
 **Excluded:** Super Ténéré (XT1200Z), competing brands (KTM, Beta, Honda…), spam listings.
 
 ---
@@ -30,7 +32,7 @@ Hosted on **Cloudflare Workers** with **Cloudflare D1 SQL Database** — zero ph
 - **Card Grid View:** Interactive card grid with live price distribution histogram
 - **Table List View (`/list`):** High-density table list view directly querying Cloudflare D1
 - **Iconic Blue Verification (`/verify.html`):** Human-in-the-loop review interface for AI color detection
-- Filter by engine type (2T / 4T)
+- Filter by engine type (2T / 4T) and bike category (Motocross, Enduro, Supermoto, Adventure, Naked, Classic)
 - Filter by exact model
 - Real-time price range & full-text search
 - Toggle to hide Ténéré 700 listings

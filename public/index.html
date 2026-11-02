@@ -143,6 +143,17 @@
               </select>
             </div>
             <div class="filter-group select-wrapper">
+              <select id="filterCategory" onchange="loadListings()" aria-label="Category">
+                <option value="">All categories</option>
+                <option value="Motocross">Motocross</option>
+                <option value="Enduro">Enduro</option>
+                <option value="Supermoto">Supermoto</option>
+                <option value="Adventure">Adventure</option>
+                <option value="Naked">Naked</option>
+                <option value="Classic">Classic</option>
+              </select>
+            </div>
+            <div class="filter-group select-wrapper">
               <select id="filterSource" onchange="loadListings()" aria-label="Source">
                 <option value="">All sources</option>
                 <option value="OLX.pl">OLX.pl</option>

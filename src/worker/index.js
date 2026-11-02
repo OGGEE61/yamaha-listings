@@ -40,6 +40,7 @@ export default {
         const search        = searchParams.get('search');
         const model         = searchParams.get('model');
         const engine        = searchParams.get('engine');
+        const category      = searchParams.get('category');
         const excludeTenere = searchParams.get('excludeTenere') === 'true';
         const activeOnly    = searchParams.get('activeOnly') !== 'false';
         const iconicBlue    = searchParams.get('iconicBlue') === 'true';
@@ -85,14 +86,17 @@ export default {
           params.push(`%${search.toLowerCase()}%`);
         }
 
-        if (engine === '2T') {
-          where.push(`(model IN ('YZ 250 2T','YZ 250X') OR (model = 'Yamaha Vintage' AND (LOWER(title) LIKE '%dt%' OR LOWER(title) LIKE '% it%')) OR (model = 'Unknown' AND cc = 250))`);
-        } else if (engine === '4T') {
-          where.push(`(model IN ('WR 250F','WR 450F','Tenere 700') OR (model = 'Yamaha Vintage' AND (LOWER(title) LIKE '%xt%' OR LOWER(title) LIKE '% tt%')))`);
+        if (engine === '2T' || engine === '4T') {
+          where.push('engine = ?');
+          params.push(engine);
+        }
+        if (category) {
+          where.push('category = ?');
+          params.push(category);
         }
 
         if (excludeTenere) {
-          where.push(`(model != 'Tenere 700' AND model != 'XJ6 Naked' AND NOT (model = 'Yamaha Vintage' AND LOWER(title) LIKE '%tenere%'))`);
+          where.push(`COALESCE(category, '') NOT IN ('Adventure', 'Naked')`);
         }
 
         const whereClause = where.length ? 'WHERE ' + where.join(' AND ') : '';
@@ -469,6 +473,29 @@ export default {
       }
 
       // ──────────────────────────────────────────────
+      // API: /api/reclassify (re-derive model/engine/category/parts/year for existing rows; touches nothing else,
+      // so is_active / last_seen are left alone, unlike a sync upsert)
+      // ──────────────────────────────────────────────
+      if (pathname === '/api/reclassify' && request.method === 'POST') {
+        if (!isAuthorized(request, env)) {
+          return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+            status: 401, headers: { 'Content-Type': 'application/json', ...corsHeaders }
+          });
+        }
+        const { updates = [] } = await request.json();
+        const stmts = updates.filter(u => u && u.id).map(u => env.DB.prepare(`
+          UPDATE listings SET
+            model = COALESCE(?, model), cc = COALESCE(?, cc), engine = ?, category = ?,
+            is_parts = COALESCE(?, is_parts), year = COALESCE(?, year)
+          WHERE id = ?
+        `).bind(u.model ?? null, u.cc ?? null, u.engine ?? null, u.category ?? null, u.is_parts ?? null, u.year ?? null, u.id));
+        for (let i = 0; i < stmts.length; i += 80) await env.DB.batch(stmts.slice(i, i + 80));
+        return new Response(JSON.stringify({ success: true, updated: stmts.length }), {
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        });
+      }
+
+      // ──────────────────────────────────────────────
       // API: /api/sync-listings (Admin batch upsert from scraper)
       // ──────────────────────────────────────────────
       if (pathname === '/api/sync-listings' && request.method === 'POST') {
@@ -509,8 +536,8 @@ export default {
             env.DB.prepare(`
               INSERT INTO listings (
                 id, title, model, price, currency, location, url, image, cc, source, first_seen, last_seen, valid_until, is_active,
-                iconic_blue, iconic_blue_parts, iconic_blue_image, iconic_blue_checked_at, iconic_blue_verified, iconic_blue_title, search_url, images, description, is_parts, year
-              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                iconic_blue, iconic_blue_parts, iconic_blue_image, iconic_blue_checked_at, iconic_blue_verified, iconic_blue_title, search_url, images, description, is_parts, year, engine, category
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
               ON CONFLICT(id) DO UPDATE SET
                 title = excluded.title,
                 model = CASE WHEN excluded.model != 'Unknown' THEN excluded.model ELSE listings.model END,
@@ -522,6 +549,8 @@ export default {
                 cc = CASE WHEN excluded.cc > 0 THEN excluded.cc ELSE listings.cc END,
                 is_parts = CASE WHEN excluded.is_parts IS NOT NULL THEN excluded.is_parts ELSE listings.is_parts END,
                 year = CASE WHEN excluded.year IS NOT NULL THEN excluded.year ELSE listings.year END,
+                engine = CASE WHEN excluded.engine IS NOT NULL THEN excluded.engine ELSE listings.engine END,
+                category = CASE WHEN excluded.category IS NOT NULL THEN excluded.category ELSE listings.category END,
                 last_seen = excluded.last_seen,
                 valid_until = excluded.valid_until,
                 is_active = 1,
@@ -554,7 +583,9 @@ export default {
               Array.isArray(item.images) && item.images.length ? JSON.stringify(item.images) : null,
               item.description ? String(item.description).slice(0, 20000) : null,
               item.is_parts ?? null,
-              item.year ?? null
+              item.year ?? null,
+              item.engine || null,
+              item.category || null
             )
           );
 

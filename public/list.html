@@ -103,6 +103,17 @@
               </select>
             </div>
             <div class="filter-group select-wrapper">
+              <select id="filterCategory" onchange="fetchTableListings(0)" aria-label="Category">
+                <option value="">All categories</option>
+                <option value="Motocross">Motocross</option>
+                <option value="Enduro">Enduro</option>
+                <option value="Supermoto">Supermoto</option>
+                <option value="Adventure">Adventure</option>
+                <option value="Naked">Naked</option>
+                <option value="Classic">Classic</option>
+              </select>
+            </div>
+            <div class="filter-group select-wrapper">
               <select id="filterSource" onchange="fetchTableListings(0)" aria-label="Source">
                 <option value="">All sources</option>
                 <option value="OLX.pl">OLX.pl</option>
@@ -183,7 +194,7 @@
     let currentTableItems = [];
 
     function resetTableFilters() {
-      ['filterSearch', 'filterMin', 'filterMax', 'filterModel', 'filterEngine', 'filterSource'].forEach(id => { document.getElementById(id).value = ''; });
+      ['filterSearch', 'filterMin', 'filterMax', 'filterModel', 'filterEngine', 'filterCategory', 'filterSource'].forEach(id => { document.getElementById(id).value = ''; });
       document.getElementById('sortBy').value = 'recommended';
       document.getElementById('showInactive').checked = false;
       document.getElementById('filterIconicBlue').checked = true;
@@ -203,6 +214,7 @@
       const maxPrice = document.getElementById('filterMax').value;
       const model = document.getElementById('filterModel').value;
       const engine = document.getElementById('filterEngine').value;
+      const category = document.getElementById('filterCategory').value;
       const source = document.getElementById('filterSource') ? document.getElementById('filterSource').value : '';
       const showInactive = document.getElementById('showInactive').checked;
       const iconicBlue = document.getElementById('filterIconicBlue').checked;
@@ -217,6 +229,7 @@
       if (maxPrice) params.set('maxPrice', maxPrice);
       if (model) params.set('model', model);
       if (engine) params.set('engine', engine);
+      if (category) params.set('category', category);
       if (source) params.set('source', source);
       if (showInactive) params.set('activeOnly', 'false');
       if (iconicBlue) params.set('iconicBlue', 'true');
@@ -822,7 +835,7 @@
       setText('modalListingTitle', l.title || 'Yamaha Listing');
       setText('modalListingModel', l.model || 'Unknown Model');
 
-      const is2T = (l.model && (l.model.includes('2T') || l.model.includes('YZ 250') || l.model.includes('DT') || l.model.includes('IT')));
+      const is2T = l.engine ? l.engine === '2T' : (l.model && (l.model.includes('2T') || l.model.includes('YZ 250') || l.model.includes('DT') || l.model.includes('IT')));
       setText('modalListingEngine', is2T ? '2-stroke (2T)' : '4-stroke (4T)');
 
       const verdictEl = document.getElementById('modalListingVerdict');

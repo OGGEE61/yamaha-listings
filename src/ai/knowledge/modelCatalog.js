@@ -8,6 +8,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { byName, matchModel, fold } = require('../../models/registry');
 
 const MODELS_DIR = path.join(__dirname, 'models');
 
@@ -48,57 +49,13 @@ function findModelKnowledge(listing) {
   const models = loadAllModels();
   if (!listing) return null;
 
-  const rawModel = (listing.model || '').toLowerCase().trim();
-  const rawTitle = (listing.title || '').toLowerCase().trim();
-  const rawDesc  = (listing.description || '').toLowerCase().substring(0, 500);
+  // The registry owns which knowledge file belongs to which model; prefer the stored model, else re-resolve
+  // from the text (e.g. a listing that was never classified).
+  const stored = byName(listing.model);
+  if (stored) return models[stored.knowledge] || null;
 
-  // 1. Direct match by ID or catalog model name
-  if (rawModel.includes('yz 250') || rawModel.includes('yz250')) {
-    return models['yz_250_2t'];
-  }
-  if (rawModel.includes('tenere') || rawModel.includes('t7')) {
-    return models['tenere_700'];
-  }
-  if (rawModel.includes('wr 450') || rawModel.includes('wr450')) {
-    return models['wr_450f'];
-  }
-  if (rawModel.includes('wr 250x') || rawModel.includes('wr250x')) {
-    return models['wr_250x'];
-  }
-  if (rawModel.includes('wr 250f') || rawModel.includes('wr250f') || rawModel === 'wr 250') {
-    return models['wr_250f'];
-  }
-  if (rawModel.includes('xj6')) {
-    return models['xj6'];
-  }
-  if (rawModel.includes('vintage') || rawModel.includes('dt') || rawModel.includes('xt') || rawModel.includes('tt') || rawModel.includes('it')) {
-    return models['yamaha_vintage'];
-  }
-
-  // 2. Match by title keywords
-  if (/\b(tenere[\s-]*700|xtz[\s-]*700|t7|t700)\b/i.test(rawTitle)) {
-    return models['tenere_700'];
-  }
-  if (/wr[ ]?450/i.test(rawTitle)) {
-    return models['wr_450f'];
-  }
-  if (/wr[ ]?250[ ]?x/i.test(rawTitle) || /wr[ ]?250[ ]?x/i.test(rawDesc)) {
-    return models['wr_250x'];
-  }
-  if (/wr[ ]?250/i.test(rawTitle)) {
-    return models['wr_250f'];
-  }
-  if (/yz[ ]?250/i.test(rawTitle) && !/yz[ ]?250[ ]?f/i.test(rawTitle)) {
-    return models['yz_250_2t'];
-  }
-  if (/\bxj6\b/i.test(rawTitle)) {
-    return models['xj6'];
-  }
-  if (/\b(dt|xt|tt|it)\b/i.test(rawTitle)) {
-    return models['yamaha_vintage'];
-  }
-
-  return null;
+  const resolved = matchModel(fold(listing.title), fold(listing.description).substring(0, 400));
+  return resolved ? models[resolved.knowledge] || null : null;
 }
 
 /**

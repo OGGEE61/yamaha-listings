@@ -27,6 +27,7 @@ async function loadListings(page = 0) {
   const maxPrice      = document.getElementById('filterMax').value;
   const model         = document.getElementById('filterModel').value;
   const engine        = document.getElementById('filterEngine').value;
+  const category      = document.getElementById('filterCategory').value;
   const source        = document.getElementById('filterSource').value;
   const excludeTenere = document.getElementById('excludeTenere').checked;
   const showInactive  = document.getElementById('showInactive') ? document.getElementById('showInactive').checked : false;
@@ -43,6 +44,7 @@ async function loadListings(page = 0) {
   if (maxPrice) params.set('maxPrice', maxPrice);
   if (model) params.set('model', model);
   if (engine) params.set('engine', engine);
+  if (category) params.set('category', category);
   if (source) params.set('source', source);
   if (excludeTenere) params.set('excludeTenere', 'true');
   if (showInactive) params.set('activeOnly', 'false');
@@ -98,6 +100,7 @@ async function fallbackFetchAll(page = 0) {
     const maxPrice      = parseInt(document.getElementById('filterMax').value) || Infinity;
     const model         = document.getElementById('filterModel').value;
     const engine        = document.getElementById('filterEngine').value;
+    const category      = document.getElementById('filterCategory').value;
     const source        = document.getElementById('filterSource').value;
     const excludeTenere = document.getElementById('excludeTenere').checked;
     const showInactive  = document.getElementById('showInactive')?.checked || false;
@@ -112,17 +115,9 @@ async function fallbackFetchAll(page = 0) {
       if (iconicBlue && l.iconic_blue !== 1) return false;
       if (hitlOnly && l.iconic_blue_verified !== 1) return false;
       if (hideParts && l.is_parts === 1) return false;
-      if (engine === '2T') {
-        const is2T = l.model === 'YZ 250 2T' || l.model === 'YZ 250X' || (l.model === 'Yamaha Vintage' && /\b(dt|it)\b/i.test(l.title));
-        if (!is2T) return false;
-      }
-      if (engine === '4T') {
-        const is4T = l.model === 'WR 250F' || l.model === 'WR 450F' || l.model === 'Tenere 700' || (l.model === 'Yamaha Vintage' && /\b(xt|tt)\b/i.test(l.title));
-        if (!is4T) return false;
-      }
-      if (excludeTenere) {
-        if (l.model === 'Tenere 700' || l.model === 'XJ6 Naked' || (l.model === 'Yamaha Vintage' && /tenere/i.test(l.title))) return false;
-      }
+      if (engine && l.engine !== engine) return false;
+      if (category && l.category !== category) return false;
+      if (excludeTenere && (l.category === 'Adventure' || l.category === 'Naked')) return false;
       if (l.price && minPrice && l.price < minPrice) return false;
       if (l.price && maxPrice < Infinity && l.price > maxPrice) return false;
       if (search && !l.title.toLowerCase().includes(search)) return false;
@@ -186,6 +181,7 @@ function resetFilters() {
   document.getElementById('filterMax').value = '';
   document.getElementById('filterModel').value = '';
   document.getElementById('filterEngine').value = '2T';
+  document.getElementById('filterCategory').value = '';
   document.getElementById('filterSource').value = '';
   document.getElementById('sortBy').value = 'recommended';
   document.getElementById('showInactive').checked = false;
@@ -200,6 +196,7 @@ function onModelChange() {
   const model = document.getElementById('filterModel').value;
   if (model) {
     document.getElementById('filterEngine').value = ""; // Reset to All Engines
+    document.getElementById('filterCategory').value = "";
     document.getElementById('excludeTenere').checked = false; // Uncheck hide toggle
   }
   loadListings(0);
@@ -770,7 +767,7 @@ function renderListingModalData(l, priceHistory = []) {
   setText('modalListingTitle', l.title || 'Yamaha Listing');
   setText('modalListingModel', l.model || 'Unknown Model');
 
-  const is2T = (l.model && (l.model.includes('2T') || l.model.includes('YZ 250') || l.model.includes('DT') || l.model.includes('IT')));
+  const is2T = l.engine ? l.engine === '2T' : (l.model && (l.model.includes('2T') || l.model.includes('YZ 250') || l.model.includes('DT') || l.model.includes('IT')));
   setText('modalListingEngine', is2T ? '2-stroke (2T)' : '4-stroke (4T)');
 
   // Verdict badge

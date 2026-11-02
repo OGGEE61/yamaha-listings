@@ -10,6 +10,7 @@ console.log("[DEBUG] scraper.js started");
 const cheerio = require('cheerio');
 const { checkListingActive } = require('./active_checker');
 const { execSync } = require('child_process');
+const { matchModel, displacementFor, describe } = require('../models/registry');
 
 // ──────────────────────────────────────────────
 // FILTER LOGIC
@@ -50,74 +51,23 @@ function determineYamahaModel(title, description = '') {
       return null;
   }
 
-  // Reject Super Tenere / 1200cc models
-  if (/(super[\s-]*tenere|xtz?[\s-]*1200|xtz[\s-]*750|\b1200\b)/i.test(t)) {
-      return null;
-  }
-
-  const isVintage = /\b(dt|xt|tt|it)\b/i.test(t);
-
-  // Check explicit models BEFORE applying generic CC filters
-  if (/\b(tenere[\s-]*700|xtz[\s-]*700|xtz690|\bt7\b|t700)\b/i.test(t) && !/\bxt[\s-]?6/i.test(t)) {
-    return 'Tenere 700';
-  }
-
-  if (/wr[ ]?450/i.test(t)) {
-    return 'WR 450F';
-  }
-
-  if (/wr[ ]?250/i.test(t)) {
-    if (/wr[ ]?250[ ]?x/i.test(t) || /wr[ ]?250[ ]?x/i.test(d)) {
-      return 'WR 250X';
-    }
-    // WR 250 is assumed to be WR250F since WR250Z is extremely rare and often confused.
-    return 'WR 250F';
-  }
-
-  if (/yz[ ]?250/i.test(t)) {
-    const isFourStroke = /yz[ ]?250[ ]?f[x]?/i.test(t) || /yzf[ ]?250/i.test(t) ||
-                         /yz[ ]?250[ ]?f[x]?/i.test(d) || /yzf[ ]?250/i.test(d) ||
-                         /\b4[ ]?t\b/i.test(d) || /4suw/i.test(d);
-    if (isFourStroke) return null;
-
-    if (/yz[ ]?250[ ]?x/i.test(t) || /yz[ ]?250[ ]?x/i.test(d)) {
-      return 'YZ 250X';
-    }
-
-    return 'YZ 250 2T';
-  }
-
-  if (/\bxj6\b/i.test(t) || /\bxj[\s-]?6\b/i.test(t)) {
-    if (/\bdiversion\b/i.test(t) || /\bdiversion\b/i.test(d)) return null;
-    if (/\bxj6[\s-]*f\b/i.test(t) || /\bxj[\s-]*6f\b/i.test(t)) return null;
-    if (/\bxj6[\s-]*s\b/i.test(t) || /\bxj[\s-]*6s\b/i.test(t)) return null;
-    return 'XJ6 Naked';
-  }
-
-  // Must NOT be a 125cc, 85cc explicitly (unless it's a vintage model like DT 125)
-  // We do this AFTER explicit model checks to avoid false positives from descriptions (e.g. "zamienię na 125" or "transport do 125km")
-  const isOtherCc = /\b125\b/.test(t) || /125cc/i.test(t) ||
-                    /\b85\b/.test(t)  || /85cc/i.test(t)  ||
-                    /\b125\b/.test(d) || /125cc/i.test(d) ||
-                    /\b85\b/.test(d)  || /85cc/i.test(d);
-  if (isOtherCc && !isVintage) return null;
-
-  if (isVintage) {
-    return 'Yamaha Vintage';
-  }
-
-  return null;
+  const model = matchModel(t, d);
+  return model ? model.name : null;
 }
 
 // Bikes sold for spares ("na części", donor bike, breaker) or part-only ads ("Plastiki Yamaha YZ"),
-// which we want to rank last. Descriptions are only trusted for strong phrases, and a leading "nie" negates them.
+// which we want to rank last. Titles are short and deliberate, so the whole phrase list applies there. Descriptions
+// are long and chatty ("stare części do wglądu", "części do kupienia osobno" on a complete bike), so only the
+// phrases that unambiguously say "this bike is being sold for spares" count, and a leading "nie" negates them.
 function detectParts(title, desc = '') {
   const fold = x => (x || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
   const t = fold(title).replace(/\s+/g, ' ').trim();
   const d = fold(desc).replace(/\s+/g, ' ').trim().substring(0, 500);
-  const strong = /(?<!\bnie )(?<!\bnie na )\b(na (czesci|czesc)|dawca|do rozbiorki|rozbiorka|szrot|czesci zamienne|tylko czesci|czesci do)\b/;
+  const notNegated = '(?<!\\bnie )(?<!\\bnie na )(?<!\\bnie jest )(?<!\\bnie nadaje sie )';
+  const titlePhrases = new RegExp(notNegated + '\\b(na (czesci|czesc)|dawca|do rozbiorki|rozbiorka|szrot|czesci zamienne|tylko czesci|czesci do)\\b');
+  const descPhrases  = new RegExp(notNegated + '\\b(sprzedam na (czesci|czesc)|na (czesci|czesc) (sprzedam|sprzedaje)|motocykl na (czesci|czesc)|dawca|do rozbiorki|szrot)\\b');
   const partOnly = /^(yamaha )?(plastiki|owiewki|rama|silnik|cylinder|tlok|wahacz|amortyzator|lagi|zawieszenie|zbiornik|blotnik|felgi?|kolo|kola|naklejki|zestaw)\b/;
-  return strong.test(t) || partOnly.test(t) || strong.test(d);
+  return titlePhrases.test(t) || partOnly.test(t) || descPhrases.test(d);
 }
 
 // Model year from the title, then the description: "2019", or a two-digit "22r". Newest plausible year wins
@@ -135,16 +85,20 @@ function extractYear(title, desc = '') {
 }
 
 function extractCC(title, desc, model) {
-  if (model === 'Tenere 700') return 700;
-  if (model === 'WR 450F') return 450;
-  if (model === 'WR 250F' || model === 'WR 250X' || model === 'YZ 250 2T' || model === 'YZ 250X') return 250;
-  if (model === 'XJ6 Naked') return 600;
-  
+  const known = displacementFor(model);
+  if (known) return known;
+
   const t = title.toLowerCase();
   const match = t.match(/\b(50|80|85|125|175|200|225|250|350|400|426|450|500|600|650|660|700)[a-z]*\b/);
   if (match) return parseInt(match[1], 10);
   
   return 0;
+}
+
+// engine (2T/4T) and category (Motocross, Enduro, ...) come from the model registry; vintage resolves per sub-family
+function modelTraits(title, model) {
+  const { engine, category } = describe(model, title);
+  return { engine, category };
 }
 
 // Safety cap on pagination per search query
@@ -263,6 +217,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
             is_parts: detectParts(title) ? 1 : undefined,
             year: extractYear(title),
             model: modelName,
+            ...modelTraits(title, modelName),
             cc: extractCC(title, '', modelName),
             price: offer.price || null,
             currency: offer.priceCurrency || 'PLN',
@@ -309,6 +264,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
       is_parts: detectParts(title) ? 1 : undefined,
       year: extractYear(title),
       model: modelName,
+      ...modelTraits(title, modelName),
       cc: extractCC(title, '', modelName),
       price,
       currency: 'PLN',
@@ -380,6 +336,7 @@ async function scrapeAutoplac(pageNum = 1, searchUrl) {
       id,
       title,
       model: modelName,
+      ...modelTraits(title, modelName),
       cc: extractCC(title, '', modelName),
       price,
       currency: 'PLN',
@@ -585,6 +542,7 @@ async function scrapeAll() {
     const finalModel = determineYamahaModel(listing.title, details.desc);
     if (finalModel) {
       listing.model = finalModel;
+      Object.assign(listing, modelTraits(listing.title, finalModel));
       listing.cc = extractCC(listing.title, details.desc, finalModel);
       listing.is_parts = detectParts(listing.title, details.desc) ? 1 : 0;
       listing.year = extractYear(listing.title, details.desc) || listing.year || null;
@@ -602,16 +560,24 @@ async function scrapeAll() {
 
 const WORKER_URL = process.env.WORKER_URL || 'https://yamaha-listings.maxgustaw.workers.dev';
 
-// Everything currently marked active in D1 (public read endpoint)
-async function fetchActiveListings() {
-  try {
-    const res = await fetch(`${WORKER_URL}/api/listings?limit=500&source=${encodeURIComponent('OLX.pl')}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return (await res.json()).listings || [];
-  } catch (err) {
-    console.warn('[Scraper] Could not load active listings from D1:', err.message);
-    return [];
+// Everything currently marked active in D1 (public read endpoint). D1 bills rows read, so this is fetched once
+// per run and shared by the "already known?" check and the "missing from the run" check.
+let activeListingsPromise = null;
+function fetchActiveListings() {
+  if (!activeListingsPromise) {
+    activeListingsPromise = (async () => {
+      try {
+        const res = await fetch(`${WORKER_URL}/api/listings?limit=500&source=${encodeURIComponent('OLX.pl')}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return (await res.json()).listings || [];
+      } catch (err) {
+        console.warn('[Scraper] Could not load active listings from D1:', err.message);
+        activeListingsPromise = null; // allow a retry rather than caching the failure
+        return [];
+      }
+    })();
   }
+  return activeListingsPromise;
 }
 
 // A listing that is missing from a run is NOT necessarily gone (it may just have slid to a later
@@ -663,7 +629,7 @@ async function syncListingsToD1(listings, runStats, inactiveUrls = []) {
   return result;
 }
 
-module.exports = { scrapeAll, determineYamahaModel, detectParts, cleanTitle, extractYear, extractCC, syncListingsToD1, __test: { scrapeOLX } };
+module.exports = { scrapeAll, determineYamahaModel, detectParts, cleanTitle, extractYear, extractCC, modelTraits, syncListingsToD1, __test: { scrapeOLX } };
 
 if (require.main === module) {
   (async () => {
