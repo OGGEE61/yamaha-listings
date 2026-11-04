@@ -127,8 +127,10 @@ npx serve public/     # preview the static dashboard locally
 Or run the local server (the only place Bielik / Ollama analysis works, since Ollama runs on your machine):
 
 ```bash
-npm start             # http://localhost:3000  (uses the local listings.db)
+npm start             # http://localhost:3000  (live data from the Worker)
 ```
+
+While it runs, this server also starts a scrape and colour check every 30 minutes, so stop it when you're done.
 
 Worker runtime preview: `npm run worker:dev`.
 

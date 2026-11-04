@@ -223,7 +223,7 @@ async function scrapeOLX(pageNum = 1, searchUrl) {
             currency: offer.priceCurrency || 'PLN',
             location,
             url: offer.url || '',
-            image: (offer.image && offer.image[0]) || null,
+            image: realPhoto(offer.image && offer.image[0]),
             source: 'OLX.pl',
             searchUrl: searchUrl,
             scrapedAt: new Date().toISOString(),
@@ -376,9 +376,10 @@ function cleanTitle(text) {
 
 // OLX lazy-loads card photos: until they scroll into view the <img> src is a relative
 // "/app/static/media/no_thumbnail.*.svg" placeholder, which is a broken image on our own origin.
+// Cards that did load point at a tiny rendition (".../image;s=216x152;q=50"); without the suffix the CDN serves its standard size, and public/ui.js picks the display size from there.
 function realPhoto(src) {
   if (!src || !/^https?:\/\//.test(src) || /no_thumbnail|placeholder/.test(src)) return null;
-  return src;
+  return src.replace(/;s=[^/]*$/, '');
 }
 
 async function fetchDetails(url) {
@@ -514,12 +515,12 @@ async function scrapeAll() {
     }
 
     if (knownIds.has(id)) {
-      // Heal rows an earlier run saved with a placeholder photo: fall back to the first gallery image
+      // Heal rows an earlier run saved with a thumbnail or placeholder photo: upgrade it, else fall back to the first gallery image
       const known = knownById.get(id);
-      if (!listing.image && !realPhoto(known.image)) {
+      if (!listing.image) {
         let gallery = known.images;
         if (typeof gallery === 'string') { try { gallery = JSON.parse(gallery); } catch (_) { gallery = []; } }
-        listing.image = (gallery || []).map(realPhoto).find(Boolean) || null;
+        listing.image = realPhoto(known.image) || (gallery || []).map(realPhoto).find(Boolean) || null;
       }
       verifiedListings.push(listing);
       continue;

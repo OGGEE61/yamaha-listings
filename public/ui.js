@@ -2,6 +2,7 @@
  * Small shared UI behaviours (no data logic):
  *  - phone filter toolbar open/close
  *  - re-fit the collapsible price chart when it is opened
+ *  - pick the OLX photo size to display
  */
 
 function toggleToolbar() {
@@ -37,3 +38,10 @@ document.addEventListener('toggle', (event) => {
   if (!event.target.matches || !event.target.matches('.card-menu') || !event.target.open) return;
   document.querySelectorAll('.card-menu[open]').forEach((menu) => { if (menu !== event.target) menu.removeAttribute('open'); });
 }, true);
+
+// OLX picks the rendition from the URL. Its default caps height at 700px, which leaves vertical phone
+// photos soft on high-density screens, so ask for up to 1000px on the long side.
+function sizedPhoto(src) {
+  if (!src || !src.includes('olxcdn.com')) return src;
+  return src.replace(/;s=[^/]*$/, '') + ';s=1000x1000';
+}

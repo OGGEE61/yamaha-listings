@@ -379,7 +379,7 @@ function renderListings(listings) {
       : `<div class="listing-price-tag is-muted">Price on request</div>`;
 
     const imgHtml = l.image
-      ? `<img class="listing-img" src="${escHtml(l.image)}" alt="${escHtml(l.title)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="listing-img-placeholder" style="display:none">${motorcycleIcon()}</div>`
+      ? `<img class="listing-img" src="${escHtml(sizedPhoto(l.image))}" alt="${escHtml(l.title)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="listing-img-placeholder" style="display:none">${motorcycleIcon()}</div>`
       : `<div class="listing-img-placeholder">${motorcycleIcon()}</div>`;
 
     const location = l.location ? `
@@ -666,9 +666,7 @@ function showToast(msg, type = '') {
 // Global listener for modal rejection
 window.addEventListener('listing-rejected', (e) => {
   const { id } = e.detail;
-  allListings = allListings.filter(l => l.id !== id);
   currentRenderedListings = currentRenderedListings.filter(l => l.id !== id);
-  updateKPIs(allListings);
   const card = document.getElementById(`card-${id}`);
   if (card) {
     card.style.transition = 'all 0.3s ease';
@@ -711,7 +709,6 @@ async function openListingDetailModal(id) {
 
   // 1. Immediately find listing from current in-memory listings
   let listing = (currentRenderedListings && currentRenderedListings.find(l => String(l.id) === String(id))) ||
-                (allListings && allListings.find(l => String(l.id) === String(id))) ||
                 (cachedFallbackListings && cachedFallbackListings.find(l => String(l.id) === String(id)));
 
   // If not yet in cache, create placeholder so modal opens instantly
@@ -783,7 +780,7 @@ function renderListingModalData(l, priceHistory = []) {
   // Image & Price
   const imgEl = document.getElementById('modalListingImg');
   if (l.image) {
-    imgEl.src = l.image;
+    imgEl.src = sizedPhoto(l.image);
     imgEl.style.display = 'block';
   } else {
     imgEl.src = 'favicon.png';
@@ -1103,7 +1100,7 @@ async function verifyListingActiveLive(id, url) {
     if (data.freshImage && (!currentModalListing.image || currentModalListing.image.includes('placeholder'))) {
       currentModalListing.image = data.freshImage;
       const imgEl = document.getElementById('modalListingImg');
-      if (imgEl) imgEl.src = data.freshImage;
+      if (imgEl) imgEl.src = sizedPhoto(data.freshImage);
     }
 
     if (currentModalListing && currentModalListing.id === id) {
