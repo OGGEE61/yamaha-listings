@@ -9,7 +9,7 @@ console.log("[DEBUG] scraper.js started");
 
 const cheerio = require('cheerio');
 const { checkListingActive } = require('./active_checker');
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 const { matchModel, displacementFor, describe } = require('../models/registry');
 
 // ──────────────────────────────────────────────
@@ -156,8 +156,8 @@ function fetchWithPuppeteer(url) {
   try {
     const scriptPath = require('path').join(__dirname, 'puppeteer_fetcher.js');
     
-    // Call the puppeteer script
-    const html = execSync(`node "${scriptPath}" "${url}"`, { 
+    // Call the puppeteer script. Arguments go straight to the process (no shell), so a URL can never be interpreted as a command
+    const html = execFileSync(process.execPath, [scriptPath, url], {
       encoding: 'utf8',
       maxBuffer: 1024 * 1024 * 10, // 10MB buffer for large HTML
       timeout: 90000 // a hung browser must not eat the whole run budget
@@ -614,7 +614,8 @@ async function syncListingsToD1(listings, runStats, inactiveUrls = []) {
       'x-sync-secret': secret,
     },
     body: JSON.stringify({
-      listings,
+      // The Worker reads snake_case column names; the scraper builds these two in camelCase
+      listings: listings.map(l => ({ ...l, search_url: l.searchUrl || null, valid_until: l.validUntil || null })),
       run: runStats,
       inactiveUrls,
     }),

@@ -590,15 +590,17 @@ export default {
           );
 
           if (item.price !== null && item.price !== undefined) {
+            // Record the price only when it differs from the latest recorded one, so a return to an
+            // earlier price (10000 -> 9000 -> 10000) is logged too. -1 stands for "no history yet".
             statements.push(
               env.DB.prepare(`
                 INSERT INTO price_history (listing_id, price, recorded_at)
                 SELECT ?, ?, ?
-                WHERE NOT EXISTS (
-                  SELECT 1 FROM price_history 
-                  WHERE listing_id = ? AND price = ?
-                  ORDER BY recorded_at DESC LIMIT 1
-                )
+                WHERE COALESCE((
+                  SELECT price FROM price_history
+                  WHERE listing_id = ?
+                  ORDER BY recorded_at DESC, id DESC LIMIT 1
+                ), -1) != CAST(? AS REAL)
               `).bind(id, item.price, now, id, item.price)
             );
           }

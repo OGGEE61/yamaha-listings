@@ -13,7 +13,7 @@
  */
 
 const cheerio = require('cheerio');
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 const path = require('path');
 
 const GENERIC_OLX_TITLE = /^Ogłoszenia - Sprzedam, kupię na OLX\.pl/i;
@@ -24,7 +24,8 @@ function checkListingActive(url) {
   let html;
   try {
     const scriptPath = path.join(__dirname, 'puppeteer_fetcher.js');
-    html = execSync(`node "${scriptPath}" "${url}"`, {
+    // Arguments go straight to the process (no shell), so a URL can never be interpreted as a command
+    html = execFileSync(process.execPath, [scriptPath, url], {
       encoding: 'utf8',
       maxBuffer: 10 * 1024 * 1024,
       timeout: 40000,

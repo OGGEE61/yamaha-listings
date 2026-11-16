@@ -55,12 +55,12 @@ async function ensureListingDescription(listing) {
   // Attempt to fetch details if URL is present
   if (!listing.url) return '';
   try {
-    const { execSync } = require('child_process');
+    const { execFileSync } = require('child_process');
     const cheerio = require('cheerio');
     const path = require('path');
     const scriptPath = path.join(__dirname, '..', 'scraper', 'puppeteer_fetcher.js');
 
-    const html = execSync(`node "${scriptPath}" "${listing.url}"`, {
+    const html = execFileSync(process.execPath, [scriptPath, listing.url], {
       encoding: 'utf8',
       maxBuffer: 10 * 1024 * 1024,
       timeout: 25000
