@@ -15,6 +15,11 @@
       "binding": "DB",
       "database_name": "yamaha-listings-db",
       "database_id": "ef53e020-1e9a-487d-a01e-0f0d59bd110d"
+    },
+    {
+      "binding": "GUARD",
+      "database_name": "site-login-guard",
+      "database_id": "cbd6112d-8979-430c-be60-fbdca8329963"
     }
   ]
 }
