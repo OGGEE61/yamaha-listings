@@ -25,9 +25,11 @@ app.use(express.static(path.join(__dirname, '..', '..', 'public')));
 // Everything except Bielik comes straight from the live Worker/D1, so local == production data.
 // (Bielik needs Ollama on this machine; it persists results to D1 via the Worker.)
 const WORKER_URL = process.env.WORKER_URL || 'https://yamaha-listings.maxgustaw.workers.dev';
+// The live site asks for a password; set SITE_PASSWORD so this local server can read it.
+const WORKER_AUTH = { Authorization: 'Basic ' + Buffer.from(':' + (process.env.SITE_PASSWORD || '')).toString('base64') };
 
 async function fetchWorkerListing(id) {
-  const r = await fetch(`${WORKER_URL}/api/listing/${encodeURIComponent(id)}`);
+  const r = await fetch(`${WORKER_URL}/api/listing/${encodeURIComponent(id)}`, { headers: WORKER_AUTH });
   return r.ok ? (await r.json()).listing : null;
 }
 
@@ -37,7 +39,7 @@ app.use('/api', async (req, res, next) => {
   try {
     const upstream = await fetch(`${WORKER_URL}/api${req.url}`, {
       method: req.method,
-      headers: { 'Content-Type': 'application/json', ...(req.get('x-sync-secret') ? { 'x-sync-secret': req.get('x-sync-secret') } : {}) },
+      headers: { ...WORKER_AUTH, 'Content-Type': 'application/json', ...(req.get('x-sync-secret') ? { 'x-sync-secret': req.get('x-sync-secret') } : {}) },
       body: ['GET', 'HEAD'].includes(req.method) ? undefined : JSON.stringify(req.body || {}),
     });
     res.status(upstream.status);

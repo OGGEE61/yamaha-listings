@@ -306,7 +306,7 @@ module.exports = {
 };
 
 async function fetchListingFromWorker(id) {
-  const res = await fetch(`${WORKER_URL}/api/listing/${encodeURIComponent(id)}`, { signal: AbortSignal.timeout(30000) });
+  const res = await fetch(`${WORKER_URL}/api/listing/${encodeURIComponent(id)}`, { headers: { 'x-sync-secret': process.env.ADMIN_SYNC_SECRET || '' }, signal: AbortSignal.timeout(30000) });
   if (!res.ok) return null;
   return (await res.json()).listing || null;
 }
@@ -324,7 +324,7 @@ if (require.main === module) {
 
     if (args.includes('--all')) {
       // Batch: every active listing in D1 that has no analysis yet.
-      const res = await fetch(`${WORKER_URL}/api/listings?limit=500&activeOnly=true`, { signal: AbortSignal.timeout(30000) });
+      const res = await fetch(`${WORKER_URL}/api/listings?limit=500&activeOnly=true`, { headers: { 'x-sync-secret': process.env.ADMIN_SYNC_SECRET || '' }, signal: AbortSignal.timeout(30000) });
       const { listings = [] } = await res.json();
       const todo = listings.filter(l => force || !l.bielik_analysis).slice(0, limit);
       console.log(`[Bielik CLI] ${todo.length} listing(s) to analyse (of ${listings.length} active)`);

@@ -13,7 +13,7 @@ const WORKER_URL = process.env.WORKER_URL || 'https://yamaha-listings.maxgustaw.
 const apply = process.argv.includes('--apply');
 
 (async () => {
-  const res = await fetch(`${WORKER_URL}/api/listings?limit=500&activeOnly=false`);
+  const res = await fetch(`${WORKER_URL}/api/listings?limit=500&activeOnly=false`, { headers: { 'x-sync-secret': process.env.ADMIN_SYNC_SECRET || '' } });
   const { listings } = await res.json();
   const updates = [];
 

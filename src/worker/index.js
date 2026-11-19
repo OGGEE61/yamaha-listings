@@ -10,6 +10,26 @@ function isAuthorized(request, env) {
   return Boolean(secret) && (header === secret || header === `Bearer ${secret}`);
 }
 
+// Site-wide password (browser login box). Any username; the password must equal SITE_PASSWORD.
+// If SITE_PASSWORD is not set, nobody gets in.
+function hasSitePassword(request, env) {
+  const header = request.headers.get('authorization') || '';
+  if (!env.SITE_PASSWORD || !header.startsWith('Basic ')) return false;
+  try {
+    const decoded = atob(header.slice(6));
+    return decoded.slice(decoded.indexOf(':') + 1) === env.SITE_PASSWORD;
+  } catch {
+    return false;
+  }
+}
+
+function askForPassword() {
+  return new Response('Password required', {
+    status: 401,
+    headers: { 'WWW-Authenticate': 'Basic realm="Nexopel", charset="UTF-8"' },
+  });
+}
+
 // Image proxy only fetches from the marketplaces we scrape (prevents use as an open proxy)
 const ALLOWED_IMAGE_HOSTS = ['olxcdn.com', 'olx.pl', 'autoplac.pl'];
 
@@ -27,6 +47,11 @@ export default {
 
     if (request.method === 'OPTIONS') {
       return new Response(null, { headers: corsHeaders });
+    }
+
+    // Scripts (GitHub scraper, AI jobs) carry ADMIN_SYNC_SECRET instead of the site password.
+    if (!hasSitePassword(request, env) && !isAuthorized(request, env)) {
+      return askForPassword();
     }
 
     try {
@@ -647,7 +672,7 @@ export default {
         return new Response(JSON.stringify({ listings, updatedAt }, null, 2), {
           headers: {
             'Content-Type': 'application/json; charset=utf-8',
-            'Cache-Control': 'public, max-age=30, s-maxage=120',
+            'Cache-Control': 'private, max-age=30',
             ...corsHeaders,
           }
         });

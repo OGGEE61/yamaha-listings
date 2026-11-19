@@ -568,7 +568,7 @@ function fetchActiveListings() {
   if (!activeListingsPromise) {
     activeListingsPromise = (async () => {
       try {
-        const res = await fetch(`${WORKER_URL}/api/listings?limit=500&source=${encodeURIComponent('OLX.pl')}`);
+        const res = await fetch(`${WORKER_URL}/api/listings?limit=500&source=${encodeURIComponent('OLX.pl')}`, { headers: { 'x-sync-secret': process.env.ADMIN_SYNC_SECRET || '' } });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return (await res.json()).listings || [];
       } catch (err) {
